@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { store } from '..';
+import { store } from '../../_app';
 import { getCookieToken } from '../cookie/cookie';
 import { reIssueAsyncAction } from '../redux/reducers/app-reducer';
 import { getInfoFromToken } from '../util/appUtils';

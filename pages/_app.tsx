@@ -7,6 +7,11 @@ import green from "@material-ui/core/colors/green"
 import grey from "@material-ui/core/colors/grey"
 import { createMuiTheme } from "@material-ui/core/styles"
 
+import rootReducer, { rootSaga } from './core/redux'
+import logger from 'redux-logger'
+import createSagaMiddleware from 'redux-saga';
+import { configureStore } from '@reduxjs/toolkit'
+
 //////// Theme ///////
 const MuiTheme = createMuiTheme({
   palette: {
@@ -24,43 +29,22 @@ const MuiTheme = createMuiTheme({
 })
 ////////////////////////
 
+const sagaMiddleware = createSagaMiddleware();
+export const store = configureStore({
+  reducer: rootReducer,
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+    serializableCheck: false,
+  }).concat(logger).concat(sagaMiddleware),
+})
+sagaMiddleware.run(rootSaga);
+
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <ThemeProvider theme={MuiTheme}>
-      <Component {...pageProps} />
-    </ThemeProvider>
+    <Provider store={store}>
+      <ThemeProvider theme={MuiTheme}>
+        <CssBaseline />
+        <Component {...pageProps} />
+      </ThemeProvider>
+    </Provider>
   )
 }
-
-
-
-// type Props = {
-//   Component: React.Component
-//   store: any
-// }
-
-// class MyApp extends App<Props> {
-//   componentDidMount() {
-//     // Remove the server-side injected CSS.
-//     const jssStyles = document.querySelector("#jss-server-side")
-//     jssStyles?.parentNode?.removeChild(jssStyles)
-//   }
-
-//   render() {
-//     const { store, Component, pageProps } = this.props
-
-//     return (
-//       <Provider store={store}>
-//         <ThemeProvider theme={MuiTheme}>
-//           {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-//           <CssBaseline />
-//           <Component {...pageProps} />
-//         </ThemeProvider>
-//       </Provider>
-//     )
-//   }
-// }
-
-// export default withRedux(makeStore, {
-//   debug: false,
-// })(MyApp)
