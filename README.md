@@ -39,3 +39,12 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 npx create-next-app@latest --typescript
 실행 명령어 npm run dev
 ```
+
+## default error 처리
+pages 하위에 404.tsx , _error.tsx 와 같이 처리
+
+## 동적 라우팅
+pages/dynamic 에 예제 만듦 (\[id\] 와 같이 파일 이름 생성)
+
+## 라우팅
+pages 하위의 tsx 파일을 자동으로 설정
