@@ -36,5 +36,6 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 # 시작하며
 
 ```
-npx create-next-app@latest
+npx create-next-app@latest --typescript
+실행 명령어 npm run dev
 ```
