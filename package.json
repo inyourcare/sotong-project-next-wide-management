@@ -9,9 +9,17 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@material-ui/core": "^4.12.4",
+    "@reduxjs/toolkit": "^1.8.6",
+    "@types/next-redux-wrapper": "^3.0.0",
+    "@types/react-redux": "^7.1.24",
+    "@types/redux-logger": "^3.0.9",
     "next": "13.0.0",
+    "next-redux-wrapper": "^8.0.0",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "react-redux": "^8.0.4",
+    "redux-logger": "^3.0.6"
   },
   "devDependencies": {
     "@types/node": "18.11.7",
