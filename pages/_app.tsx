@@ -10,6 +10,7 @@ import { green, purple } from '@mui/material/colors';
 import { makeStyles } from '@mui/styles';
 
 import { createWrapper } from "next-redux-wrapper";
+import { SessionProvider } from 'next-auth/react'
 
 // global theme
 const theme = createTheme({
@@ -105,15 +106,17 @@ const makeStore = () => store;
 export type AppStore = ReturnType<typeof makeStore>;
 export const wrapper = createWrapper<AppStore>(makeStore)
 
-export function App({ Component, pageProps }: AppProps) {
-  const {store, props} = wrapper.useWrappedStore(pageProps);
+export function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
+  const { store, props } = wrapper.useWrappedStore(pageProps);
   return (
-    <Provider store={store}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Component {...pageProps} />
-      </ThemeProvider>
-    </Provider>
+    <SessionProvider session={session}>
+      <Provider store={store}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <Component {...pageProps} />
+        </ThemeProvider>
+      </Provider>
+    </SessionProvider>
   )
 }
 
