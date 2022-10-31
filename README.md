@@ -85,3 +85,18 @@ process.env
 .env.$(NODE_ENV)
 .env
 ```
+
+## Prisma database control
+```
+DATABASE_URL="file:./dev.db" 
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+```
+설정을 활용하면 sqlite 로도 사용 가능
+아래는 스키마 파일 생성 후 적용 
+```
+npx prisma db push
+npx prisma studio
+```
