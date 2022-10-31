@@ -7,15 +7,19 @@ import { options as authOptions } from "../api/auth/[...nextauth]"
 // import { options as authOptions } from "./api/auth/[...nextauth]"
 import { IncomingMessage, ServerResponse } from "http";
 import { BuiltInProviderType } from "next-auth/providers";
+import SignIn, { SignInData } from "../../components/auth/SignIn";
 
 function AuthSignIn({ data }: InferGetServerSidePropsType<typeof getServerSideProps>) {
     // will resolve data to type Data
     return (
-        <div>커스텀 로그인{data.providers?.google.name}</div>
+        // <div>커스텀 로그인{data.providers?.google.name}</div>
+        (<>
+            <SignIn providers={data.providers}></SignIn>
+        </>)
     )
 }
-type Data = { providers: Record<LiteralUnion<BuiltInProviderType, string>, ClientSafeProvider> | null }
-export const getServerSideProps: GetServerSideProps<{ data: Data }> = async (context) => {
+
+export const getServerSideProps: GetServerSideProps<{ data: SignInData }> = async (context) => {
     const { req, res } = context;
     const session = await unstable_getServerSession(
         req as NextApiRequest | (IncomingMessage & { cookies: Partial<{ [key: string]: string; }>; }),
@@ -23,6 +27,7 @@ export const getServerSideProps: GetServerSideProps<{ data: Data }> = async (con
         authOptions
     )
     if (session) {
+        alert("이미 로그인 되어있습니다.")
         return {
             redirect: {
                 destination: '/',

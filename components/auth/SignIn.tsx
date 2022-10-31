@@ -6,8 +6,11 @@ import { useTranslation } from 'react-i18next'
 import { signInAsyncAction } from '../../core/redux/reducers/app-reducer';
 import { authorizedApi, refreshTokens } from '../../core/logics/auth';
 import { signIn, signOut, useSession } from "next-auth/react";
+import { LiteralUnion, ClientSafeProvider } from "next-auth/react";
+import { BuiltInProviderType } from "next-auth/providers";
 
-function SignInContent() {
+export type SignInData = { providers: Record<LiteralUnion<BuiltInProviderType, string>, ClientSafeProvider> | null }
+function SignInContent({ providers }: SignInData) {
     const { t } = useTranslation(['page'])
     // const onChangeLang = () => {
     //     i18n.changeLanguage('ko')
@@ -131,7 +134,7 @@ function SignInContent() {
                                     {loginBtnText}
                                 </Button>
 
-                                <Button
+                                {/* <Button
                                     type="button"
                                     variant="contained"
                                     color="primary"
@@ -148,8 +151,8 @@ function SignInContent() {
                                     className={`${classes.signIn_Btn} ${classes.width100P}`}
                                 >
                                     {"테스트 refreshToken"}
-                                </Button>
-                                {(session.status === 'unauthenticated' || session.status === 'loading') && <Button
+                                </Button> */}
+                                {/* {(session.status === 'unauthenticated' || session.status === 'loading') && <Button
                                     type="button"
                                     variant="contained"
                                     color="primary"
@@ -158,7 +161,24 @@ function SignInContent() {
                                     className={`${classes.signIn_Btn} ${classes.width100P}`}
                                 >
                                     {"next auth 로그인"}
-                                </Button>}
+                                </Button>} */}
+                                {(session.status === 'unauthenticated' || session.status === 'loading') && providers
+                                    && (
+                                        Object.keys(providers).map(k => {
+                                            const provider = providers[k];
+                                            return (<div key={provider.name}>
+                                                <Button
+                                                    type="button"
+                                                    variant="contained"
+                                                    color="primary"
+                                                    onClick={() => signIn(provider.id)}
+                                                    className={`${classes.signIn_Btn} ${classes.width100P}`}
+                                                >
+                                                    {provider.name}로 로그인 하기
+                                                </Button>
+                                            </div>)
+                                        })
+                                    )}
                                 {session.status === 'authenticated' && <Button
                                     type="button"
                                     variant="contained"
@@ -177,6 +197,6 @@ function SignInContent() {
         </Grid>
     </>)
 }
-export default function SignIn() {
-    return <SignInContent />;
+export default function SignIn(props: SignInData) {
+    return <SignInContent providers={props.providers} />;
 }
