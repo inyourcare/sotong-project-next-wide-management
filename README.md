@@ -52,3 +52,26 @@ pages 하위의 tsx 파일을 자동으로 설정
 ## withRedux
 https://blog.logrocket.com/use-redux-next-js/
 https://chaeyoung2.tistory.com/53 - getServerSideProps
+
+## className 문제 해결 (MUI 또는 바닐라 자바스크립트 관련으로 보임)
+[블로그](https://tesseractjh.tistory.com/164)
+```
+/.babelrc 
+{
+  "presets": ["next/babel"],
+  "plugins": ["babel-plugin-styled-components"]
+}
+{
+  "presets": ["next/babel"],
+  "plugins": [
+    [
+      "babel-plugin-styled-components", 
+      {
+        "ssr": true, // SSR을 위한 설정
+        "displayName": true, // 클래스명에 컴포넌트 이름을 붙임
+        "pure": true // dead code elimination (사용되지 않는 속성 제거)
+      }
+    ]
+  ]
+}
+```
