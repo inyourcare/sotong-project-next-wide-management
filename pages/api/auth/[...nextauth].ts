@@ -18,9 +18,9 @@ type RedirectParam = {
     url: string,
     baseUrl: string
 }
-
+var optionsDefault:any;
 if (kakaoClientId && kakaoClientSecret && naverClientId && naverClientSecret && googleClientId && googleClientSecret && prisma) {
-    const options = {
+    optionsDefault = {
         providers: [
             Kakao({
                 clientId: kakaoClientId,
@@ -57,4 +57,5 @@ if (kakaoClientId && kakaoClientSecret && naverClientId && naverClientSecret && 
     throw new Error(errMsg)
 }
 
+export const options = optionsDefault;
 export default authHandler;
