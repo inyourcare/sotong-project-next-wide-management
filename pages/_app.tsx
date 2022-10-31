@@ -11,6 +11,7 @@ import { makeStyles } from '@mui/styles';
 
 import { createWrapper } from "next-redux-wrapper";
 import { SessionProvider } from 'next-auth/react'
+import AppHead from '../components/app/Head'
 
 // global theme
 const theme = createTheme({
@@ -112,6 +113,7 @@ export function App({ Component, pageProps: { session, ...pageProps } }: AppProp
     <SessionProvider session={session}>
       <Provider store={store}>
         <ThemeProvider theme={theme}>
+          <AppHead/>
           <CssBaseline />
           <Component {...pageProps} />
         </ThemeProvider>

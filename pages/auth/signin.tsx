@@ -27,7 +27,7 @@ export const getServerSideProps: GetServerSideProps<{ data: SignInData }> = asyn
         authOptions
     )
     if (session) {
-        alert("이미 로그인 되어있습니다.")
+        console.info('이미 로그인 되어 있습니다.')
         return {
             redirect: {
                 destination: '/',
