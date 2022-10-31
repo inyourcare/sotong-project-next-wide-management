@@ -66,8 +66,12 @@ datasource db {
 npx prisma db push
 npx prisma studio
 ```
+
+마이그레이션 코드 -> 스키마만 로드함, 변경사항도 체크함
+```
+npx prisma migrate dev
+```
 ### 프리즈마 클라이언트 이용
-스키마 파일이 바뀌는 경우
 ```
 npx prisma generate
 ->
