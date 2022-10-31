@@ -75,3 +75,13 @@ https://chaeyoung2.tistory.com/53 - getServerSideProps
   ]
 }
 ```
+
+## 환경변수 실행 순서 
+https://nextjs.org/docs/basic-features/environment-variables
+```
+process.env
+.env.$(NODE_ENV).local
+.env.local (Not checked when NODE_ENV is test.)
+.env.$(NODE_ENV)
+.env
+```
