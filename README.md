@@ -92,7 +92,17 @@ const prisma = new PrismaClient()
 
 DATABASE_URL="database://id:pass@host:port/database?schema=public"
 ```
+```
+BROWSER=none
+KAKAO_CLIENT_ID=
+KAKAO_CLIENT_SECRET=
+NAVER_CLIENT_ID=
+NAVER_CLIENT_SECRET=
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
 
+NEXTAUTH_URL=http://localhost:3000/api/auth
+```
 ## Oauth 연동
 다음과 같이 컬백 설정
 ```
