@@ -5,6 +5,7 @@ import { MuiVariables, useStyles } from '../../pages/_app';
 import { useTranslation } from 'react-i18next'
 import { signInAsyncAction } from '../../core/redux/reducers/app-reducer';
 import { authorizedApi, refreshTokens } from '../../core/logics/auth';
+import { signIn, signOut, useSession } from "next-auth/react";
 
 function SignInContent() {
     const { t } = useTranslation(['page'])
@@ -135,7 +136,7 @@ function SignInContent() {
                                     onClick={() => { authorizedApi("rest/test/post") }}
                                     className={`${classes.signIn_Btn} ${classes.width100P}`}
                                 >
-                                    {"test"}
+                                    {"테스트 Post"}
                                 </Button>
                                 <Button
                                     type="button"
@@ -144,7 +145,16 @@ function SignInContent() {
                                     onClick={() => { refreshTokens() }}
                                     className={`${classes.signIn_Btn} ${classes.width100P}`}
                                 >
-                                    {"test"}
+                                    {"테스트 refreshToken"}
+                                </Button>
+                                <Button
+                                    type="button"
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={() => { signIn() }}
+                                    className={`${classes.signIn_Btn} ${classes.width100P}`}
+                                >
+                                    {"Kakao login Test"}
                                 </Button>
                             </form>
                         </div>
