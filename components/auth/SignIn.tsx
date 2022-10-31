@@ -42,6 +42,8 @@ function SignInContent() {
     // const theme = useTheme();
     const classes = useStyles();
     const dispatch = useDispatch();
+    // const [session, loading] = useSession();
+    const session = useSession();
     // const { accessToken, refreshToken } = useSelector(
     //     (state: RootState) => state.app
     // );
@@ -147,15 +149,24 @@ function SignInContent() {
                                 >
                                     {"테스트 refreshToken"}
                                 </Button>
-                                <Button
+                                {session && <Button
                                     type="button"
                                     variant="contained"
                                     color="primary"
                                     onClick={() => { signIn() }}
                                     className={`${classes.signIn_Btn} ${classes.width100P}`}
                                 >
-                                    {"Kakao login Test"}
-                                </Button>
+                                    {"next auth 로그인"}
+                                </Button>}
+                                {!session && <Button
+                                    type="button"
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={() => { signOut() }}
+                                    className={`${classes.signIn_Btn} ${classes.width100P}`}
+                                >
+                                    {"next auth 로그아웃"}
+                                </Button>}
                             </form>
                         </div>
                     </div>
