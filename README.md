@@ -100,6 +100,15 @@ datasource db {
 npx prisma db push
 npx prisma studio
 ```
+### 프리즈마 클라이언트 이용
+```
+npx prisma generate
+->
+You can now start using Prisma Client in your code. Reference: https://pris.ly/d/client
+import { PrismaClient } from '@prisma/client'
+const prisma = new PrismaClient()
+```
+
 
 ## .env 와 .env*.local
 .env 는 아래와 같다. prisma 를 위한 설정이다. .local 파일은 next 의 환경 변수 역활을 한다.
