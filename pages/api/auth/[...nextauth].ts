@@ -7,6 +7,8 @@ import { prisma } from '../../../core/prisma'
 
 const kakaoClientId = process.env.KAKAO_CLIENT_ID
 const kakaoClientSecret = process.env.KAKAO_CLIENT_SECRET
+const naverClientId = process.env.NAVER_CLIENT_ID
+const naverClientSecret = process.env.NAVER_CLIENT_SECRET
 let authHandler: NextApiHandler | undefined = undefined;
 const SECRET = "dsds"
 type RedirectParam = {
@@ -14,7 +16,7 @@ type RedirectParam = {
     baseUrl: string
 }
 
-if (kakaoClientId && kakaoClientSecret && prisma) {
+if (kakaoClientId && kakaoClientSecret && naverClientId && naverClientSecret && prisma) {
     const options = {
         providers: [
             Kakao({
@@ -23,8 +25,8 @@ if (kakaoClientId && kakaoClientSecret && prisma) {
                 
             }),
             Naver({
-                clientId: kakaoClientId,
-                clientSecret: kakaoClientSecret,
+                clientId: naverClientId,
+                clientSecret: naverClientSecret,
             }),
         ],
         adapter: PrismaAdapter(prisma),
