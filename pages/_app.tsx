@@ -9,6 +9,8 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { green, purple } from '@mui/material/colors';
 import { makeStyles } from '@mui/styles';
 
+import { createWrapper } from "next-redux-wrapper";
+
 // global theme
 const theme = createTheme({
   palette: {
@@ -55,17 +57,17 @@ export const useStyles = makeStyles(() => ({
 }));
 
 interface IMuiVariables {
-  TextField:{
-    variant:{
-      outlined: "filled" | "outlined" | "standard" | undefined ,
-      standard: "filled" | "outlined" | "standard" | undefined ,
-      filled: "filled" | "outlined" | "standard" | undefined 
+  TextField: {
+    variant: {
+      outlined: "filled" | "outlined" | "standard" | undefined,
+      standard: "filled" | "outlined" | "standard" | undefined,
+      filled: "filled" | "outlined" | "standard" | undefined
     }
   }
 }
-export const MuiVariables:IMuiVariables = {
+export const MuiVariables: IMuiVariables = {
   TextField: {
-    variant:  {
+    variant: {
       outlined: "outlined",
       standard: "standard",
       filled: "filled"
@@ -74,7 +76,24 @@ export const MuiVariables:IMuiVariables = {
 }
 ////////////////////////
 
+// const sagaMiddleware = createSagaMiddleware();
+// export const store = configureStore({
+//   reducer: rootReducer,
+//   middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+//     serializableCheck: false,
+//   }).concat(logger).concat(sagaMiddleware),
+// })
+// sagaMiddleware.run(rootSaga);
+
+//////////////////
 const sagaMiddleware = createSagaMiddleware();
+// const makeStore = () =>
+//   configureStore({
+//     reducer: rootReducer,
+//     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+//       serializableCheck: false,
+//     }).concat(logger).concat(sagaMiddleware),
+//   })
 export const store = configureStore({
   reducer: rootReducer,
   middleware: (getDefaultMiddleware) => getDefaultMiddleware({
@@ -82,8 +101,12 @@ export const store = configureStore({
   }).concat(logger).concat(sagaMiddleware),
 })
 sagaMiddleware.run(rootSaga);
+const makeStore = () => store;
+export type AppStore = ReturnType<typeof makeStore>;
+export const wrapper = createWrapper<AppStore>(makeStore)
 
-export default function App({ Component, pageProps }: AppProps) {
+export function App({ Component, pageProps }: AppProps) {
+  const {store, props} = wrapper.useWrappedStore(pageProps);
   return (
     <Provider store={store}>
       <ThemeProvider theme={theme}>
@@ -93,3 +116,6 @@ export default function App({ Component, pageProps }: AppProps) {
     </Provider>
   )
 }
+
+// export default wrapper.useWrappedStore(App);
+export default wrapper.withRedux(App);

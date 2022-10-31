@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { MuiVariables, useStyles } from '../../pages/_app';
 import { useTranslation } from 'react-i18next'
 import { signInAsyncAction } from '../../core/redux/reducers/app-reducer';
+import { authorizedApi, refreshTokens } from '../../core/logics/auth';
 
 function SignInContent() {
     const { t } = useTranslation(['page'])
@@ -127,7 +128,7 @@ function SignInContent() {
                                     {loginBtnText}
                                 </Button>
 
-                                {/* <Button
+                                <Button
                                     type="button"
                                     variant="contained"
                                     color="primary"
@@ -144,7 +145,7 @@ function SignInContent() {
                                     className={`${classes.signIn_Btn} ${classes.width100P}`}
                                 >
                                     {"test"}
-                                </Button> */}
+                                </Button>
                             </form>
                         </div>
                     </div>

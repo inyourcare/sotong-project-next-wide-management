@@ -48,3 +48,7 @@ pages/dynamic 에 예제 만듦 (\[id\] 와 같이 파일 이름 생성)
 
 ## 라우팅
 pages 하위의 tsx 파일을 자동으로 설정
+
+## withRedux
+https://blog.logrocket.com/use-redux-next-js/
+https://chaeyoung2.tistory.com/53 - getServerSideProps

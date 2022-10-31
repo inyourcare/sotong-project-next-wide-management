@@ -1,5 +1,8 @@
 import axios from 'axios';
-import { store } from '../../pages/_app';
+import { GetServerSideProps } from 'next';
+import { Context } from 'vm';
+import { store, wrapper } from '../../pages/_app';
+// import { store } from '../../pages/_app';
 import { getCookieToken } from '../cookie/cookie';
 import { reIssueAsyncAction } from '../redux/reducers/app-reducer';
 import { getInfoFromToken } from '../util/appUtils';
@@ -16,6 +19,16 @@ const header = {
 
 const apiHost = "http://localhost:8080/";
 // const apiHost = "s5xen.iptime.org:40011/";
+// export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps(
+//     (store) => async (context: Context) => {
+//         const props = store.getState().app
+        
+//         await store.dispatch(getAccessToken("",""));
+//         return {
+//             props: {}, // will be passed to the page component as props
+//         };
+//     }
+// );
 
 
 export type GetAccessTokenParam = {
