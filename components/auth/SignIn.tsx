@@ -149,16 +149,17 @@ function SignInContent() {
                                 >
                                     {"테스트 refreshToken"}
                                 </Button>
-                                {session && <Button
+                                {(session.status === 'unauthenticated' || session.status === 'loading') && <Button
                                     type="button"
                                     variant="contained"
                                     color="primary"
                                     onClick={() => { signIn() }}
+                                    disabled={session.status === 'loading'}
                                     className={`${classes.signIn_Btn} ${classes.width100P}`}
                                 >
                                     {"next auth 로그인"}
                                 </Button>}
-                                {!session && <Button
+                                {session.status === 'authenticated' && <Button
                                     type="button"
                                     variant="contained"
                                     color="primary"
