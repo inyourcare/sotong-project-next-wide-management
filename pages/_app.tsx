@@ -12,6 +12,7 @@ import { makeStyles } from '@mui/styles';
 import { createWrapper } from "next-redux-wrapper";
 import { SessionProvider } from 'next-auth/react'
 import AppHead from '../components/app/Head'
+import { appWithTranslation } from 'next-i18next';
 
 // global theme
 const theme = createTheme({
@@ -123,4 +124,5 @@ export function App({ Component, pageProps: { session, ...pageProps } }: AppProp
 }
 
 // export default wrapper.useWrappedStore(App);
-export default wrapper.withRedux(App);
+export default appWithTranslation(wrapper.withRedux(App));
+// export default appWithTranslation((App));
