@@ -13,11 +13,11 @@ export default function Home({ }) {
     <Link href="/auth/signin" passHref>
       로그인페이지
     </Link>
-    <>{"||||"}</>
+    {/* <>{"||||"}</>
     <a href="/auth/signin">
       로그인페이지 A
     </a>
-    <br />
+    <br /> */}
     {/* <p>{t('en_test2')}</p>
     <p>{t('en_test')}</p>
     <p>{t('test2')}</p>
