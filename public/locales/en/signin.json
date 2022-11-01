@@ -1,5 +1,5 @@
 {
-    "signIn_login_btnText": "로그인"
+    "signIn_login_btnText": "Sign in"
     , "signIn_mainText":"소통파이브 리액트 프로젝트"
     , "signIn_subText":"안녕하세요 소통파이브입니다."
     , "signIn_idInputLabel":"아이디를 입력하세요"
