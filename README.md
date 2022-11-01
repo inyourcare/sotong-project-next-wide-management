@@ -19,27 +19,8 @@ https://blog.logrocket.com/use-redux-next-js/
 https://chaeyoung2.tistory.com/53 - getServerSideProps
 
 ## className 문제 해결 (MUI 또는 바닐라 자바스크립트 관련으로 보임)
-[블로그](https://tesseractjh.tistory.com/164)
-```
-/.babelrc 
-{
-  "presets": ["next/babel"],
-  "plugins": ["babel-plugin-styled-components"]
-}
-{
-  "presets": ["next/babel"],
-  "plugins": [
-    [
-      "babel-plugin-styled-components", 
-      {
-        "ssr": true, // SSR을 위한 설정
-        "displayName": true, // 클래스명에 컴포넌트 이름을 붙임
-        "pure": true // dead code elimination (사용되지 않는 속성 제거)
-      }
-    ]
-  ]
-}
-```
+[해결글](https://kyounghwan01.github.io/blog/React/next/mui/#%E1%84%89%E1%85%A6%E1%84%90%E1%85%B5%E1%86%BC%E1%84%92%E1%85%A1%E1%84%80%E1%85%B5)
+공식문서를 보면서 해결 했다. 대단한 사람
 
 ## 환경변수 실행 순서 
 https://nextjs.org/docs/basic-features/environment-variables
