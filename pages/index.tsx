@@ -10,9 +10,13 @@ export default function Home({ }) {
   return (<>
     메인페이지
     <br />
-    <Link href="/auth/signin">
+    <Link href="/auth/signin" passHref>
       로그인페이지
     </Link>
+    <>{"||||"}</>
+    <a href="/auth/signin">
+      로그인페이지 A
+    </a>
     <br />
     {/* <p>{t('en_test2')}</p>
     <p>{t('en_test')}</p>
