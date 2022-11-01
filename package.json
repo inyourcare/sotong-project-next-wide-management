@@ -27,6 +27,7 @@
     "i18next": "^22.0.3",
     "next": "13.0.0",
     "next-auth": "^4.15.0",
+    "next-i18next": "^12.1.0",
     "next-redux-wrapper": "^8.0.0",
     "react": "18.2.0",
     "react-cookie": "^4.1.1",
