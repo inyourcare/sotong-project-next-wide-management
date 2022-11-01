@@ -8,19 +8,21 @@ import { options as authOptions } from "../api/auth/[...nextauth]"
 import { IncomingMessage, ServerResponse } from "http";
 import { BuiltInProviderType } from "next-auth/providers";
 import SignIn, { SignInData } from "../../components/auth/SignIn";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useTranslation } from 'next-i18next'
+import { AppProps } from "next/app";
 
 function AuthSignIn({ data }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-    // will resolve data to type Data
+    const { t } = useTranslation('signin');
     return (
         // <div>커스텀 로그인{data.providers?.google.name}</div>
         (<>
-            <SignIn providers={data.providers}></SignIn>
+            <SignIn providers={data.providers} t={t}></SignIn>
         </>)
     )
 }
-
-export const getServerSideProps: GetServerSideProps<{ data: SignInData }> = async (context) => {
-    const { req, res } = context;
+export const getServerSideProps: GetServerSideProps<any> = async (context) => {
+    const { req, res, locale } = context;
     const session = await unstable_getServerSession(
         req as NextApiRequest | (IncomingMessage & { cookies: Partial<{ [key: string]: string; }>; }),
         res as NextApiResponse<any> | ServerResponse<IncomingMessage>,
@@ -37,7 +39,8 @@ export const getServerSideProps: GetServerSideProps<{ data: SignInData }> = asyn
     }
     return {
         props: {
-            data: { providers: await getProviders(), }
+            data: { providers: await getProviders(), },
+            ...(await serverSideTranslations(locale as string))
         },
     };
 }

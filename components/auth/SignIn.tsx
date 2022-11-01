@@ -8,10 +8,17 @@ import { authorizedApi, refreshTokens } from '../../core/logics/auth';
 import { signIn, signOut, useSession } from "next-auth/react";
 import { LiteralUnion, ClientSafeProvider } from "next-auth/react";
 import { BuiltInProviderType } from "next-auth/providers";
+import { GetStaticProps } from 'next';
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { AppProps } from 'next/app';
+import { TFunction } from 'i18next';
 
-export type SignInData = { providers: Record<LiteralUnion<BuiltInProviderType, string>, ClientSafeProvider> | null }
-function SignInContent({ providers }: SignInData) {
-    const { t } = useTranslation(['page'])
+export type SignInData = { 
+    providers: Record<LiteralUnion<BuiltInProviderType, string>, ClientSafeProvider> | null, 
+    t: TFunction<"signin", undefined> 
+}
+function SignInContent({ providers, t }: SignInData) {
+    // const { t } = useTranslation(['page'])
     // const onChangeLang = () => {
     //     i18n.changeLanguage('ko')
     // }
@@ -47,19 +54,16 @@ function SignInContent({ providers }: SignInData) {
     const dispatch = useDispatch();
     // const [session, loading] = useSession();
     const session = useSession();
-    // const { accessToken, refreshToken } = useSelector(
-    //     (state: RootState) => state.app
-    // );
-    const mainText = t('page:signIn_mainText');
-    const subText = t('page:signIn_subText');
-    const loginBtnText = t('page:signIn_login_btnText');
-    const idInputLabel = t('page:signIn_idInputLabel');
-    const idInputPlaceholder = t('page:signIn_idInputPlaceholder');
-    const idInputHelperText = t('page:signIn_idInputHelperText');
-    const passwordInputLabel = t('page:signIn_passwordInputLabel');
-    const passwordInputPlaceholder = t('page:signIn_passwordInputPlaceholder');
-    const passwordInputHelperText = t('page:signIn_passwordInputHelperText');
-    const rememberMeText = t('page:signIn_rememberMeText');
+    const mainText = t('signIn_mainText');
+    const subText = t('signIn_subText');
+    const loginBtnText = t('signIn_login_btnText');
+    const idInputLabel = t('signIn_idInputLabel');
+    const idInputPlaceholder = t('signIn_idInputPlaceholder');
+    const idInputHelperText = t('signIn_idInputHelperText');
+    const passwordInputLabel = t('signIn_passwordInputLabel');
+    const passwordInputPlaceholder = t('signIn_passwordInputPlaceholder');
+    const passwordInputHelperText = t('signIn_passwordInputHelperText');
+    const rememberMeText = t('signIn_rememberMeText');
     return (<>
         <Grid container component="main" className={`${classes.height100vh}`}>
             <Grid item xs={false} sm={4} md={7} className={`${classes.signIn_sideImage}`} />
@@ -198,5 +202,5 @@ function SignInContent({ providers }: SignInData) {
     </>)
 }
 export default function SignIn(props: SignInData) {
-    return <SignInContent providers={props.providers} />;
+    return <SignInContent providers={props.providers} t={props.t}/>;
 }
