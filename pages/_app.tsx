@@ -5,7 +5,7 @@ import rootReducer, { rootSaga } from '../core/redux'
 import logger from 'redux-logger'
 import createSagaMiddleware from 'redux-saga';
 import { configureStore } from '@reduxjs/toolkit'
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { createTheme, ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
 import { green, purple } from '@mui/material/colors';
 import { makeStyles } from '@mui/styles';
 
@@ -114,9 +114,11 @@ export function App({ Component, pageProps: { session, ...pageProps } }: AppProp
     <SessionProvider session={session}>
       <Provider store={store}>
         <ThemeProvider theme={theme}>
-          <AppHead/>
-          <CssBaseline />
-          <Component {...pageProps} />
+          <StyledEngineProvider injectFirst>
+            <AppHead />
+            <CssBaseline />
+            <Component {...pageProps} />
+          </StyledEngineProvider>
         </ThemeProvider>
       </Provider>
     </SessionProvider>
