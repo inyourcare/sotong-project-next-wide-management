@@ -4,7 +4,7 @@ import Header from './Header';
 import Footer from './Footer';
 
 type LayoutParam = {
-    children: any,
+    children: React.ReactNode,
     title: string,
     description: string,
     ogImage?: string,
