@@ -17,9 +17,10 @@ import NewWindow from 'react-new-window'
 
 export type SignInData = {
     providers: Record<LiteralUnion<BuiltInProviderType, string>, ClientSafeProvider> | null,
-    t: TFunction<"signin", undefined>
+    t: TFunction<"signin", undefined>,
+    csrfToken: string | undefined,
 }
-function SignInContent({ providers, t }: SignInData) {
+function SignInContent({ providers, t, csrfToken }: SignInData) {
     // const { t } = useTranslation(['page'])
     // const onChangeLang = () => {
     //     i18n.changeLanguage('ko')
@@ -135,7 +136,9 @@ function SignInContent({ providers, t }: SignInData) {
                         </Typography>
                         <div className={`${classes.marginTop3} ${classes.width100P} ${classes.alignCenterBasic}`}>
                             {/* <form onSubmit={(e) => onSubmit(e, () => { dispatch({ type: SIGN_IN_ACTION, payload: { userId, password:userPass } }); setUserId(''); setUserPass(''); })}> */}
-                            <form onSubmit={(e) => onSubmit(e, () => { dispatch(signInAsyncAction.request({ userId, password: userPass })); setUserId(''); setUserPass(''); })}>
+                            {/* <form onSubmit={(e) => onSubmit(e, () => { dispatch(signInAsyncAction.request({ userId, password: userPass })); setUserId(''); setUserPass(''); })}> */}
+                            <form method='post' action="/api/auth/callback/credentials">
+                                <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
                                 <TextField
                                     autoFocus
                                     required
@@ -148,6 +151,8 @@ function SignInContent({ providers, t }: SignInData) {
                                     className={`${classes.width100P}`}
                                     // error={!(chatlinkValid && !getChatlinkState.error)}
                                     value={userId}
+                                    name="username"
+                                    type="text"
                                 />
                                 <TextField
                                     autoFocus
@@ -160,6 +165,8 @@ function SignInContent({ providers, t }: SignInData) {
                                     className={`${classes.width100P}`}
                                     // error={!(chatlinkValid && !getChatlinkState.error)}
                                     value={userPass}
+                                    name="password"
+                                    type="password"
                                 />
                                 <FormControlLabel
                                     control={
@@ -217,6 +224,7 @@ function SignInContent({ providers, t }: SignInData) {
                                     && (
                                         Object.keys(providers).map(k => {
                                             const provider = providers[k];
+                                            if (provider.id === "credentials") return null
                                             return (<div key={provider.name}>
                                                 <Button
                                                     type="button"
@@ -260,5 +268,5 @@ function SignInContent({ providers, t }: SignInData) {
     </>)
 }
 export default function SignIn(props: SignInData) {
-    return <SignInContent providers={props.providers} t={props.t} />;
+    return <SignInContent providers={props.providers} t={props.t} csrfToken={props.csrfToken} />;
 }

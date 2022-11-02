@@ -10,15 +10,14 @@ import { BuiltInProviderType } from "next-auth/providers";
 import SignIn, { SignInData } from "../../components/auth/SignIn";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from 'next-i18next'
-import { AppProps } from "next/app";
-import Layout from "../../components/layout/default/Layout";
+import { getCsrfToken } from "next-auth/react"
 
 function AuthSignIn({ data }: InferGetServerSidePropsType<typeof getServerSideProps>) {
     const { t } = useTranslation('signin');
     return (
         // <div>커스텀 로그인{data.providers?.google.name}</div>
         (<>
-                <SignIn providers={data.providers} t={t}></SignIn>
+                <SignIn providers={data.providers} t={t} csrfToken={data.csrfToken}></SignIn>
         </>)
     )
 }
@@ -40,7 +39,7 @@ export const getServerSideProps: GetServerSideProps<any> = async (context) => {
     }
     return {
         props: {
-            data: { providers: await getProviders(), },
+            data: { providers: await getProviders(), csrfToken: await getCsrfToken(context),},
             ...(await serverSideTranslations(locale as string))
         },
     };
