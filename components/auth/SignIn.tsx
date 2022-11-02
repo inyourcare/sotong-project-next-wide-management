@@ -61,8 +61,7 @@ function SignInContent({ providers, t }: SignInData) {
     const windowFeatures = "width=" + width + ",height=" + height + ",popup=1,toolbar=no,resizable=yes"
     const signInPopUpEffect = useEffect(() => {
         // console.log('signInPopUpEffect')
-
-        console.log(signInPopup)
+        // console.log(signInPopup)
         if (signInPopup) {
             // console.log(window.screen.width, window.screen.height, window.screen.availWidth, window.screen.availHeight, window.screenX, window.screenY)
             // const left = (window.screen.availWidth / 2) - (width / 2) + window.screenX;
@@ -77,7 +76,7 @@ function SignInContent({ providers, t }: SignInData) {
                 // console.log("I am the 3rd one.");
                 // alert('unload')
                 // setSignInPopup(false)
-              });
+            });
             win?.addEventListener("beforeunload", (event) => {
                 // console.log("I am the 1st one.");
                 // alert('beforeunload')
@@ -85,6 +84,13 @@ function SignInContent({ providers, t }: SignInData) {
             });
             // alert(win?.location.href);
             // console.log(win,win?.location.href)
+            var timer = setInterval(function () {
+                if (!win || win.closed) {
+                    clearInterval(timer);
+                    // alert('closed');
+                    setSignInPopup(false)
+                }
+            }, 1000);
         }
     }, [signInPopup, selectedProvider])
 
@@ -207,7 +213,7 @@ function SignInContent({ providers, t }: SignInData) {
                                     {"next auth 로그인"}
                                 </Button>} */}
                                 {/* {(session.status === 'unauthenticated' || session.status === 'loading') && providers */}
-                                { providers
+                                {providers
                                     && (
                                         Object.keys(providers).map(k => {
                                             const provider = providers[k];
