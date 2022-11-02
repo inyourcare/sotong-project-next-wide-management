@@ -13,11 +13,6 @@ export default function Home({ }) {
   const session = useSession();
   // const classes = useStyles();
   return (<>
-    <Layout
-      // type your page title and page description.
-      title="Template - Next.js and Material-UI with Header and Footer"
-      description="This is a Template using Next.js and Material-UI with Header and Footer."
-    >
       메인페이지
       <br />
       <Link href="/auth/signin" passHref>
@@ -42,7 +37,6 @@ export default function Home({ }) {
     <p>{t('en_test')}</p>
     <p>{t('test2')}</p>
     <p>{t('test.intest')}</p> */}
-    </Layout>
   </>)
 }
 

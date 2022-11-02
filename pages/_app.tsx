@@ -13,6 +13,7 @@ import { createWrapper } from "next-redux-wrapper";
 import { SessionProvider } from 'next-auth/react'
 import AppHead from '../components/app/Head'
 import { appWithTranslation } from 'next-i18next';
+import Layout from '../components/layout/default/Layout'
 
 // global theme
 const theme = createTheme({
@@ -127,7 +128,14 @@ export function App({ Component, pageProps: { session, ...pageProps } }: AppProp
           <StyledEngineProvider injectFirst>
             {/* <AppHead /> */}
             <CssBaseline />
-            <Component {...pageProps} />
+
+            <Layout
+              // type your page title and page description.
+              title="Template - Next.js and Material-UI with Header and Footer"
+              description="This is a Template using Next.js and Material-UI with Header and Footer."
+            >
+              <Component {...pageProps} />
+            </Layout>
           </StyledEngineProvider>
         </ThemeProvider>
       </Provider>

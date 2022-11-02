@@ -18,13 +18,7 @@ function AuthSignIn({ data }: InferGetServerSidePropsType<typeof getServerSidePr
     return (
         // <div>커스텀 로그인{data.providers?.google.name}</div>
         (<>
-            <Layout
-                // type your page title and page description.
-                title="Template - Next.js and Material-UI with Header and Footer"
-                description="This is a Template using Next.js and Material-UI with Header and Footer."
-            >
                 <SignIn providers={data.providers} t={t}></SignIn>
-            </Layout>
         </>)
     )
 }
