@@ -115,7 +115,7 @@ export function App({ Component, pageProps: { session, ...pageProps } }: AppProp
       <Provider store={store}>
         <ThemeProvider theme={theme}>
           <StyledEngineProvider injectFirst>
-            <AppHead />
+            {/* <AppHead /> */}
             <CssBaseline />
             <Component {...pageProps} />
           </StyledEngineProvider>
