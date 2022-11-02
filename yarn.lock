@@ -2440,6 +2440,13 @@ react-is@^18.0.0, react-is@^18.2.0:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-18.2.0.tgz#199431eeaaa2e09f86427efbb4f1473edb47609b"
   integrity sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==
 
+react-new-window@^0.2.2:
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/react-new-window/-/react-new-window-0.2.2.tgz#aa851ecd1c7b6a74f677cc706facb4c9705e2a15"
+  integrity sha512-B21UfF7EYRHEQz51WzwZqFqB3QQVVyJGQtrlmujKCnWcu+X9yo4UKtTSCDPCo7JbCgRaKAISU0QMcAwKFSgifw==
+  dependencies:
+    prop-types "^15.7.2"
+
 react-redux@^8.0.4:
   version "8.0.4"
   resolved "https://registry.yarnpkg.com/react-redux/-/react-redux-8.0.4.tgz#80c31dffa8af9526967c4267022ae1525ff0e36a"

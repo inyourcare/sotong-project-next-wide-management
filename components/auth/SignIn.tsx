@@ -1,5 +1,5 @@
 import { Button, Checkbox, Container, CssBaseline, FormControlLabel, Grid, TextField, Typography } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { MuiVariables, useStyles } from '../../pages/_app';
 import { useTranslation } from 'react-i18next'
@@ -12,10 +12,12 @@ import { GetStaticProps } from 'next';
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { AppProps } from 'next/app';
 import { TFunction } from 'i18next';
+import Link from 'next/link';
+import NewWindow from 'react-new-window'
 
-export type SignInData = { 
-    providers: Record<LiteralUnion<BuiltInProviderType, string>, ClientSafeProvider> | null, 
-    t: TFunction<"signin", undefined> 
+export type SignInData = {
+    providers: Record<LiteralUnion<BuiltInProviderType, string>, ClientSafeProvider> | null,
+    t: TFunction<"signin", undefined>
 }
 function SignInContent({ providers, t }: SignInData) {
     // const { t } = useTranslation(['page'])
@@ -25,6 +27,8 @@ function SignInContent({ providers, t }: SignInData) {
     const [remeberMeCheck, setRememberMeCheck] = useState(false);
     const [userId, setUserId] = useState("");
     const [userPass, setUserPass] = useState("");
+    const [signInPopup, setSignInPopup] = useState(false)
+    const [selectedProvider, setSelectedProvider] = useState('')
 
     function checkboxOnChange(
         event: React.ChangeEvent<HTMLInputElement>,
@@ -49,6 +53,41 @@ function SignInContent({ providers, t }: SignInData) {
         e.currentTarget.removeAttribute('disabled')
     };
 
+    // sign in popup window
+    const width = 500;
+    const height = 500;
+    // const windowFeatures = "left=100,top=100,width=1000,height=800,popup=1,toolbar=no,resizable=yes,noopener,location=no"
+    // const windowFeatures = "width=" + width + ",height=" + height + ",popup=1,toolbar=no,resizable=yes,noopener"
+    const windowFeatures = "width=" + width + ",height=" + height + ",popup=1,toolbar=no,resizable=yes"
+    const signInPopUpEffect = useEffect(() => {
+        // console.log('signInPopUpEffect')
+
+        console.log(signInPopup)
+        if (signInPopup) {
+            // console.log(window.screen.width, window.screen.height, window.screen.availWidth, window.screen.availHeight, window.screenX, window.screenY)
+            // const left = (window.screen.availWidth / 2) - (width / 2) + window.screenX;
+            // const top = (window.screen.availHeight / 2) - (height / 2) + window.screenY;
+            const left = window.screenX + (window.screen.availWidth / 2) - (width / 2)
+            const top = window.screenY + (window.screen.availHeight / 2) - (height / 2)
+            // window.open("https://www.mozilla.org/", "mozillaWindow", "popup");
+            // window.open('/auth/signinpopup?prividerId' + selectedProvider, "mozillaWindow", "popup");
+            const win = window.open('/auth/signinpopup?prividerId=' + selectedProvider, "targetWindow", windowFeatures + ",left=" + left + ",top=" + top);
+            // win?.moveTo(left, top)
+            win?.addEventListener("unload", (event) => {
+                // console.log("I am the 3rd one.");
+                // alert('unload')
+                // setSignInPopup(false)
+              });
+            win?.addEventListener("beforeunload", (event) => {
+                // console.log("I am the 1st one.");
+                // alert('beforeunload')
+                // setSignInPopup(false)
+            });
+            // alert(win?.location.href);
+            // console.log(win,win?.location.href)
+        }
+    }, [signInPopup, selectedProvider])
+
     // const theme = useTheme();
     const classes = useStyles();
     const dispatch = useDispatch();
@@ -64,6 +103,7 @@ function SignInContent({ providers, t }: SignInData) {
     const passwordInputPlaceholder = t('signIn_passwordInputPlaceholder');
     const passwordInputHelperText = t('signIn_passwordInputHelperText');
     const rememberMeText = t('signIn_rememberMeText');
+    const isUserSessionEmpty = (session.status === 'unauthenticated' || session.status === 'loading')
     return (<>
         <Grid container component="main" className={`${classes.height100vh}`}>
             <Grid item xs={false} sm={4} md={7} className={`${classes.signIn_sideImage}`} />
@@ -166,7 +206,8 @@ function SignInContent({ providers, t }: SignInData) {
                                 >
                                     {"next auth 로그인"}
                                 </Button>} */}
-                                {(session.status === 'unauthenticated' || session.status === 'loading') && providers
+                                {/* {(session.status === 'unauthenticated' || session.status === 'loading') && providers */}
+                                { providers
                                     && (
                                         Object.keys(providers).map(k => {
                                             const provider = providers[k];
@@ -175,8 +216,10 @@ function SignInContent({ providers, t }: SignInData) {
                                                     type="button"
                                                     variant="contained"
                                                     color="primary"
-                                                    onClick={() => signIn(provider.id)}
+                                                    // onClick={() => signIn(provider.id)}
+                                                    onClick={() => { setSignInPopup(true); setSelectedProvider(provider.id) }}
                                                     className={`${classes.signIn_Btn} ${classes.width100P}`}
+                                                    disabled={signInPopup}
                                                 >
                                                     {provider.name}로 로그인 하기
                                                 </Button>
@@ -192,6 +235,15 @@ function SignInContent({ providers, t }: SignInData) {
                                 >
                                     {"next auth 로그아웃"}
                                 </Button>}
+                                {/* {signInPopup && isUserSessionEmpty && ( */}
+                                {/* {signInPopup && (
+                                    // <NewWindow url={'/auth/signinpopup?prividerId' + selectedProvider} onUnload={() => setSignInPopup(false)} />
+                                    // <NewWindow onUnload={() => setSignInPopup(false)}>
+                                    // <NewWindow onUnload={()=>{alert('test')}} onBlock={()=>alert('block')} onOpen={()=>alert('open')}>
+                                    //     <h1>Hi 👋</h1>
+                                    // </NewWindow>
+                                    // <SignInPopup providerId={selectedProvider} unloadCallback={() => setSignInPopup(false)} />
+                                )} */}
                             </form>
                         </div>
                     </div>
@@ -202,5 +254,5 @@ function SignInContent({ providers, t }: SignInData) {
     </>)
 }
 export default function SignIn(props: SignInData) {
-    return <SignInContent providers={props.providers} t={props.t}/>;
+    return <SignInContent providers={props.providers} t={props.t} />;
 }
