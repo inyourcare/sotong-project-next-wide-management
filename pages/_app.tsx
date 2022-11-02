@@ -56,7 +56,17 @@ export const useStyles = makeStyles(() => ({
   },
   signIn_Btn: {
     margin: theme.spacing(0, 0, 1),
-  }
+  },
+  footer: {
+    backgroundColor: theme.palette.primary.main,
+    width: `100%`,
+    // position: "relative",
+    overflow: "hidden",
+    bottom: "0px",
+    position: "absolute",
+    // marginTop: "6em",
+    // padding: "2em 0 ",
+  },
 }));
 
 interface IMuiVariables {

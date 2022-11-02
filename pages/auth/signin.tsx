@@ -11,13 +11,20 @@ import SignIn, { SignInData } from "../../components/auth/SignIn";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from 'next-i18next'
 import { AppProps } from "next/app";
+import Layout from "../../components/layout/default/Layout";
 
 function AuthSignIn({ data }: InferGetServerSidePropsType<typeof getServerSideProps>) {
     const { t } = useTranslation('signin');
     return (
         // <div>커스텀 로그인{data.providers?.google.name}</div>
         (<>
-            <SignIn providers={data.providers} t={t}></SignIn>
+            <Layout
+                // type your page title and page description.
+                title="Template - Next.js and Material-UI with Header and Footer"
+                description="This is a Template using Next.js and Material-UI with Header and Footer."
+            >
+                <SignIn providers={data.providers} t={t}></SignIn>
+            </Layout>
         </>)
     )
 }

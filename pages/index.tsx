@@ -5,6 +5,7 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { GetStaticProps, InferGetStaticPropsType } from 'next';
 import { signOut, useSession } from "next-auth/react";
 import { Button } from "@mui/material";
+import Layout from "../components/layout/default/Layout";
 
 
 export default function Home({ }) {
@@ -12,30 +13,36 @@ export default function Home({ }) {
   const session = useSession();
   // const classes = useStyles();
   return (<>
-    메인페이지
-    <br />
-    <Link href="/auth/signin" passHref>
-      로그인페이지
-    </Link>
-    <br />
-    {session.status === 'authenticated' && <Button
-      type="button"
-      variant="contained"
-      color="primary"
-      onClick={() => { signOut() }}
-      // className={`${classes.signIn_Btn} ${classes.width100P}`}
+    <Layout
+      // type your page title and page description.
+      title="Template - Next.js and Material-UI with Header and Footer"
+      description="This is a Template using Next.js and Material-UI with Header and Footer."
     >
-      {"next auth 로그아웃"}
-    </Button>}
-    {/* <>{"||||"}</>
+      메인페이지
+      <br />
+      <Link href="/auth/signin" passHref>
+        로그인페이지
+      </Link>
+      <br />
+      {session.status === 'authenticated' && <Button
+        type="button"
+        variant="contained"
+        color="primary"
+        onClick={() => { signOut() }}
+      // className={`${classes.signIn_Btn} ${classes.width100P}`}
+      >
+        {"next auth 로그아웃"}
+      </Button>}
+      {/* <>{"||||"}</>
     <a href="/auth/signin">
       로그인페이지 A
     </a>
     <br /> */}
-    {/* <p>{t('en_test2')}</p>
+      {/* <p>{t('en_test2')}</p>
     <p>{t('en_test')}</p>
     <p>{t('test2')}</p>
     <p>{t('test.intest')}</p> */}
+    </Layout>
   </>)
 }
 
