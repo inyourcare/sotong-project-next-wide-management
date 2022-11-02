@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import useMediaQuery from "@material-ui/core/useMediaQuery";
-import { useTheme } from '@material-ui/core';
+import { Button, useTheme } from '@material-ui/core';
 import { useRouter } from 'next/router';
 import { routes } from './data/routes';
 import {
@@ -18,6 +18,7 @@ import Link from 'next/link';
 
 import MenuIcon from "@material-ui/icons/Menu";
 import useScrollTrigger from "@material-ui/core/useScrollTrigger";
+import { signOut, useSession } from 'next-auth/react';
 
 function ElevationScroll(props:any) {
     const { children } = props;
@@ -34,6 +35,7 @@ function ElevationScroll(props:any) {
 
 export default function Header() {
     const [openDrawer, setOpenDrawer] = useState(false);
+    const session = useSession();
 
     const theme = useTheme();
     /**
@@ -139,6 +141,18 @@ export default function Header() {
                         {/* <Typography className={classes.logo}>Material-UI</Typography> */}
                         <Typography>Material-UI</Typography>
                     </Link>
+                    {session.status === 'authenticated' 
+                    && 
+                    <Link
+                        href="/"
+                        type="button"
+                        // variant="contained"
+                        color="primary"
+                        onClick={() => { signOut() }}
+                        // className={`${classes.signIn_Btn} ${classes.width100P}`}
+                    >
+                        {"next auth 로그아웃"}
+                    </Link>}
                     {matches ? drawer : tabs}
                 </Toolbar>
             </AppBar>
