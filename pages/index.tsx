@@ -39,7 +39,7 @@ export default function Home({ }) {
                 {"next auth 로그아웃"}
               </Button>}
               `{session.data?.expires}하이루?{session.data?.user?.name}`<br/>
-              {Date.now()}
+              {/* {Date.now()} */}
           </Text>
         </Stack>
       </Stack>
