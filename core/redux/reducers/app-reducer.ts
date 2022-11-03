@@ -4,6 +4,7 @@ import { setRefreshToken } from "@core/cookie";
 import { getInfoFromToken, InfoFromToken } from "@core/util/appUtils";
 import { getAccessToken, GetAccessTokenParam, reIssueTokens, ReIssueTokensaram } from "@core/logics/auth";
 import createAsyncSaga, { createAsyncReducer, transformToArray } from "../util/reducerUtils";
+import { logger } from "@core/logger";
 
 
 ////////////////////////////////////////////////////////////action
@@ -114,7 +115,7 @@ function processAfterTokenIssued(result: TokenIssuedSuccessfullyResult) {
     // const base64Payload = token.split('.')[1]; //value 0 -> header, 1 -> payload, 2 -> VERIFY SIGNATURE
     // const payload = Buffer.from(base64Payload, 'base64');
     const userInfo: InfoFromToken = getInfoFromToken(token);
-    console.log('jwt infos::', userInfo);
+    logger.debug('jwt infos', userInfo)
     // const refreshToken = result.grantType + ' ' + result.refreshToken;
     const refreshToken = result.refreshToken;
     // const accessToken = result.grantType + ' ' + result.accessToken;
@@ -133,11 +134,11 @@ function processAfterTokenIssued(result: TokenIssuedSuccessfullyResult) {
     } as SetTokensActionParam
 }
 function* signInSuccessSaga(action: ReturnType<typeof signInAsyncAction.success>) {
-    console.log('signInSuccessSaga action::', action)
+    logger.debug('signInSuccessSaga action::', action)
     yield put(setTokenInfoAction(processAfterTokenIssued(action.payload as TokenIssuedSuccessfullyResult)))
 }
 function* reIssueSuccessSaga(action: ReturnType<typeof reIssueAsyncAction.success>) {
-    console.log('reIssueSuccessSaga action::', action)
+    logger.debug('reIssueSuccessSaga action::', action)
     yield put(setTokenInfoAction(processAfterTokenIssued(action.payload as TokenIssuedSuccessfullyResult)))
 }
 

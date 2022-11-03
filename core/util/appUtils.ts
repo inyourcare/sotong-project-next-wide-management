@@ -1,3 +1,4 @@
+import { logger } from '@core/logger';
 import { Buffer } from 'buffer';
 
 export type InfoFromToken = {
@@ -16,6 +17,6 @@ export function getInfoFromToken (token:String) {
     const base64Payload = token.split('.')[1]; //value 0 -> header, 1 -> payload, 2 -> VERIFY SIGNATURE
     const payload = Buffer.from(base64Payload, 'base64');
     const userInfo: InfoFromToken = JSON.parse(payload.toString());
-    console.log('jwt infos::', userInfo);
+    logger.debug('jwt infos::', userInfo)
     return userInfo;
 }
