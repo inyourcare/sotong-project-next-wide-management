@@ -1,19 +1,11 @@
 import { Button, Checkbox, Container, CssBaseline, FormControlLabel, Grid, TextField, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { MuiVariables, useStyles } from '../../pages/_app';
-import { useTranslation } from 'react-i18next'
-import { signInAsyncAction } from '../../core/redux/reducers/app-reducer';
-import { authorizedApi, refreshTokens } from '../../core/logics/auth';
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { LiteralUnion, ClientSafeProvider } from "next-auth/react";
 import { BuiltInProviderType } from "next-auth/providers";
-import { GetStaticProps } from 'next';
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import { AppProps } from 'next/app';
 import { TFunction } from 'i18next';
-import Link from 'next/link';
-import NewWindow from 'react-new-window'
 
 export type SignInData = {
     providers: Record<LiteralUnion<BuiltInProviderType, string>, ClientSafeProvider> | null,
