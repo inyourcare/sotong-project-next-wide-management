@@ -7,8 +7,7 @@ import InstagramIcon from "@material-ui/icons/Instagram";
 import FacebookIcon from "@material-ui/icons/Facebook";
 import GitHubIcon from "@material-ui/icons/GitHub";
 import HomeIcon from "@material-ui/icons/Home";
-import { useStyles } from '../../../pages/_app';
-
+import { useStyles } from '@core/styles/mui';
 export default function Footer() {
     const path = routes;
     const { instagram, facebook, github, homepage } = socialMedia;

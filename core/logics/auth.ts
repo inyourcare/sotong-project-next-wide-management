@@ -1,12 +1,11 @@
+import { getCookieToken } from '@core/cookie';
+import { store } from '@core/redux';
+import { reIssueAsyncAction } from '@core/redux/reducers/app-reducer';
+import { getInfoFromToken } from '@core/util/appUtils';
 import axios from 'axios';
 import { GetServerSideProps } from 'next';
 import { Context } from 'vm';
-import { store, wrapper } from '../../pages/_app';
 // import { store } from '../../pages/_app';
-import { getCookieToken } from '../cookie/cookie';
-import { reIssueAsyncAction } from '../redux/reducers/app-reducer';
-import { getInfoFromToken } from '../util/appUtils';
-
 // const auth = 'Bearer ' + state.accessToken
 const header = {
     'Content-Type': 'application/json',

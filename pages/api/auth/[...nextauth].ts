@@ -5,7 +5,6 @@ import Naver from 'next-auth/providers/naver';
 import Google from 'next-auth/providers/google';
 import EmailProvider from 'next-auth/providers/email';
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
-import { prisma } from '../../../core/prisma'
 import CredentialsProvider from "next-auth/providers/credentials";
 
 const kakaoClientId = process.env.KAKAO_CLIENT_ID

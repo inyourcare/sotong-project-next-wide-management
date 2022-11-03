@@ -1,11 +1,11 @@
 import { Button, Checkbox, Container, CssBaseline, FormControlLabel, Grid, TextField, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from "react-redux";
-import { MuiVariables, useStyles } from '../../pages/_app';
 import { signOut, useSession } from "next-auth/react";
 import { LiteralUnion, ClientSafeProvider } from "next-auth/react";
 import { BuiltInProviderType } from "next-auth/providers";
 import { TFunction } from 'i18next';
+import { MuiVariables, useStyles } from '@core/styles/mui';
 
 export type SignInData = {
     providers: Record<LiteralUnion<BuiltInProviderType, string>, ClientSafeProvider> | null,

@@ -7,10 +7,10 @@ import { options as authOptions } from "../api/auth/[...nextauth]"
 // import { options as authOptions } from "./api/auth/[...nextauth]"
 import { IncomingMessage, ServerResponse } from "http";
 import { BuiltInProviderType } from "next-auth/providers";
-import SignIn, { SignInData } from "../../components/auth/SignIn";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from 'next-i18next'
 import { getCsrfToken } from "next-auth/react"
+import SignIn from "@components/auth/SignIn";
 
 function AuthSignIn({ data }: InferGetServerSidePropsType<typeof getServerSideProps>) {
     const { t } = useTranslation('signin');

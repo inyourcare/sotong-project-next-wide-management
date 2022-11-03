@@ -5,7 +5,6 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { GetStaticProps, InferGetStaticPropsType } from 'next';
 import { signOut, useSession } from "next-auth/react";
 import { Button } from "@mui/material";
-import Layout from "../components/layout/default/Layout";
 
 
 export default function Home({ }) {

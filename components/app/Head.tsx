@@ -1,7 +1,7 @@
+import { useStyles } from '@core/styles/mui';
 import { Button } from '@material-ui/core';
 import { signOut, useSession } from 'next-auth/react';
 import Head from 'next/head'
-import { useStyles } from '../../pages/_app';
 
 function AppHead() {
     const session = useSession();
