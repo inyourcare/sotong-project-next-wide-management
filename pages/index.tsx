@@ -4,7 +4,7 @@ import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { GetStaticProps, InferGetStaticPropsType } from 'next';
 import { signOut, useSession } from "next-auth/react";
-import { Button } from "@mui/material";
+import { Button, Flex, Heading, Stack, Text, useColorModeValue } from "@chakra-ui/react";
 
 
 export default function Home({ }) {
@@ -12,27 +12,45 @@ export default function Home({ }) {
   const session = useSession();
   // const classes = useStyles();
   return (<>
-      메인페이지
-      <br />
-      <Link href="/auth/signin" passHref>
-        로그인페이지
-      </Link>
-      <br />
-      {session.status === 'authenticated' && <Button
-        type="button"
-        variant="contained"
-        color="primary"
-        onClick={() => { signOut() }}
-      // className={`${classes.signIn_Btn} ${classes.width100P}`}
+    <Flex
+      minH={"100vh"}
+      align={"center"}
+      justify={"center"}
+      bg={useColorModeValue("gray.50", "gray.800")}
+    >
+      <Stack
+        spacing={8}
+        mx={"auto"}
+        w={{ md: "md" }}
+        maxW={"lg"}
+        py={12}
+        px={6}
       >
-        {"next auth 로그아웃"}
-      </Button>}
-      {/* <>{"||||"}</>
+        <Stack align={"center"}>
+          <Heading fontSize={"4xl"} textAlign={"center"}>
+            메인페이지
+          </Heading>
+          <Text fontSize={"lg"} color={"gray.600"}>
+            {session.status === 'authenticated'
+              && <Button
+                onClick={() => { signOut() }}
+              // className={`${classes.signIn_Btn} ${classes.width100P}`}
+              >
+                {"next auth 로그아웃"}
+              </Button>}
+              `{session.data?.expires}하이루?{session.data?.user?.name}`<br/>
+              {Date.now()}
+          </Text>
+        </Stack>
+      </Stack>
+    </Flex>
+
+    {/* <>{"||||"}</>
     <a href="/auth/signin">
       로그인페이지 A
     </a>
     <br /> */}
-      {/* <p>{t('en_test2')}</p>
+    {/* <p>{t('en_test2')}</p>
     <p>{t('en_test')}</p>
     <p>{t('test2')}</p>
     <p>{t('test.intest')}</p> */}

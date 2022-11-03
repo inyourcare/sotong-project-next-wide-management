@@ -6,6 +6,8 @@ import Google from 'next-auth/providers/google';
 import EmailProvider from 'next-auth/providers/email';
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import CredentialsProvider from "next-auth/providers/credentials";
+import { logger } from '@core/logger';
+import { prisma } from '@core/prisma';
 
 const kakaoClientId = process.env.KAKAO_CLIENT_ID
 const kakaoClientSecret = process.env.KAKAO_CLIENT_SECRET
@@ -20,7 +22,7 @@ type RedirectParam = {
     baseUrl: string
 }
 var optionsDefault: any;
-if (kakaoClientId && kakaoClientSecret && naverClientId && naverClientSecret && googleClientId && googleClientSecret && prisma) {
+if (kakaoClientId && kakaoClientSecret && naverClientId && naverClientSecret && googleClientId && googleClientSecret) {
     optionsDefault = {
         providers: [
             Kakao({
@@ -59,21 +61,27 @@ if (kakaoClientId && kakaoClientSecret && naverClientId && naverClientSecret && 
                     // e.g. return { id: 1, name: 'J Smith', email: 'jsmith@example.com' }
                     // You can also use the `req` object to obtain additional parameters
                     // (i.e., the request IP address)
-                    // const res = await fetch("/your/endpoint", {
-                    //     method: 'POST',
-                    //     body: JSON.stringify(credentials),
-                    //     headers: { "Content-Type": "application/json" }
-                    // })
-                    // const user = await res.json()
+                    logger.debug('authorize', { credentials })
+                    const res = await fetch(`${process.env.NEXTAPI_BASE_URL}/user/check-credentials`, {
+                        method: 'POST',
+                        body: JSON.stringify(credentials),
+                        headers: { "Content-Type": "application/json" }
+                    }).catch((e)=>{
+                        logger.debug('authorize error' , e)
+                        throw Error(e)
+                    })
+                    logger.debug('authorize res', { res })
+                    const user = await res.json()
+                    logger.debug('uesr', user)
+                    // If no error and we have user data, return it
+                    if (res.ok && user) {
+                        logger.debug('res ok')
+                        return user
+                    }
+                    // Return null if user data could not be retrieved
+                    return null
 
-                    // // If no error and we have user data, return it
-                    // if (res.ok && user) {
-                    //     return user
-                    // }
-                    // // Return null if user data could not be retrieved
-                    // return null
-                    
-                    console.log('credentials->',credentials)
+                    // console.log('credentials->',credentials)
                     /**
                         [Object: null prototype] {
                             csrfToken: '2b8084f3a92951b70411b3e9ef8243650c9a43cad4d3acdad0182955ec78d124',
@@ -81,9 +89,9 @@ if (kakaoClientId && kakaoClientSecret && naverClientId && naverClientSecret && 
                             password: 'pass12#$'
                         }
                      */
-                    console.log('req->',req)
-                    const user = { name: "J Smith", email: "jsmith@example.com" } as User
-                    return user
+                    // console.log('req->',req)
+                    // const user = { name: "J Smith", email: "jsmith@example.com" } as User
+                    // return user
                 }
             }),
         ],
@@ -98,7 +106,7 @@ if (kakaoClientId && kakaoClientSecret && naverClientId && naverClientSecret && 
             }
         },
         secret: SECRET,
-
+        session: { strategy: "jwt" },
     };
 
     authHandler = (req, res) => NextAuth(req, res, options);
