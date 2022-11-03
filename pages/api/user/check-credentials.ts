@@ -35,8 +35,10 @@ async function handlePOST(
             email: true,
             image: true,
             password: true,
+            role: true
         },
     });
+    logger.debug("password", user,user?.password,hashPassword(req.body.password));
     if (user && user.password == hashPassword(req.body.password)) {
         logger.debug("password correct");
         res.json(omit(user, "password"));

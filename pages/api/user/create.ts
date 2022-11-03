@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import sha256 from "crypto-js/sha256";
 import { logger } from "@core/logger";
 import { prisma } from '@core/prisma';
+import Role from "@core/types/Role";
 
 export default async function handle(
     req: NextApiRequest,
@@ -30,7 +31,7 @@ async function handlePOST(
         password: hashPassword(req.body.password),
     });
     const user = await prisma.user.create({
-        data: { ...req.body, password: hashPassword(req.body.password) },
+        data: { ...req.body, password: hashPassword(req.body.password), role: Role.User },
     });
     res.json(user);
 }

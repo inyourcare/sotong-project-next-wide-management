@@ -22,7 +22,7 @@ type RedirectParam = {
     baseUrl: string
 }
 
-export const authOptions:NextAuthOptions = {
+export const authOptions: NextAuthOptions = {
     providers: [
         Kakao({
             clientId: kakaoClientId as string,
@@ -71,7 +71,7 @@ export const authOptions:NextAuthOptions = {
                 })
                 logger.debug('authorize res', { res })
                 const user = await res.json()
-                logger.debug('uesr', user)
+                logger.debug('user', user)
                 // If no error and we have user data, return it
                 if (res.ok && user) {
                     logger.debug('res ok')
@@ -102,7 +102,24 @@ export const authOptions:NextAuthOptions = {
             // Allows callback URLs on the same origin
             else if (new URL(url).origin === baseUrl) return url
             return baseUrl
-        }
+        },
+        async session({ session, token, user }) {
+            logger.debug("session callback", session, token, user)
+            const userRole = token.role as string;
+            if (userRole) session.user.role = userRole; // Add role value to user object so it is passed along with session
+            return session;
+        },
+        async jwt({ token, user, account, profile, isNewUser }) {
+            logger.debug("jwt callback", token, user, account, profile, isNewUser)
+            const userRole = user?.role;
+            if (userRole) token.role = userRole
+            return token
+        },
+        async signIn({ user, account, profile, email, credentials }) {
+            logger.debug("signIn callback", user, account, profile, email, credentials)
+            return true
+        },
+
     },
     secret: SECRET,
     session: { strategy: "jwt" },
