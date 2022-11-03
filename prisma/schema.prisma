@@ -49,7 +49,7 @@ model User {
   emailVerified DateTime?
   password      String?
   image         String?
-  role          String?  // New Column
+  role          Role      @default(USER)
   accounts      Account[]
   sessions      Session[]
   createdAt     DateTime  @default(now())
@@ -62,4 +62,9 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+enum Role {
+  USER
+  ADMIN
 }
