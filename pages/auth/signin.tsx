@@ -3,7 +3,6 @@ import type { NextApiRequest, NextApiResponse, NextPage, NextPageContext } from 
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { getProviders, signIn, getSession, LiteralUnion, ClientSafeProvider } from "next-auth/react";
 import { unstable_getServerSession } from "next-auth";
-import { options as authOptions } from "../api/auth/[...nextauth]"
 // import { options as authOptions } from "./api/auth/[...nextauth]"
 import { IncomingMessage, ServerResponse } from "http";
 import { BuiltInProviderType } from "next-auth/providers";
@@ -11,6 +10,7 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from 'next-i18next'
 import { getCsrfToken } from "next-auth/react"
 import SignIn from "@components/auth/SignIn";
+import { authOptions } from "pages/api/auth/[...nextauth]";
 
 function AuthSignIn({ data }: InferGetServerSidePropsType<typeof getServerSideProps>) {
     const { t } = useTranslation('signin');
