@@ -7,15 +7,16 @@ import { signOut, useSession } from "next-auth/react";
 import { Button, Flex, Heading, Stack, Text, useColorModeValue } from "@chakra-ui/react";
 import { logger } from "@core/logger";
 import { useEffect } from "react";
+import { prisma } from "@core/prisma"
 
 
 export default function Home({ }) {
   // const { t } = useTranslation('common');
   const session = useSession();
   // const classes = useStyles();
-  useEffect(()=>{
-    logger.debug("session change",session,session.data?.user,session.data?.expires)
-  },[session])
+  useEffect(() => {
+    logger.debug("session change", session, session.data?.user, session.data?.expires)
+  }, [session])
   return (<>
     <Flex
       minH={"100vh"}
@@ -43,9 +44,7 @@ export default function Home({ }) {
               >
                 {"next auth 로그아웃"}
               </Button>}
-              `{session.data?.expires}하이루?(Role:{session.data?.user?.role}){session.data?.user?.name}`<br/>
-              {/* `하이루` */}
-              {/* {Date.now()} */}
+            {session.data?.expires}하이루?(Role:{session.data?.user?.role}){session.data?.user?.name}<br />
           </Text>
         </Stack>
       </Stack>
