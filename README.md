@@ -61,6 +61,15 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 ```
 
+### 프리즈마 데이터 타입
+[설명](https://www.prisma.io/docs/concepts/components/prisma-migrate/supported-types-and-db-features)
+
+### 프리즈마 기타
+```
+모든 필드 찾기
+console.log("Account fields:", Prisma.dmmf.datamodel.models.find(model => model.name === "Account").fields)
+```
+
 
 ## .env 와 .env*.local
 .env 는 아래와 같다. prisma 를 위한 설정이다. .local 파일은 next 의 환경 변수 역활을 한다.
