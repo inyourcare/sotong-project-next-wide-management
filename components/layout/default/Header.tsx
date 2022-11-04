@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { Button, useTheme } from '@material-ui/core';
 import { useRouter } from 'next/router';
-import { routes } from './data/routes';
+import { routes } from '@core/reference';
 import {
     Grid,
     AppBar,

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Container, Grid, Typography } from "@material-ui/core";
-import { routes } from './data/routes';
+import { routes } from '@core/reference';
 import Link from 'next/link';
 import { socialMedia } from './data/socialMedia';
 import InstagramIcon from "@material-ui/icons/Instagram";
