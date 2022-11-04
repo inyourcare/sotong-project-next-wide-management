@@ -8,6 +8,7 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import CredentialsProvider from "next-auth/providers/credentials";
 import { logger } from '@core/logger';
 import { prisma } from '@core/prisma';
+import { Role } from '@prisma/client';
 
 const kakaoClientId = process.env.KAKAO_CLIENT_ID
 const kakaoClientSecret = process.env.KAKAO_CLIENT_SECRET
@@ -105,7 +106,7 @@ export const authOptions: NextAuthOptions = {
         },
         async session({ session, token, user }) {
             logger.debug("session callback", session, token, user)
-            const userRole = token.role as string;
+            const userRole = token.role as Role;
             if (userRole) session.user.role = userRole; // Add role value to user object so it is passed along with session
             return session;
         },

@@ -22,7 +22,7 @@ export const getServerSideProps: GetServerSideProps<any> = async (context) => {
         authOptions
     )
     // redirect check
-    if (session && checkAuthorized(session, resolvedUrl) === false) {
+    if (checkAuthorized(session, resolvedUrl) === false) {
         return {
             redirect: {
                 destination: '/',
