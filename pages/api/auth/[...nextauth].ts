@@ -107,7 +107,9 @@ export const authOptions: NextAuthOptions = {
         async session({ session, token, user }) {
             logger.debug("session callback", session, token, user)
             const userRole = token.role as Role;
+            const userId = token.sub
             if (userRole) session.user.role = userRole; // Add role value to user object so it is passed along with session
+            if (userId) session.user.id = userId
             return session;
         },
         async jwt({ token, user, account, profile, isNewUser }) {

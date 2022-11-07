@@ -27,9 +27,15 @@ async function handlePOST(
     req: NextApiRequest,
     res: NextApiResponse,
 ) {
-    const session = await getSession()
+    const session = await getSession({ req })
     const creatorId = session?.user.id
-    const modifierId = session?.user.id
+    if (!session || creatorId) {
+        const errMsg = 'menu create error, session info essecial'
+        logger.error(errMsg)
+        res.json({msg:errMsg})
+        return;
+    }
+    // logger.debug('api/menu/create' , session)
     const parentId = Number(req.body.parentId)
     logger.debug("creating menu", {
         ...req.body,
@@ -42,7 +48,7 @@ async function handlePOST(
     // const client = new PrismaClient()
     await prisma.$transaction(async (tx) => {
         const me = await tx.menu.create({
-            data: { ...req.body, creatorId, modifierId, parentId },
+            data: { ...req.body, creatorId, modifierId: creatorId, parentId },
         })
         // 부모가 없는 경우
         if (me.parentId === 0)
