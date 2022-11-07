@@ -148,7 +148,7 @@ export const getServerSideProps: GetServerSideProps<any> = async (context) => {
     const translation = await serverSideTranslations(locale as string)
     // logger.debug('menu create getServerSideProps', translation)
     // redirect check
-    if (session && checkAuthorized(session, resolvedUrl) === false) {
+    if (checkAuthorized(session, resolvedUrl) === false) {
         return {
             redirect: {
                 destination: '/',
