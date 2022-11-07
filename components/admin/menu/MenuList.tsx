@@ -1,13 +1,18 @@
 import { Box, Flex, Heading, ListItem, Stack, UnorderedList } from "@chakra-ui/react";
 import { logger } from "@core/logger";
+import { TMenu } from "@core/types/TMenu";
 import { Props } from "framer-motion/types/types";
 import { useTranslation } from "next-i18next";
 import { useEffect } from "react";
+import MenuDetail from "./MenuDetail";
 
 type MenuProps = Props & {
-    // menus: 
+    data: {
+        csrfToken: string,
+        menus: Array<TMenu>
+    }
 }
-const MenuList: React.FC<MenuProps> = ({props}) => {
+const MenuList: React.FC<MenuProps> = ({props,data}) => {
     const { t } = useTranslation('menu');
 
     return (
@@ -22,11 +27,11 @@ const MenuList: React.FC<MenuProps> = ({props}) => {
                         justifyContent="space-between"
                     >{props?.data?.csrfToken}
                         <UnorderedList size="lg">
-                            {/* {props.drafts.map((post) => (
-                                <ListItem key={post.id}>
-                                    <Post post={post} />
+                            {data?.menus.map((menu) => (
+                                <ListItem key={String(menu.id)}>
+                                    <MenuDetail menu={menu} />
                                 </ListItem>
-                            ))} */}
+                            ))}
                             
                         </UnorderedList>
                     </Box>
