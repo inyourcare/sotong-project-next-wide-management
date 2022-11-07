@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import sha256 from "crypto-js/sha256";
 import { logger } from "@core/logger";
 import { prisma } from '@core/prisma';
-import { Role } from "@prisma/client"
+import { PrismaClient, Role } from "@prisma/client"
 import { getSession } from "next-auth/react";
 
 export default async function handle(
@@ -34,13 +34,19 @@ async function handlePOST(
     logger.debug("creating menu", {
         ...req.body,
     });
-    // 먼저 생성
-    const menu = await prisma.menu.create({
-        data: { ...req.body, creatorId, modifierId, parentId },
-    }).then(async me => {
+
+    // const [posts, totalPosts] = await prisma.$transaction([
+    //     prisma.post.findMany({ where: { title: { contains: 'prisma' } } }),
+    //     prisma.post.count(),
+    // ])
+    // const client = new PrismaClient()
+    await prisma.$transaction(async (tx) => {
+        const me = await tx.menu.create({
+            data: { ...req.body, creatorId, modifierId, parentId },
+        })
         // 부모가 없는 경우
         if (me.parentId === 0)
-            return await prisma.menu.update({
+            await tx.menu.update({
                 where: { id: me.id },
                 data: {
                     ...me,
@@ -51,19 +57,19 @@ async function handlePOST(
         // 부모가 있는 경우
         else {
             // 먼저 부모를 찾고
-            const parent = await prisma.menu.findFirstOrThrow({
+            const parent = await tx.menu.findFirstOrThrow({
                 where: { id: me.parentId },
             })
             // 같은 부모를 가진 기존 글중 최대 step + 1
-            const maxStepRecord = await prisma.menu.findFirstOrThrow({
+            const maxStepRecord = await tx.menu.findFirstOrThrow({
                 where: { parentId: me.parentId },
                 orderBy: [{
                     step: 'desc'
                 }]
             })
-            const newStep = maxStepRecord.step + 1;
+            const newStep = Math.max(maxStepRecord.step, parent.step) + 1;
             // 해당 그룹에 step 이 더 크거나 하면 increment
-            await prisma.menu.updateMany({
+            await tx.menu.updateMany({
                 where: { groupId: parent.groupId, step: { gte: newStep } },
                 data: {
                     step: {
@@ -72,7 +78,7 @@ async function handlePOST(
                 }
             })
             // 자기자신 업데이트
-            return await prisma.menu.update({
+            await tx.menu.update({
                 where: { id: me.id },
                 data: {
                     ...me,
@@ -81,54 +87,104 @@ async function handlePOST(
                     groupId: parent.groupId,
                 }
             })
-
-
-
-            // if (parent.id !== parent.groupId) {
-            //     return await prisma.menu.update({
-            //         where: { id: me.id },
-            //         data: {
-            //             ...me,
-            //             groupId: parent.groupId,
-            //             step: parent.step + 1,
-            //             depth: parent.depth + 1
-            //         }
-            //     }).then(updated => {
-            //         logger.debug('menu create previously updateMany' , parent, updated)
-            //         prisma.menu.updateMany({
-            //             where: { groupId: parent.groupId, step: { gte: updated.step } },
-            //             data: {
-            //                 step: {
-            //                     increment: 1
-            //                 }
-            //             }
-            //         }).then(r=>{
-            //             logger.debug('result -->>' , r)
-            //         })
-            //         return updated;
-            //     })
-            // } else {
-
-            //     return await prisma.menu.findFirstOrThrow({
-            //         where: { groupId: me.parentId },
-            //         orderBy: [{
-            //             step: 'desc'
-            //         }]
-            //     }).then(async one=>{
-            //         return await prisma.menu.update({
-            //             where: { id: me.id },
-            //             data: {
-            //                 ...me,
-            //                 groupId: parent.groupId,
-            //                 step: one.step + 1,
-            //                 depth: parent.depth + 1
-            //             }
-            //         })
-            //     })
-            // }
-
-            // return
         }
-    });
-    res.json(menu);
+        res.json(me);
+    })
+    // 먼저 생성
+    // const menu = await prisma.menu.create({
+    //     data: { ...req.body, creatorId, modifierId, parentId },
+    // }).then(async me => {
+    //     // 부모가 없는 경우
+    //     if (me.parentId === 0)
+    //         return await prisma.menu.update({
+    //             where: { id: me.id },
+    //             data: {
+    //                 ...me,
+    //                 groupId: me.id,
+    //                 parentId: me.id
+    //             }
+    //         })
+    //     // 부모가 있는 경우
+    //     else {
+    //         // 먼저 부모를 찾고
+    //         const parent = await prisma.menu.findFirstOrThrow({
+    //             where: { id: me.parentId },
+    //         })
+    //         // 같은 부모를 가진 기존 글중 최대 step + 1
+    //         const maxStepRecord = await prisma.menu.findFirstOrThrow({
+    //             where: { parentId: me.parentId },
+    //             orderBy: [{
+    //                 step: 'desc'
+    //             }]
+    //         })
+    //         const newStep = maxStepRecord.step + 1;
+    //         // 해당 그룹에 step 이 더 크거나 하면 increment
+    //         await prisma.menu.updateMany({
+    //             where: { groupId: parent.groupId, step: { gte: newStep } },
+    //             data: {
+    //                 step: {
+    //                     increment: 1
+    //                 }
+    //             }
+    //         })
+    //         // 자기자신 업데이트
+    //         return await prisma.menu.update({
+    //             where: { id: me.id },
+    //             data: {
+    //                 ...me,
+    //                 depth: parent.depth + 1,
+    //                 step: newStep,
+    //                 groupId: parent.groupId,
+    //             }
+    //         })
+
+
+
+    //         // if (parent.id !== parent.groupId) {
+    //         //     return await prisma.menu.update({
+    //         //         where: { id: me.id },
+    //         //         data: {
+    //         //             ...me,
+    //         //             groupId: parent.groupId,
+    //         //             step: parent.step + 1,
+    //         //             depth: parent.depth + 1
+    //         //         }
+    //         //     }).then(updated => {
+    //         //         logger.debug('menu create previously updateMany' , parent, updated)
+    //         //         prisma.menu.updateMany({
+    //         //             where: { groupId: parent.groupId, step: { gte: updated.step } },
+    //         //             data: {
+    //         //                 step: {
+    //         //                     increment: 1
+    //         //                 }
+    //         //             }
+    //         //         }).then(r=>{
+    //         //             logger.debug('result -->>' , r)
+    //         //         })
+    //         //         return updated;
+    //         //     })
+    //         // } else {
+
+    //         //     return await prisma.menu.findFirstOrThrow({
+    //         //         where: { groupId: me.parentId },
+    //         //         orderBy: [{
+    //         //             step: 'desc'
+    //         //         }]
+    //         //     }).then(async one=>{
+    //         //         return await prisma.menu.update({
+    //         //             where: { id: me.id },
+    //         //             data: {
+    //         //                 ...me,
+    //         //                 groupId: parent.groupId,
+    //         //                 step: one.step + 1,
+    //         //                 depth: parent.depth + 1
+    //         //             }
+    //         //         })
+    //         //     })
+    //         // }
+
+    //         // return
+    //     }
+    // // });
+    // res.json(menu);
 }
