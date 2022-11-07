@@ -23,8 +23,8 @@ type MenuParams = {
 // const Menu: React.FC<GetServerSidePropsResult<MenuParams>> = (result) => {
 const Menu: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (result) => {
     const props = result as MenuParams
-    logger.debug('Menu rendering result', result)
-    logger.debug('Menu rendering props', props)
+    // logger.debug('Menu rendering result', result)
+    // logger.debug('Menu rendering props', props)
     return (
         <>
             <MenuList props={props} data={props.data}></MenuList>

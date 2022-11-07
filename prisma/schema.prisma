@@ -237,9 +237,9 @@ model Menu {
   creatorId  String?
   modifierId String?
 
-  name           String?
+  name           String
   englishName    String?
-  code           String
+  code           String  @unique
   greetings      String? @db.VarChar(300)
   redirectUrl    String?
   contentsHeader String? @db.VarChar(3000)

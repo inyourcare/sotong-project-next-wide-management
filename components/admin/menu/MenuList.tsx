@@ -1,8 +1,9 @@
-import { Box, Flex, Heading, ListItem, Stack, UnorderedList } from "@chakra-ui/react";
+import { Box, Flex, Heading, ListItem, Stack, Text, UnorderedList } from "@chakra-ui/react";
 import { logger } from "@core/logger";
 import { TMenu } from "@core/types/TMenu";
 import { Props } from "framer-motion/types/types";
 import { useTranslation } from "next-i18next";
+import Link from "next/link";
 import { useEffect } from "react";
 import MenuDetail from "./MenuDetail";
 
@@ -12,7 +13,7 @@ type MenuProps = Props & {
         menus: Array<TMenu>
     }
 }
-const MenuList: React.FC<MenuProps> = ({props,data}) => {
+const MenuList: React.FC<MenuProps> = ({ props, data }) => {
     const { t } = useTranslation('menu');
 
     return (
@@ -25,16 +26,23 @@ const MenuList: React.FC<MenuProps> = ({props,data}) => {
                         display="flex"
                         flexDirection={{ base: "column", sm: "row" }}
                         justifyContent="space-between"
-                    >{props?.data?.csrfToken}
+                    >
+                        {/* {props?.data?.csrfToken} */}
                         <UnorderedList size="lg">
                             {data?.menus.map((menu) => (
                                 <ListItem key={String(menu.id)}>
                                     <MenuDetail menu={menu} />
                                 </ListItem>
                             ))}
-                            
+
                         </UnorderedList>
                     </Box>
+
+                    <Text align={"center"}>
+                        <Link color={"blue.400"} href="menu/create">
+                            Menu Create
+                        </Link>
+                    </Text>
                 </Stack>
             </Stack>
         </Flex>
