@@ -167,7 +167,7 @@ export const getServerSideProps: GetServerSideProps<MenuCreateParams> = async (c
         authOptions
     )
     const translation = await serverSideTranslations(locale as string)
-    const menus = await fetch(`${process.env.NEXTAPI_BASE_URL}/menu/list`, {
+    const fetched = await fetch(`${process.env.NEXTAPI_BASE_URL}/menu/list`, {
         method: 'POST',
         body: JSON.stringify({}),
         headers: { "Content-Type": "application/json" }
@@ -186,7 +186,7 @@ export const getServerSideProps: GetServerSideProps<MenuCreateParams> = async (c
         props: ({
             data: {
                 csrfToken: await getCsrfToken(context),
-                menus: (await menus.json()),
+                menus: (await fetched.json()).menus,
             },
             ...(translation)
         }) as MenuCreateParams

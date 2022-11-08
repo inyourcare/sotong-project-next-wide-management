@@ -15,16 +15,9 @@ import { appWithTranslation } from 'next-i18next';
 import { theme } from '@core/styles/mui'
 import Layout from '@components/layout/default/Layout'
 import { Hydrate, QueryClient, QueryClientProvider } from "react-query";
-import { useState } from 'react'
-
-// const sagaMiddleware = createSagaMiddleware();
-// export const store = configureStore({
-//   reducer: rootReducer,
-//   middleware: (getDefaultMiddleware) => getDefaultMiddleware({
-//     serializableCheck: false,
-//   }).concat(logger).concat(sagaMiddleware),
-// })
-// sagaMiddleware.run(rootSaga);
+import { useEffect, useState } from 'react'
+import "nprogress/nprogress.css";
+import NextNProgress from 'nextjs-progressbar';
 
 
 const makeStore = () => store;
@@ -49,6 +42,7 @@ export function App({ Component, pageProps: { session, ...pageProps } }: AppProp
                   title="Template - Next.js and Material-UI with Header and Footer"
                   description="This is a Template using Next.js and Material-UI with Header and Footer."
                 >
+                  <NextNProgress />
                   <Component {...pageProps} />
                 </Layout>
               </StyledEngineProvider>
@@ -60,6 +54,4 @@ export function App({ Component, pageProps: { session, ...pageProps } }: AppProp
   )
 }
 
-// export default wrapper.useWrappedStore(App);
 export default appWithTranslation(wrapper.withRedux(App));
-// export default appWithTranslation((App));
