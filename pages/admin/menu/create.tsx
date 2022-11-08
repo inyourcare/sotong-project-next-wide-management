@@ -81,7 +81,7 @@ const MenuCreate: React.FC<InferGetServerSidePropsType<typeof getServerSideProps
                             <List w={"100%"}>
                                 {data?.menus?.map((menu) => (
                                     <ListItem key={String(menu.id)}>
-                                        <Text fontSize="sm" paddingLeft={menu.depth * 20}>({menu.id}){menu.name}</Text>
+                                        <Text fontSize="sm" paddingLeft={menu.depth * 20}>({menu.menuType})({menu.id}){menu.name}({menu.code})(순서:{menu.order})</Text>
                                     </ListItem>
                                 ))}
                             </List>

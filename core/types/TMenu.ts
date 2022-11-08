@@ -6,6 +6,7 @@ export type TMenu = {
     modifierId: string,
 
     name: string,
+    menuType: string,
     englishName: string,
     code: string,
     greetings: string

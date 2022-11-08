@@ -1,11 +1,11 @@
-import { Box, Flex, Heading, ListItem, Stack, Text, UnorderedList } from "@chakra-ui/react";
+import { Box, Flex, Heading, List, ListItem, Stack, Text, UnorderedList } from "@chakra-ui/react";
 import { logger } from "@core/logger";
 import { TMenu } from "@core/types/TMenu";
 import { Props } from "framer-motion/types/types";
 import { useTranslation } from "next-i18next";
 import Link from "next/link";
 import { useEffect } from "react";
-import MenuDetail from "./MenuDetail";
+import ReactMarkdown from "react-markdown";
 
 type MenuProps = Props & {
     data: {
@@ -18,7 +18,7 @@ const MenuList: React.FC<MenuProps> = ({ props, data }) => {
 
     return (
         <Flex minH={"100vh"} w={"100%"} align={"center"} justify={"center"}>
-            <Stack w={"100%"}  spacing={20} mx={"auto"} py={12} px={20}>
+            <Stack w={"100%"} spacing={20} mx={"auto"} py={12} px={20}>
                 <Stack w={"full"} align={"center"}>
                     <Heading mb={6}>{t('heading')}</Heading>
                     <Box
@@ -30,14 +30,15 @@ const MenuList: React.FC<MenuProps> = ({ props, data }) => {
                         w={"100%"}
                     >
                         {/* {props?.data?.csrfToken} */}
-                        <UnorderedList size="lg" w={"100%"}>
+                        <List size="lg" w={"100%"}>
                             {data?.menus.map((menu) => (
                                 <ListItem key={String(menu.id)}>
-                                    <MenuDetail menu={menu} />
+                                    <Text fontSize="sm">({menu.menuType})({menu.id}){menu.name}({menu.code})(순서:{menu.order})(Created By {menu.creator?.email})(Modified By {menu.modifier?.email})</Text>
+                                    <ReactMarkdown children={menu.greetings} />
                                 </ListItem>
                             ))}
 
-                        </UnorderedList>
+                        </List>
                     </Box>
 
                     <Text align={"center"}>
