@@ -14,6 +14,10 @@ export default async function handle(
     // const query = req.query;
     const { page, limit, lastId } = req.body;
     logger.debug('menu list api', req.body, page, limit)
+    const whereRoles =  {
+        deleted: false,
+        invisable: false,
+    }
     const menus = await prisma.menu.findMany({
         // skip: page * limit,
         // skip: lastId ? 1 : page * limit,
@@ -21,10 +25,7 @@ export default async function handle(
         ...(page && limit && { skip: page * limit }),
         ...(limit && { take: limit }),
         ...(lastId && { skip: 1, cursor: { id: lastId } }),
-        where: {
-            deleted: false,
-            invisable: false,
-        },
+        where: whereRoles,
         orderBy: [{
             groupId: 'desc',
         }, {
@@ -44,5 +45,9 @@ export default async function handle(
         }
     });
     logger.debug('menu list api result', menus)
-    res.status(200).json(menus)
+    const total = await prisma.menu.count({
+        where: whereRoles,
+    });
+    const pages = total === 0 ? 1 : Math.floor(total / limit) + (total % limit === 0 ? 0 : 1)
+    res.status(200).json({ menus, pages })
 }

@@ -14,6 +14,8 @@ import { SessionProvider } from 'next-auth/react'
 import { appWithTranslation } from 'next-i18next';
 import { theme } from '@core/styles/mui'
 import Layout from '@components/layout/default/Layout'
+import { Hydrate, QueryClient, QueryClientProvider } from "react-query";
+import { useState } from 'react'
 
 // const sagaMiddleware = createSagaMiddleware();
 // export const store = configureStore({
@@ -31,25 +33,30 @@ export const wrapper = createWrapper<AppStore>(makeStore)
 
 export function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   const { store, props } = wrapper.useWrappedStore(pageProps);
+  const [queryClient] = useState(() => new QueryClient());
   return (
-    <SessionProvider session={session}>
-      <Provider store={store}>
-        <ThemeProvider theme={theme}>
-          <StyledEngineProvider injectFirst>
-            {/* <AppHead /> */}
-            <CssBaseline />
+    <QueryClientProvider client={queryClient}>
+      <Hydrate state={pageProps.dehydratedState}>
+        <SessionProvider session={session}>
+          <Provider store={store}>
+            <ThemeProvider theme={theme}>
+              <StyledEngineProvider injectFirst>
+                {/* <AppHead /> */}
+                <CssBaseline />
 
-            <Layout
-              // type your page title and page description.
-              title="Template - Next.js and Material-UI with Header and Footer"
-              description="This is a Template using Next.js and Material-UI with Header and Footer."
-            >
-              <Component {...pageProps} />
-            </Layout>
-          </StyledEngineProvider>
-        </ThemeProvider>
-      </Provider>
-    </SessionProvider>
+                <Layout
+                  // type your page title and page description.
+                  title="Template - Next.js and Material-UI with Header and Footer"
+                  description="This is a Template using Next.js and Material-UI with Header and Footer."
+                >
+                  <Component {...pageProps} />
+                </Layout>
+              </StyledEngineProvider>
+            </ThemeProvider>
+          </Provider>
+        </SessionProvider>
+      </Hydrate>
+    </QueryClientProvider>
   )
 }
 
