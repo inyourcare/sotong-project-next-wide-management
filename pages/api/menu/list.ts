@@ -12,11 +12,15 @@ export default async function handle(
     res: NextApiResponse,
 ) {
     // const query = req.query;
-    const { page, limit } = req.body;
+    const { page, limit, lastId } = req.body;
     logger.debug('menu list api', req.body, page, limit)
     const menus = await prisma.menu.findMany({
-        skip: page * limit,
-        take: limit,
+        // skip: page * limit,
+        // skip: lastId ? 1 : page * limit,
+
+        ...(page && limit && { skip: page * limit }),
+        ...(limit && { take: limit }),
+        ...(lastId && { skip: 1, cursor: { id: lastId } }),
         where: {
             deleted: false,
             invisable: false,

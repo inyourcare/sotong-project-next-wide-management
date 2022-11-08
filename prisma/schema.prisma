@@ -244,16 +244,17 @@ model Menu {
 
   name           String
   englishName    String?
-  code           String  @unique
-  greetings      String? @db.VarChar(300)
+  code           String   @unique
+  greetings      String?  @db.VarChar(300)
   redirectUrl    String?
-  contentsHeader String? @db.VarChar(3000)
-  contentsFooter String? @db.VarChar(3000)
-  order          Int     @default(0)
-  depth          Int     @default(0)
-  step           Int     @default(0)
-  groupId        Int     @default(0)
-  parentId       Int     @default(0)
+  contentsHeader String?  @db.VarChar(3000)
+  contentsFooter String?  @db.VarChar(3000)
+  order          Int      @default(0)
+  depth          Int      @default(0)
+  step           Int      @default(0)
+  groupId        Int      @default(0)
+  parentId       Int      @default(0)
+  menuType       MenuType @default(DIR)
 
   deleted   Boolean @default(false)
   invisable Boolean @default(false)
