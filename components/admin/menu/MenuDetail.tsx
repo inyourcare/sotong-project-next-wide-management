@@ -7,6 +7,8 @@ import { Stack, HStack, VStack } from '@chakra-ui/react'
 
 const MenuDetail: React.FC<{ menu: TMenu }> = ({ menu }) => {
   const creatorId = menu.creatorId
+  const creator = menu.creator;
+  const modifier = menu.modifier;
   return (
     <Box
       p={1}
@@ -18,7 +20,8 @@ const MenuDetail: React.FC<{ menu: TMenu }> = ({ menu }) => {
     >
       <Stack spacing={8} direction='row'>
         <Heading size="md">{menu.name}</Heading>
-        <Text fontSize="sm">By {creatorId}</Text>
+        <Text fontSize="sm">(Created By {creator?.email})</Text>
+        <Text fontSize="sm">(Modified By {modifier?.email})</Text>
         <ReactMarkdown children={menu.greetings} />
       </Stack>
     </Box>

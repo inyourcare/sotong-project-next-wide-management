@@ -1,3 +1,5 @@
+import { Role } from "@prisma/client"
+
 export type TMenu = {
     id: number,
     creatorId: string,
@@ -21,4 +23,18 @@ export type TMenu = {
 
     createdAt: Date
     updatedAt: Date
+
+    creator?: {
+        name: string,
+        email: string,
+        iamge: string,
+        role: Role
+    }
+
+    modifier?: {
+        name: string,
+        email: string,
+        iamge: string,
+        role: Role
+    }
 }

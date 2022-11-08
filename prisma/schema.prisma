@@ -2,7 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["interactiveTransactions"]
 }
 
@@ -67,11 +67,13 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  boards   Board[]
-  posts    Post[]
-  comments Comment[]
-  accounts Account[]
-  sessions Session[]
+  boards        Board[]
+  posts         Post[]
+  comments      Comment[]
+  accounts      Account[]
+  sessions      Session[]
+  menusCreator  Menu[]    @relation("creator")
+  menusModifier Menu[]    @relation("modifier")
 }
 
 model VerificationToken {
@@ -236,7 +238,9 @@ model Menu {
   id Int @id @default(autoincrement())
 
   creatorId  String?
+  creator    User?   @relation("creator", fields: [creatorId], references: [id])
   modifierId String?
+  modifier   User?   @relation("modifier", fields: [modifierId], references: [id])
 
   name           String
   englishName    String?

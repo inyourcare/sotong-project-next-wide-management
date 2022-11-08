@@ -25,32 +25,20 @@ export default async function handle(
             groupId: 'desc',
         }, {
             step: 'asc'
-        }]
+        }],
+        include: {
+            creator: {
+                select: {
+                    name: true, email: true, image: true, role: true
+                }
+            },
+            modifier: {
+                select: {
+                    name: true, email: true, image: true, role: true
+                }
+            }
+        }
     });
     logger.debug('menu list api result', menus)
     res.status(200).json(menus)
-    // if (menus.length>0)
-    //     res.status(200).json({menus})
-    // res.status(500).send({})
-
-    // const session = await getSession({ req });
-    // if (!session) {
-    //     res.statusCode = 403;
-    //     return { props: { drafts: [] } };
-    // }
-
-    // const drafts = await prisma.post.findMany({
-    //     where: {
-    //         author: { email: session.user.email },
-    //         published: false,
-    //     },
-    //     include: {
-    //         author: {
-    //             select: { name: true, email: true },
-    //         },
-    //     },
-    // });
-    // return {
-    //     props: { drafts },
-    // };
 }
