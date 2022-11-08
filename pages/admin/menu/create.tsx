@@ -15,33 +15,13 @@ import { FieldValues, useForm } from 'react-hook-form';
 // const MenuCreate: React.FC<Props> = ({ props }) => {
 const MenuCreate: React.FC<Props> = (props) => {
     const router = useRouter();
-    // const { data } = props
     const { t } = useTranslation('menu');
-    // const [name, setName] = useState("");
-    // const [code, setCode] = useState("");
-    // const [englishName, setEnglishName] = useState("");
-    // const [greetings, setGreetings] = useState("");
     const {
         handleSubmit,
         register,
         reset,
         formState: { errors, isSubmitting },
     } = useForm();
-    // const submitData = async (e: React.SyntheticEvent) => {
-    //     e.preventDefault();
-    //     try {
-    //         const body = { name, englishName };
-    //         await fetch(`/api/menu/create`, {
-    //             method: "POST",
-    //             headers: { "Content-Type": "application/json" },
-    //             body: JSON.stringify(body),
-    //         });
-    //         await Router.push("/");
-    //     } catch (error) {
-    //         // console.error(error);
-    //         logger.error(error);
-    //     }
-    // };
     async function onSubmit(values: FieldValues) {
         try {
             const body = { ...values };
@@ -52,10 +32,10 @@ const MenuCreate: React.FC<Props> = (props) => {
                 body: JSON.stringify(body),
             });
             logger.debug(`res`, res);
-            // todo:: 만약 네이버 등으로 먼저 로그읺해서 메일이 등록된 유저는 create 가 되지 않는다. 해결 필요
             reset();
+            // logger.debug(`router.query`, router.query.callbackUrl);
             router.push(
-                `${router.query.callbackUrl
+                `/admin/menu${router.query.callbackUrl
                     ? `?callbackUrl=${router.query.callbackUrl}`
                     : ""
                 }`,
@@ -64,13 +44,6 @@ const MenuCreate: React.FC<Props> = (props) => {
             console.error(error);
         }
     }
-    // useEffect(()=>{
-    //     logger.debug('hi')
-    //     logger.debug('props', props)
-    // },[props])
-    // useEffect(() => {
-    //     logger.debug('MenuCreate t', t('create-heading'), data)
-    // }, [t, data])
     return (
         <>
             <Flex
