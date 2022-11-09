@@ -128,7 +128,7 @@ const MenuCreate: React.FC<InferGetServerSidePropsType<typeof getServerSideProps
                                         <option>{MenuType.BOARD}</option>
                                         <option>{MenuType.CONTENTS}</option> */}
                                         {Object.values(MenuType).map((v)=>{
-                                            return (<option>{v}</option>)
+                                            return (<option key={v}>{v}</option>)
                                         })}
                                     </Select>
                                 </FormControl>

@@ -15,14 +15,18 @@ import {
     Box,
     Icon,
     Button,
-    Heading
+    Heading,
+    Stack
 } from '@chakra-ui/react';
 import { CgChevronLeft, CgChevronRight } from 'react-icons/cg';
-import { useEffect, useState } from 'react';
-import { Table } from "react-chakra-pagination";
+import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { FiTrash2, FiUser } from "react-icons/fi";
-import { useQuery } from 'react-query';
+import { dehydrate, DehydratedState, QueryClient, useQuery } from 'react-query';
 import { Pagination } from '@mui/material';
+import { useRouter } from 'next/router';
+import { useTranslation } from 'next-i18next';
+import Link from 'next/link';
+import Table from '@components/common/Table';
 
 type MenuParams = {
     // props: {
@@ -36,32 +40,164 @@ type MenuParams = {
 // const Menu: React.FC<Props> = (props) => {
 // const Menu: React.FC<GetServerSidePropsResult<MenuParams>> = (result) => {
 const Menu: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (result) => {
+    const router = useRouter();
     const props = result as MenuParams
+    const [page, setPage] = useState(parseInt(router.query.page as string) || 1);
+    const { t } = useTranslation('menu');
     // logger.debug('Menu rendering result', result)
     // logger.debug('Menu rendering props', props)
     // const menus = props.data.menus
     // const [page, setPage] = useState(1);
-    // const { data } = useQuery(
-    //     "menuList",
-    //     async () =>
-    //         // await fetch(`https://rickandmortyapi.com/api/character/`).then((result) =>
-    //         //     result.json()
-    //         // )
-    //         // await fetch(`${process.env.NEXTAPI_BASE_URL}/menu/list`, {
-    //         await fetch(`/api/menu/list`, {
-    //             method: 'POST',
-    //             body: JSON.stringify({ page, limit: 5 }),
-    //             headers: { "Content-Type": "application/json" }
-    //         }).then(async (result) => {
-    //             const jsonResult = await result.json()
-    //             logger.debug('useQuery result', jsonResult)
-    //             return jsonResult
-    //         })
-    // );
+    const { data } = useQuery(
+        ["menuList", page],
+        // ["menuList", queryTrigger],
+        async () => {
+            // await fetch(`https://rickandmortyapi.com/api/character/`).then((result) =>
+            //     result.json()
+            // )
+            // await fetch(`${process.env.NEXTAPI_BASE_URL}/menu/list`, {
+            return await fetch(`/api/menu/list`, {
+                method: 'POST',
+                body: JSON.stringify({
+                    page: page - 1,
+                    limit: 5,
+                    conditions: {
+                        creator: {
+                            // email: 'admin@sotong.co.kr'
+                            // email
+                        }
+                    }
+                }),
+                headers: { "Content-Type": "application/json" }
+            }).then(async (result) => {
+                const jsonResult = await result.json()
+                logger.debug('useQuery result', jsonResult)
+                return jsonResult
+            })
+        },
+        {
+            refetchOnMount: "always",
+            // staleTime: 60 * 1000, // 1분
+        }
+    );
+    function handlePaginationChange(event: ChangeEvent<unknown>, page: number) {
+        setPage(page);
+        router.push(`menu/?page=${page}`, undefined, { shallow: false });
+        // routerPush(page)
+    }
+    // useEffect(()=>{
+    //     const state = props.dehydratedState as DehydratedState
+    // },[props.dehydratedState])
+
+    const columns = useMemo(
+        () => [
+            {
+                Header: "Menu",
+                columns: [{
+                    accessor: "name",
+                    Header: "Name",
+                    // Header: () => (
+                    //     <p style={{text-align: 'center}}>번호</p>
+                    //   ),
+                    show: true,
+                    maxWidth: 300,
+                    minWidth: 300,
+                    width: 300,
+                },
+                {
+                    accessor: "menuType",
+                    Header: "menuType",
+                },
+                {
+                    accessor: "id",
+                    Header: "id",
+                },
+                {
+                    accessor: "code",
+                    Header: "code",
+                },
+                {
+                    accessor: "order",
+                    Header: "order",
+                },
+                {
+                    accessor: "creator",
+                    Header: "creator",
+                },
+                {
+                    accessor: "modifier",
+                    Header: "modifier",
+                },]
+            }
+        ],
+        []
+    );
     return (
         <>
             {/* {data && data.menus && (data.menus as Array<TMenu>).length > 0 && <MenuList props={props} data={data}></MenuList>} */}
-            {<MenuList props={props}></MenuList>}
+            {/* {<MenuList props={props}></MenuList>} <- CSR */}
+            <Flex minH={"100vh"} w={"100%"} align={"center"} justify={"center"}>
+            <Stack w={"100%"} spacing={20} mx={"auto"} py={12} px={20}>
+                <Stack w={"full"} align={"center"}>
+                    <Heading mb={6}>{t('heading')}</Heading>
+                    <Box
+                        marginTop={{ base: "1", sm: "5" }}
+                        display="flex"
+                        flexDirection={{ base: "column", sm: "row" }}
+                        justifyContent="space-between"
+                        // w={"full"}
+                        w={"100%"}
+                    >
+                        {/* {props?.data?.csrfToken} */}
+                        {/* <List size="lg" w={"100%"}>
+                            {(data?.menus as Array<TMenu>)?.map((menu) => (
+                                // {menus.map((menu) => (
+                                <ListItem key={String(menu.id)}>
+                                    <Text fontSize="sm">({menu.menuType})({menu.id}){menu.name}({menu.code})(순서:{menu.order})(Created By {menu.creator?.email})(Modified By {menu.modifier?.email})</Text>
+                                    <ReactMarkdown children={menu.greetings} />
+                                </ListItem>
+                            ))}
+
+                        </List> */}
+                        {(data?.menus as Array<TMenu>) && <Table columns={columns} data={(data.menus as Array<TMenu>).map(menu => { return { ...menu, creator: menu.creator?.email, modifier: menu.modifier?.email } })} />}
+                    </Box>
+                    <Pagination
+                        count={data?.pages}
+                        variant='outlined'
+                        color='primary'
+                        className='pagination'
+                        page={page}
+                        onChange={handlePaginationChange}
+                    />
+                    <Text align={"center"}>
+                        <Link color={"blue.400"} href="menu/create">
+                            Menu Create
+                        </Link>
+                    </Text>
+                    {/* <SearchBar
+                        // onChange={() => { }}
+                        onChange={(e) => { setChangingEmail(e.target.value) }}
+                        // onChange={(e) => { setEmail(e.target.value) }}
+                        // onClick={() => { }}
+                        onClick={() => {
+                            let resultEmail
+                            if (changingEmail) resultEmail = changingEmail
+                            else resultEmail = undefined
+                            // setPage(page);
+                            // alert('onclick email' , email)
+                            console.log('onclick', changingEmail, email)
+                            
+                            setEmail(resultEmail)
+                            setPage(1)
+                            setQueryTrigger(queryTrigger+1)
+                            // routerPush(undefined, resultEmail)
+                        }}
+                        // onClick={() => { router.push(`menu/?page=${page}`, undefined, { shallow: true }); }} 
+                        placeHolder='' /> */}
+                    {/* <button onClick={() => { router.back() }}>go back</button> */}
+                </Stack>
+            </Stack>
+        </Flex>
         </>
     )
 }
@@ -73,6 +209,29 @@ export const getServerSideProps: GetServerSideProps<MenuParams> = async (context
         res as NextApiResponse<any> | ServerResponse<IncomingMessage>,
         authOptions
     )
+    let page = 1;
+    if (context.query.page && typeof context.query.page === 'string') {
+        page = parseInt(context.query.page);
+    }
+    const queryClient = new QueryClient();
+    await queryClient.prefetchQuery(
+        ["menuList", page],
+        async () =>
+            await fetch(`${process.env.NEXTAPI_BASE_URL}/menu/list`, {
+                method: 'POST',
+                body: JSON.stringify({
+                    page: page - 1,
+                    limit: 5,
+                    conditions: {
+                        creator: {
+                            // email: 'admin@sotong.co.kr'
+                            // email
+                        }
+                    }
+                }),
+                headers: { "Content-Type": "application/json" }
+            }).then((result) => result.json())
+    );
     // const menus = await fetch(`${process.env.NEXTAPI_BASE_URL}/menu/list`, {
     //     method: 'POST',
     //     body: JSON.stringify({ page: 0, limit: 5 }),
@@ -93,6 +252,7 @@ export const getServerSideProps: GetServerSideProps<MenuParams> = async (context
                 csrfToken: await getCsrfToken(context),
                 // menus: (await menus.json()),
             },
+            dehydratedState: dehydrate(queryClient),
             ...(await serverSideTranslations(locale as string))
         }) as MenuParams
     }
