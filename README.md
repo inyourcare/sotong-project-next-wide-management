@@ -103,3 +103,8 @@ http://localhost:3000/api/auth/callback/kakao
 [공식문서](https://mui.com/material-ui/guides/interoperability/)
 [해답](https://github.com/mui/material-ui/issues/27149)
 StyledEngineProvider 를 통해 css 순서가 뒤집히지 않도록 설정하는 방식으로 해결
+
+
+## useQuery 
+서버사이드 해답은 admin/menu/index.tsx
+클라이언트 해답은 components/admin/menu/menuList.tsx
