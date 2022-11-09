@@ -27,6 +27,7 @@ import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import Table from '@components/common/Table';
+import { SearchBar } from '@components/common/SearchBar';
 
 type MenuParams = {
     // props: {
@@ -42,14 +43,19 @@ type MenuParams = {
 const Menu: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (result) => {
     const router = useRouter();
     const props = result as MenuParams
-    const [page, setPage] = useState(parseInt(router.query.page as string) || 1);
+    const initializePage = () => parseInt(router.query.page as string) || 1
+    const [page, setPage] = useState(initializePage());
+    const [changingEmail, setChangingEmail] = useState('')
+    const [email, setEmail] = useState('');
+    const [queryTrigger, setQueryTrigger] = useState(0);
+    const [queryBody, setQieryBody] = useState('');
     const { t } = useTranslation('menu');
     // logger.debug('Menu rendering result', result)
     // logger.debug('Menu rendering props', props)
     // const menus = props.data.menus
     // const [page, setPage] = useState(1);
     const { data } = useQuery(
-        ["menuList", page],
+        ["menuList", queryTrigger],
         // ["menuList", queryTrigger],
         async () => {
             // await fetch(`https://rickandmortyapi.com/api/character/`).then((result) =>
@@ -65,6 +71,7 @@ const Menu: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (
                         creator: {
                             // email: 'admin@sotong.co.kr'
                             // email
+                            ...(email && { email: email })
                         }
                     }
                 }),
@@ -81,13 +88,16 @@ const Menu: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (
         }
     );
     function handlePaginationChange(event: ChangeEvent<unknown>, page: number) {
-        setPage(page);
+        setPage(initializePage());
         router.push(`menu/?page=${page}`, undefined, { shallow: false });
         // routerPush(page)
     }
-    // useEffect(()=>{
-    //     const state = props.dehydratedState as DehydratedState
-    // },[props.dehydratedState])
+    useEffect(() => {
+        // const state = props.dehydratedState as DehydratedState
+        console.log('hi')
+        setPage(parseInt(router.query.page as string) || 1)
+        setQueryTrigger(queryTrigger + 1)
+    }, [props])
 
     const columns = useMemo(
         () => [
@@ -137,19 +147,19 @@ const Menu: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (
             {/* {data && data.menus && (data.menus as Array<TMenu>).length > 0 && <MenuList props={props} data={data}></MenuList>} */}
             {/* {<MenuList props={props}></MenuList>} <- CSR */}
             <Flex minH={"100vh"} w={"100%"} align={"center"} justify={"center"}>
-            <Stack w={"100%"} spacing={20} mx={"auto"} py={12} px={20}>
-                <Stack w={"full"} align={"center"}>
-                    <Heading mb={6}>{t('heading')}</Heading>
-                    <Box
-                        marginTop={{ base: "1", sm: "5" }}
-                        display="flex"
-                        flexDirection={{ base: "column", sm: "row" }}
-                        justifyContent="space-between"
-                        // w={"full"}
-                        w={"100%"}
-                    >
-                        {/* {props?.data?.csrfToken} */}
-                        {/* <List size="lg" w={"100%"}>
+                <Stack w={"100%"} spacing={20} mx={"auto"} py={12} px={20}>
+                    <Stack w={"full"} align={"center"}>
+                        <Heading mb={6}>{t('heading')}</Heading>
+                        <Box
+                            marginTop={{ base: "1", sm: "5" }}
+                            display="flex"
+                            flexDirection={{ base: "column", sm: "row" }}
+                            justifyContent="space-between"
+                            // w={"full"}
+                            w={"100%"}
+                        >
+                            {/* {props?.data?.csrfToken} */}
+                            {/* <List size="lg" w={"100%"}>
                             {(data?.menus as Array<TMenu>)?.map((menu) => (
                                 // {menus.map((menu) => (
                                 <ListItem key={String(menu.id)}>
@@ -159,45 +169,47 @@ const Menu: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (
                             ))}
 
                         </List> */}
-                        {(data?.menus as Array<TMenu>) && <Table columns={columns} data={(data.menus as Array<TMenu>).map(menu => { return { ...menu, creator: menu.creator?.email, modifier: menu.modifier?.email } })} />}
-                    </Box>
-                    <Pagination
-                        count={data?.pages}
-                        variant='outlined'
-                        color='primary'
-                        className='pagination'
-                        page={page}
-                        onChange={handlePaginationChange}
-                    />
-                    <Text align={"center"}>
-                        <Link color={"blue.400"} href="menu/create">
-                            Menu Create
-                        </Link>
-                    </Text>
-                    {/* <SearchBar
-                        // onChange={() => { }}
-                        onChange={(e) => { setChangingEmail(e.target.value) }}
-                        // onChange={(e) => { setEmail(e.target.value) }}
-                        // onClick={() => { }}
-                        onClick={() => {
-                            let resultEmail
-                            if (changingEmail) resultEmail = changingEmail
-                            else resultEmail = undefined
-                            // setPage(page);
-                            // alert('onclick email' , email)
-                            console.log('onclick', changingEmail, email)
-                            
-                            setEmail(resultEmail)
-                            setPage(1)
-                            setQueryTrigger(queryTrigger+1)
-                            // routerPush(undefined, resultEmail)
-                        }}
-                        // onClick={() => { router.push(`menu/?page=${page}`, undefined, { shallow: true }); }} 
-                        placeHolder='' /> */}
-                    {/* <button onClick={() => { router.back() }}>go back</button> */}
+                            {(data?.menus as Array<TMenu>) && <Table columns={columns} data={(data.menus as Array<TMenu>).map(menu => { return { ...menu, creator: menu.creator?.email, modifier: menu.modifier?.email } })} />}
+                        </Box>
+                        <Pagination
+                            count={data?.pages}
+                            variant='outlined'
+                            color='primary'
+                            className='pagination'
+                            page={page}
+                            onChange={handlePaginationChange}
+                        />
+                        <Text align={"center"}>
+                            <Link color={"blue.400"} href="menu/create">
+                                Menu Create
+                            </Link>
+                        </Text>
+                        <SearchBar
+                            // onChange={() => { }}
+                            onChange={(e) => { setChangingEmail(e.target.value) }}
+                            // onChange={(e) => { setEmail(e.target.value) }}
+                            // onClick={() => { }}
+                            onClick={() => {
+                                // let resultEmail
+                                // if (changingEmail) resultEmail = changingEmail
+                                // else resultEmail = undefined
+                                // // setPage(page);
+                                // // alert('onclick email' , email)
+                                // console.log('onclick', changingEmail, email)
+
+                                // setEmail(resultEmail)
+                                setEmail(changingEmail)
+                                setChangingEmail('')
+                                setPage(1)
+                                setQueryTrigger(queryTrigger + 1)
+                                // routerPush(undefined, resultEmail)
+                            }}
+                            // onClick={() => { router.push(`menu/?page=${page}`, undefined, { shallow: true }); }} 
+                            placeHolder='' />
+                        {/* <button onClick={() => { setPage(1) }}>test</button> */}
+                    </Stack>
                 </Stack>
-            </Stack>
-        </Flex>
+            </Flex>
         </>
     )
 }
