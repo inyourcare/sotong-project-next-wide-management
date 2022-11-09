@@ -1,4 +1,5 @@
 import { Box, Flex, Heading, List, ListItem, Stack, Text, UnorderedList } from "@chakra-ui/react";
+import Table from "@components/common/Table";
 import { logger } from "@core/logger";
 import { TMenu } from "@core/types/TMenu";
 import { Pagination } from "@mui/material";
@@ -6,7 +7,7 @@ import { Props } from "framer-motion/types/types";
 import { useTranslation } from "next-i18next";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { useQuery } from "react-query";
 
@@ -44,6 +45,50 @@ const MenuList: React.FC<MenuProps> = ({ props }) => {
         router.push(`menu/?page=${page}`, undefined, { shallow: true });
     }
 
+    const columns = useMemo(
+        () => [
+            {
+                Header: "Menu",
+                columns: [{
+                    accessor: "name",
+                    Header: "Name",
+                    // Header: () => (
+                    //     <p style={{text-align: 'center}}>번호</p>
+                    //   ),
+                    show: true,
+                    maxWidth: 300,
+                    minWidth: 300,
+                    width: 300,
+                },
+                {
+                    accessor: "menuType",
+                    Header: "menuType",
+                },
+                {
+                    accessor: "id",
+                    Header: "id",
+                },
+                {
+                    accessor: "code",
+                    Header: "code",
+                },
+                {
+                    accessor: "order",
+                    Header: "order",
+                },
+                {
+                    accessor: "creator",
+                    Header: "creator",
+                },
+                {
+                    accessor: "modifier",
+                    Header: "modifier",
+                },]
+            }
+        ],
+        []
+    );
+
     return (
         <Flex minH={"100vh"} w={"100%"} align={"center"} justify={"center"}>
             <Stack w={"100%"} spacing={20} mx={"auto"} py={12} px={20}>
@@ -58,7 +103,7 @@ const MenuList: React.FC<MenuProps> = ({ props }) => {
                         w={"100%"}
                     >
                         {/* {props?.data?.csrfToken} */}
-                        <List size="lg" w={"100%"}>
+                        {/* <List size="lg" w={"100%"}>
                             {(data?.menus as Array<TMenu>)?.map((menu) => (
                                 // {menus.map((menu) => (
                                 <ListItem key={String(menu.id)}>
@@ -67,7 +112,8 @@ const MenuList: React.FC<MenuProps> = ({ props }) => {
                                 </ListItem>
                             ))}
 
-                        </List>
+                        </List> */}
+                        {(data?.menus as Array<TMenu>) && <Table columns={columns} data={(data.menus as Array<TMenu>).map(menu => { return { ...menu, creator: menu.creator?.email, modifier: menu.modifier?.email } })} />}
                     </Box>
                     <Pagination
                         count={data?.pages}

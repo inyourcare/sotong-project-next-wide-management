@@ -44,7 +44,7 @@ export default async function handle(
             }
         }
     });
-    logger.debug('menu list api result', menus)
+    logger.debug('menu list api result', menus.length)
     const total = await prisma.menu.count({
         where: whereRoles,
     });
