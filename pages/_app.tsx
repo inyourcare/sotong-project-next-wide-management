@@ -37,14 +37,14 @@ export function App({ Component, pageProps: { session, ...pageProps } }: AppProp
                 {/* <AppHead /> */}
                 <CssBaseline />
 
-                <Layout
+                {/* <Layout
                   // type your page title and page description.
                   title="Template - Next.js and Material-UI with Header and Footer"
                   description="This is a Template using Next.js and Material-UI with Header and Footer."
-                >
+                > */}
                   <NextNProgress />
                   <Component {...pageProps} />
-                </Layout>
+                {/* </Layout> */}
               </StyledEngineProvider>
             </ThemeProvider>
           </Provider>
