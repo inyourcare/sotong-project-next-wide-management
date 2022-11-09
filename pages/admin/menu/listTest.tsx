@@ -79,8 +79,8 @@ const Menu: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (
         setEmail(initializeEmail())
     }, [router.query])
     const routePush = (page: number, email: string) => {
-        let link = 'menu/?'
-        // let link = 'listTest/?'
+        // let link = 'menu/?'
+        let link = 'listTest/?'
         if (page)
             link = link.concat(`page=${page}&`)
         if (email)
