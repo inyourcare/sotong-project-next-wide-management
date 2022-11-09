@@ -1,4 +1,5 @@
 import { Box, Flex, Heading, List, ListItem, Stack, Text, UnorderedList } from "@chakra-ui/react";
+import { SearchBar } from "@components/common/SearchBar";
 import Table from "@components/common/Table";
 import { logger } from "@core/logger";
 import { TMenu } from "@core/types/TMenu";
@@ -7,7 +8,7 @@ import { Props } from "framer-motion/types/types";
 import { useTranslation } from "next-i18next";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { ChangeEvent, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { useQuery } from "react-query";
 
@@ -22,28 +23,105 @@ type MenuProps = Props & {
 const MenuList: React.FC<MenuProps> = ({ props }) => {
     const { t } = useTranslation('menu');
     const router = useRouter();
-    const [page, setPage] = useState(1);
+    const initialPage = () => Number(router.query.page) || 1
+    const initialEmail = () => router.query.email as string || undefined
+    const [page, setPage] = useState(initialPage());
+    // searching
+    const [email, setEmail] = useState<string | undefined>(initialEmail());
+    const [queryTrigger, setQueryTrigger] = useState(0)
+    const [changingEmail, setChangingEmail] = useState<string | undefined>(undefined);
     const { data } = useQuery(
-        ["menuList", page],
-        async () =>
+        // ["menuList", page, email],
+        ["menuList", queryTrigger],
+        async () => {
             // await fetch(`https://rickandmortyapi.com/api/character/`).then((result) =>
             //     result.json()
             // )
             // await fetch(`${process.env.NEXTAPI_BASE_URL}/menu/list`, {
-            await fetch(`/api/menu/list`, {
+            return await fetch(`/api/menu/list`, {
                 method: 'POST',
-                body: JSON.stringify({ page: page - 1, limit: 5 }),
+                body: JSON.stringify({
+                    page: page - 1,
+                    limit: 5,
+                    conditions: {
+                        creator: {
+                            // email: 'admin@sotong.co.kr'
+                            email
+                        }
+                    }
+                }),
                 headers: { "Content-Type": "application/json" }
             }).then(async (result) => {
                 const jsonResult = await result.json()
                 logger.debug('useQuery result', jsonResult)
                 return jsonResult
             })
+        },
+        {
+            refetchOnMount: "always",
+            // staleTime: 60 * 1000, // 1분
+        }
     );
+
+    function routerPush(page?: number, email?: string) {
+        let link = 'menu/?'
+        if (page)
+            link = link.concat(`page=${page}&`)
+        if (email)
+            link = link.concat(`email=${email}&`)
+        router.push(link, undefined, { shallow: true })
+        // router.push(`menu/?page=${page}&email=${email}`, undefined, { shallow: true });
+        // router.push(`menu/?page=${page}`, undefined, { shallow: true });
+    }
     function handlePaginationChange(event: ChangeEvent<unknown>, page: number) {
         setPage(page);
-        router.push(`menu/?page=${page}`, undefined, { shallow: true });
+        setQueryTrigger(queryTrigger+1)
+        // routerPush(page)
     }
+    // useEffect(() => {
+    //     logger.debug('page, email chaging detector', page, email, router.query.page)
+    //     if (router.query.page && (page) !== Number(router.query.page))
+    //         setPage(Number(router.query.page))
+    //         // router.reload()
+    // }, [router.query.page])
+    // useEffect(() => {
+    //     const handleRouteChange = (url: string, { shallow }: { shallow: boolean }) => {
+    //         // console.log(
+    //         //     `App is changing to ${url} ${shallow ? 'with' : 'without'
+    //         //     } shallow routing`
+    //         // )
+    //         // const complePage = Number(router.query.page)
+    //         // const compleEmail = router.query.email as string
+    //         // if (complePage && (complePage !== page))
+    //         //     setPage(complePage)
+    //         // if (!complePage)
+    //         //     setPage(initialPage)
+    //         // // else 
+    //         // //     setPage(1)
+    //         // if (compleEmail && typeof compleEmail === 'string' && (compleEmail !== email))
+    //         //     setEmail(compleEmail)
+    //         // if (!compleEmail)
+    //         //     setEmail(initialEmail)
+    //         // else 
+    //         //     setEmail(undefined)
+    //         setPage(initialPage())
+    //         setEmail(initialEmail())
+    //         console.log('router change query', router.query.page, router.query.email)
+    //         setQueryTrigger(queryTrigger + 1)
+    //     }
+
+    //     // router.events.on('routeChangeStart', handleRouteChange)
+    //     router.events.on('routeChangeComplete', handleRouteChange)
+
+    //     // If the component is unmounted, unsubscribe
+    //     // from the event with the `off` method:
+    //     return () => {
+    //         // router.events.off('routeChangeStart', handleRouteChange)
+    //         router.events.off('routeChangeComplete', handleRouteChange)
+    //     }
+    // }, [router.query])
+
+    // const routerPush = useCallback(()=>router.push(`menu/?page=${page}&email=${email}`, undefined, { shallow: true }),[page,email]);
 
     const columns = useMemo(
         () => [
@@ -128,6 +206,27 @@ const MenuList: React.FC<MenuProps> = ({ props }) => {
                             Menu Create
                         </Link>
                     </Text>
+                    <SearchBar
+                        // onChange={() => { }}
+                        onChange={(e) => { setChangingEmail(e.target.value) }}
+                        // onChange={(e) => { setEmail(e.target.value) }}
+                        // onClick={() => { }}
+                        onClick={() => {
+                            let resultEmail
+                            if (changingEmail) resultEmail = changingEmail
+                            else resultEmail = undefined
+                            // setPage(page);
+                            // alert('onclick email' , email)
+                            console.log('onclick', changingEmail, email)
+                            
+                            setEmail(resultEmail)
+                            setPage(1)
+                            setQueryTrigger(queryTrigger+1)
+                            // routerPush(undefined, resultEmail)
+                        }}
+                        // onClick={() => { router.push(`menu/?page=${page}`, undefined, { shallow: true }); }} 
+                        placeHolder='' />
+                    <button onClick={() => { router.back() }}>go back</button>
                 </Stack>
             </Stack>
         </Flex>

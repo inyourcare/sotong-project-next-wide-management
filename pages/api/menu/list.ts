@@ -12,11 +12,18 @@ export default async function handle(
     res: NextApiResponse,
 ) {
     // const query = req.query;
-    const { page, limit, lastId } = req.body;
+    const { page, limit, lastId, conditions } = req.body;
     logger.debug('menu list api', req.body, page, limit)
-    const whereRoles =  {
+    // const conditionTemp = {
+    //     creator: {
+    //         email: 'admin@sotong.co.kr'
+    //     }
+    // }
+    const whereConditions = {
         deleted: false,
         invisable: false,
+        ...conditions,
+        // ...conditionTemp
     }
     const menus = await prisma.menu.findMany({
         // skip: page * limit,
@@ -25,7 +32,12 @@ export default async function handle(
         ...(page && limit && { skip: page * limit }),
         ...(limit && { take: limit }),
         ...(lastId && { skip: 1, cursor: { id: lastId } }),
-        where: whereRoles,
+        where: whereConditions,
+        // where: {
+        //     creator: {
+        //         email: 'admin@sotong.co.kr'
+        //     }
+        // },
         orderBy: [{
             groupId: 'desc',
         }, {
@@ -46,7 +58,12 @@ export default async function handle(
     });
     logger.debug('menu list api result', menus.length)
     const total = await prisma.menu.count({
-        where: whereRoles,
+        where: whereConditions,
+        // where: {
+        //     creator: {
+        //         email: 'admin@sotong.co.kr'
+        //     }
+        // }
     });
     const pages = total === 0 ? 1 : Math.floor(total / limit) + (total % limit === 0 ? 0 : 1)
     res.status(200).json({ menus, pages })

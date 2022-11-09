@@ -6,19 +6,19 @@ function Table({ columns, data }: { columns: Column<{}>[], data: {}[] }) {
     const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
         useTable({ columns, data });
 
-    useEffect(() => {
-        logger.debug("table attributes::", headerGroups, rows, getTableProps(), getTableProps())
-        headerGroups.map((headerGroup) => {
-            logger.debug('headergroup', { ...headerGroup.getHeaderGroupProps() })
-            headerGroup.headers.map((column) => (
-                logger.debug('column', {
-                    ...column.getHeaderProps({
-                        style: { maxWidth: column.maxWidth, minWidth: column.minWidth, width: column.width },
-                    })
-                })
-            ))
-        })
-    }, [getTableProps, getTableBodyProps, headerGroups, rows, prepareRow])
+    // useEffect(() => {
+    //     logger.debug("table attributes::", headerGroups, rows, getTableProps(), getTableProps())
+    //     headerGroups.map((headerGroup) => {
+    //         logger.debug('headergroup', { ...headerGroup.getHeaderGroupProps() })
+    //         headerGroup.headers.map((column) => (
+    //             logger.debug('column', {
+    //                 ...column.getHeaderProps({
+    //                     style: { maxWidth: column.maxWidth, minWidth: column.minWidth, width: column.width },
+    //                 })
+    //             })
+    //         ))
+    //     })
+    // }, [getTableProps, getTableBodyProps, headerGroups, rows, prepareRow])
 
     return (
         <table {...getTableProps()}>
