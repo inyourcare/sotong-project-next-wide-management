@@ -57,7 +57,8 @@ const Menu: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (
     // const menus = props.data.menus
     // const [page, setPage] = useState(1);
 
-    const { data } = result.dehydratedState.queries[0].state
+    // const { data } = result.dehydratedState.queries[0].state
+    const { data } = useQuery("menuList") as any
 
     function handlePaginationChange(event: ChangeEvent<unknown>, page: number) {
         // setPage(initializePage());
@@ -205,7 +206,22 @@ const Menu: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (
         </>
     )
 }
-
+const getMenus = async (page:any,email:any) =>
+await fetch(`${process.env.NEXTAPI_BASE_URL}/menu/list`, {
+    method: 'POST',
+    body: JSON.stringify({
+        page: page - 1,
+        limit: 5,
+        conditions: {
+            creator: {
+                // email: 'admin@sotong.co.kr'
+                // email
+                ...(email && { email: email })
+            }
+        }
+    }),
+    headers: { "Content-Type": "application/json" }
+}).then((result) => result.json())
 export const getServerSideProps: GetServerSideProps<MenuParams> = async (context) => {
     const { req, res, locale, resolvedUrl } = context;
     const session = await unstable_getServerSession(
@@ -220,23 +236,9 @@ export const getServerSideProps: GetServerSideProps<MenuParams> = async (context
     const email = context.query.email;
     const queryClient = new QueryClient();
     await queryClient.prefetchQuery(
-        ["menuList", page],
-        async () =>
-            await fetch(`${process.env.NEXTAPI_BASE_URL}/menu/list`, {
-                method: 'POST',
-                body: JSON.stringify({
-                    page: page - 1,
-                    limit: 5,
-                    conditions: {
-                        creator: {
-                            // email: 'admin@sotong.co.kr'
-                            // email
-                            ...(email && { email: email })
-                        }
-                    }
-                }),
-                headers: { "Content-Type": "application/json" }
-            }).then((result) => result.json())
+        // ["menuList", page],
+        "menuList",
+        ()=>getMenus(page,email)
     );
     // const menus = await fetch(`${process.env.NEXTAPI_BASE_URL}/menu/list`, {
     //     method: 'POST',
