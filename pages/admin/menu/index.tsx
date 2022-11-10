@@ -59,6 +59,7 @@ const Menu: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (
 
     // const { data } = result.dehydratedState.queries[0].state
     const { data } = useQuery("menuList") as any
+    const tableData = { ...data }
 
     function handlePaginationChange(event: ChangeEvent<unknown>, page: number) {
         // setPage(initializePage());
@@ -87,7 +88,7 @@ const Menu: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (
         if (email)
             link = link.concat(`email=${email}&`)
         router.push(link, undefined, { shallow: false })
-        return 
+        return
     }
 
     const columns = useMemo(
@@ -160,10 +161,11 @@ const Menu: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (
                             ))}
 
                         </List> */}
-                            {(data?.menus as Array<TMenu>) && <Table columns={columns} data={(data.menus as Array<TMenu>).map(menu => { return { ...menu, creator: menu.creator?.email, modifier: menu.modifier?.email } })} />}
+                            {/* {(data?.menus as Array<TMenu>) && <Table columns={columns} data={(data.menus as Array<TMenu>).map(menu => { return { ...menu, creator: menu.creator?.email, modifier: menu.modifier?.email } })} />} */}
+                            {(tableData?.menus as Array<TMenu>) && <Table columns={columns} data={(tableData.menus as Array<TMenu>).map(menu => { return { ...menu, creator: menu.creator?.email, modifier: menu.modifier?.email } })} />}
                         </Box>
                         <Pagination
-                            count={data?.pages}
+                            count={tableData?.pages}
                             variant='outlined'
                             color='primary'
                             className='pagination'
@@ -206,22 +208,22 @@ const Menu: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (
         </>
     )
 }
-const getMenus = async (page:any,email:any) =>
-await fetch(`${process.env.NEXTAPI_BASE_URL}/menu/list`, {
-    method: 'POST',
-    body: JSON.stringify({
-        page: page - 1,
-        limit: 5,
-        conditions: {
-            creator: {
-                // email: 'admin@sotong.co.kr'
-                // email
-                ...(email && { email: email })
+const getMenus = async (page: any, email: any) =>
+    await fetch(`${process.env.NEXTAPI_BASE_URL}/menu/list`, {
+        method: 'POST',
+        body: JSON.stringify({
+            page: page - 1,
+            limit: 5,
+            conditions: {
+                creator: {
+                    // email: 'admin@sotong.co.kr'
+                    // email
+                    ...(email && { email: email })
+                }
             }
-        }
-    }),
-    headers: { "Content-Type": "application/json" }
-}).then((result) => result.json())
+        }),
+        headers: { "Content-Type": "application/json" }
+    }).then((result) => result.json())
 export const getServerSideProps: GetServerSideProps<MenuParams> = async (context) => {
     const { req, res, locale, resolvedUrl } = context;
     const session = await unstable_getServerSession(
@@ -238,7 +240,7 @@ export const getServerSideProps: GetServerSideProps<MenuParams> = async (context
     await queryClient.prefetchQuery(
         // ["menuList", page],
         "menuList",
-        ()=>getMenus(page,email)
+        () => getMenus(page, email)
     );
     // const menus = await fetch(`${process.env.NEXTAPI_BASE_URL}/menu/list`, {
     //     method: 'POST',

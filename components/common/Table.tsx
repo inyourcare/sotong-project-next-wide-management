@@ -1,10 +1,10 @@
 import { logger } from "@core/logger";
 import React, { useEffect } from "react";
-import { Column, useTable } from "react-table";
+import { Column, useTable, useSortBy } from "react-table";
 
 function Table({ columns, data }: { columns: Column<{}>[], data: {}[] }) {
     const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
-        useTable({ columns, data });
+        useTable({ columns, data }, useSortBy);
 
     // useEffect(() => {
     //     logger.debug("table attributes::", headerGroups, rows, getTableProps(), getTableProps())
@@ -26,9 +26,11 @@ function Table({ columns, data }: { columns: Column<{}>[], data: {}[] }) {
                 {headerGroups.map((headerGroup) => (
                     <tr {...headerGroup.getHeaderGroupProps()}>
                         {headerGroup.headers.map((column) => (
-                            <th {...column.getHeaderProps({
-                                style: { minWidth: column.minWidth, width: column.width },
-                            })}>{column.render("Header")}</th>
+                            // <th {...column.getHeaderProps({ style: { minWidth: column.minWidth, width: column.width } })}>
+                            // <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                            <th {...column.getHeaderProps([{ style: { minWidth: column.minWidth, width: column.width } },column.getSortByToggleProps()])}>
+                                {column.render("Header")}
+                            </th>
                         ))}
                     </tr>
                 ))}
