@@ -8,6 +8,7 @@ import { Button, Flex, Heading, Stack, Text, useColorModeValue } from "@chakra-u
 import { logger } from "@core/logger";
 import { useEffect } from "react";
 import { prisma } from "@core/prisma"
+import KakaoShareBtn from "@components/common/KakaoShareBtn";
 
 
 export default function Home({ }) {
@@ -46,6 +47,7 @@ export default function Home({ }) {
               </Button>}
             {session.data?.expires}하이루?(Role:{session.data?.user?.role}){session.data?.user?.name}<br />
           </Text>
+          <KakaoShareBtn />
         </Stack>
       </Stack>
     </Flex>

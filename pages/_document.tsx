@@ -8,6 +8,7 @@ export default class MyDocument extends Document {
             <Html>
                 <Head>
                     <meta name="description" content="HTML meta tag page" />
+                    <script defer src="https://developers.kakao.com/sdk/js/kakao.min.js"></script>
                 </Head>
                 <body>
                     <Main />
