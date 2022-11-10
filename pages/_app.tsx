@@ -33,10 +33,10 @@ export function App({ Component, pageProps: { session, ...pageProps } }: AppProp
   const { store, props } = wrapper.useWrappedStore(pageProps);
   const [queryClient] = useState(() => new QueryClient());
   useEffect(() => {
-    console.log('app start' , process.env.KAKAO_CLIENT_ID, process.env)
+    console.log('app start', process.env.KAKAO_CLIENT_ID, process.env)
     if (!window.Kakao.isInitialized()) {
       window.Kakao.init(process.env.NEXT_PUBLIC_KAKAO_API_KEY);
-  };
+    };
   }, []);
   return (
     <QueryClientProvider client={queryClient}>
@@ -47,15 +47,14 @@ export function App({ Component, pageProps: { session, ...pageProps } }: AppProp
               <StyledEngineProvider injectFirst>
                 {/* <AppHead /> */}
                 <CssBaseline />
-
-                {/* <Layout
+                <Layout
                   // type your page title and page description.
                   title="Template - Next.js and Material-UI with Header and Footer"
                   description="This is a Template using Next.js and Material-UI with Header and Footer."
-                > */}
-                <NextNProgress />
-                <Component {...pageProps} />
-                {/* </Layout> */}
+                >
+                  <NextNProgress />
+                  <Component {...pageProps} />
+                </Layout>
               </StyledEngineProvider>
             </ThemeProvider>
           </Provider>

@@ -13,14 +13,16 @@ import {
     ListItemText,
     SwipeableDrawer,
     IconButton,
-} from "@material-ui/core";
+    // } from "@material-ui/core";
+} from "@mui/material";
 import Link from 'next/link';
 
 import MenuIcon from "@material-ui/icons/Menu";
 import useScrollTrigger from "@material-ui/core/useScrollTrigger";
 import { signOut, useSession } from 'next-auth/react';
+import { useStyles } from '@core/styles/mui';
 
-function ElevationScroll(props:any) {
+function ElevationScroll(props: any) {
     const { children } = props;
 
     const trigger = useScrollTrigger({
@@ -49,6 +51,7 @@ export default function Header() {
     const iOS = process.browser && /iPad|iPhone|iPod/.test(navigator.userAgent);
     const router = useRouter();
     const path = routes;
+    const classes = useStyles();
 
     const tabs = (
         <>
@@ -125,38 +128,42 @@ export default function Header() {
     );
 
     return (<>
-        <ElevationScroll>
-            {/* <AppBar className={classes.appBar}> */}
-            <AppBar>
-                <Toolbar
-                    disableGutters
-                    style={{
-                        maxWidth: "1280px",
-                        margin: "0 auto",
-                        width: "100%",
-                        padding: matches ? "0 16px" : "24px",
-                    }}
-                >
-                    <Link href="/">
-                        {/* <Typography className={classes.logo}>Material-UI</Typography> */}
-                        <Typography>Material-UI</Typography>
-                    </Link>
-                    {session.status === 'authenticated' 
-                    && 
+        {/* <ElevationScroll> */}
+        {/* <AppBar className={classes.appBar}> */}
+        {/* <AppBar style={{}}> */}
+        {/* <AppBar style={{ backgroundColor: 'rgba(0,0,0,0.3)' }}> */}
+        {/* <header className={`${classes.header}`}> */}
+        <AppBar className={`${classes.header}`}>
+            <Toolbar
+                disableGutters
+                style={{
+                    maxWidth: "1280px",
+                    margin: "0 auto",
+                    width: "100%",
+                    padding: matches ? "0 16px" : "24px",
+                }}
+            >
+                <Link href="/">
+                    {/* <Typography className={classes.logo}>Material-UI</Typography> */}
+                    <Typography>Material-UI</Typography>
+                </Link>
+                {session.status === 'authenticated'
+                    &&
                     <Link
                         href="/"
                         type="button"
                         // variant="contained"
                         color="primary"
                         onClick={() => { signOut() }}
-                        // className={`${classes.signIn_Btn} ${classes.width100P}`}
+                    // className={`${classes.signIn_Btn} ${classes.width100P}`}
                     >
                         {"next auth 로그아웃"}
                     </Link>}
-                    {matches ? drawer : tabs}
-                </Toolbar>
-            </AppBar>
-        </ElevationScroll>
+                {matches ? drawer : tabs}
+            </Toolbar>
+        </AppBar>
+        {/* </header> */}
+        {/* </ElevationScroll> */}
 
         {/* <div className={classes.toolbarMargin} /> */}
 
