@@ -28,6 +28,9 @@ import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import Table from '@components/common/Table';
 import { SearchBar } from '@components/common/SearchBar';
+import MuiTable from '@components/common/MuiTable';
+import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
+import { menuTableLimit } from '@core/styles/mui';
 
 type MenuParams = {
     // props: {
@@ -91,49 +94,85 @@ const Menu: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (
         return
     }
 
-    const columns = useMemo(
-        () => [
-            {
-                Header: "Menu",
-                columns: [{
-                    accessor: "name",
-                    Header: "Name",
-                    // Header: () => (
-                    //     <p style={{text-align: 'center}}>번호</p>
-                    //   ),
-                    show: true,
-                    maxWidth: 300,
-                    minWidth: 300,
-                    width: 300,
-                },
-                {
-                    accessor: "menuType",
-                    Header: "menuType",
-                },
-                {
-                    accessor: "id",
-                    Header: "id",
-                },
-                {
-                    accessor: "code",
-                    Header: "code",
-                },
-                {
-                    accessor: "order",
-                    Header: "order",
-                },
-                {
-                    accessor: "creator",
-                    Header: "creator",
-                },
-                {
-                    accessor: "modifier",
-                    Header: "modifier",
-                },]
-            }
-        ],
-        []
-    );
+    // const columns = useMemo(
+    //     () => [
+    //         {
+    //             Header: "Menu",
+    //             columns: [{
+    //                 accessor: "name",
+    //                 Header: "Name",
+    //                 // Header: () => (
+    //                 //     <p style={{text-align: 'center}}>번호</p>
+    //                 //   ),
+    //                 show: true,
+    //                 maxWidth: 300,
+    //                 minWidth: 300,
+    //                 width: 300,
+    //             },
+    //             {
+    //                 accessor: "menuType",
+    //                 Header: "menuType",
+    //             },
+    //             {
+    //                 accessor: "id",
+    //                 Header: "id",
+    //             },
+    //             {
+    //                 accessor: "code",
+    //                 Header: "code",
+    //             },
+    //             {
+    //                 accessor: "order",
+    //                 Header: "order",
+    //             },
+    //             {
+    //                 accessor: "creator",
+    //                 Header: "creator",
+    //             },
+    //             {
+    //                 accessor: "modifier",
+    //                 Header: "modifier",
+    //             },]
+    //         }
+    //     ],
+    //     []
+    // );
+    const columns: GridColDef[] = [
+        { field: 'id', headerName: 'ID', width: 70 },
+        { field: 'name', headerName: 'Name', width: 130 },
+        { field: 'menuType', headerName: 'MenuType', width: 70 },
+        { field: 'code', headerName: 'code', width: 70 },
+        { field: 'order', headerName: 'order', width: 70, type: 'number', },
+        { field: 'creator', headerName: 'creator', width: 100 },
+        { field: 'modifier', headerName: 'modifier', width: 100 },
+        // {
+        //     field: 'age',
+        //     headerName: 'Age',
+        //     type: 'number',
+        //     width: 90,
+        // },
+        // {
+        //     field: 'fullName',
+        //     headerName: 'Full name',
+        //     description: 'This column has a value getter and is not sortable.',
+        //     sortable: false,
+        //     width: 160,
+        //     valueGetter: (params: GridValueGetterParams) =>
+        //         `${params.row.firstName || ''} ${params.row.lastName || ''}`,
+        // },
+    ];
+
+    // const rows = [
+    //     { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
+    //     { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
+    //     { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
+    //     { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
+    //     { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
+    //     { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
+    //     { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
+    //     { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
+    //     { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
+    // ];
     return (
         <>
             {/* {data && data.menus && (data.menus as Array<TMenu>).length > 0 && <MenuList props={props} data={data}></MenuList>} */}
@@ -162,7 +201,14 @@ const Menu: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (
 
                         </List> */}
                             {/* {(data?.menus as Array<TMenu>) && <Table columns={columns} data={(data.menus as Array<TMenu>).map(menu => { return { ...menu, creator: menu.creator?.email, modifier: menu.modifier?.email } })} />} */}
-                            {(tableData?.menus as Array<TMenu>) && <Table columns={columns} data={(tableData.menus as Array<TMenu>).map(menu => { return { ...menu, creator: menu.creator?.email, modifier: menu.modifier?.email } })} />}
+                            {/* {(tableData?.menus as Array<TMenu>) && <Table columns={columns} data={(tableData.menus as Array<TMenu>).map(menu => { return { ...menu, creator: menu.creator?.email, modifier: menu.modifier?.email } })} />} */}
+                            {/* {<MuiTable columns={columns} rows={rows}/>} */}
+                            {(tableData?.menus as Array<TMenu>)
+                                && <MuiTable
+                                    columns={columns}
+                                    rows={(tableData.menus as Array<TMenu>).map(menu => { return { ...menu, creator: menu.creator?.email, modifier: menu.modifier?.email } })}
+                                    limit={menuTableLimit}
+                                />}
                         </Box>
                         <Pagination
                             count={tableData?.pages}
@@ -213,7 +259,7 @@ const getMenus = async (page: any, email: any) =>
         method: 'POST',
         body: JSON.stringify({
             page: page - 1,
-            limit: 5,
+            limit: menuTableLimit,
             conditions: {
                 creator: {
                     // email: 'admin@sotong.co.kr'

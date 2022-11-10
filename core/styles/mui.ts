@@ -80,3 +80,5 @@ export const MuiVariables: IMuiVariables = {
   }
 }
   ////////////////////////
+
+  export const menuTableLimit = 5
