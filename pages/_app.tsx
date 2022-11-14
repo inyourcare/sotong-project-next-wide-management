@@ -53,7 +53,10 @@ export function App({ Component, pageProps: { session, ...pageProps } }: AppProp
                   color: "red", 
                   position: 'relative',
                   // position: 'static',
-                  // top: '10%'
+                  top: '10px',
+                  left: '50%',
+                  // transform: 'translate(-50%,50%)',
+                  transform: 'translateX(-50%)',
                   zIndex: '100000'
                 }}>layout</button>
                 <Layout
