@@ -17,6 +17,54 @@ export default function MuiTable({ columns, rows, limit }: {
   }>
   , limit: number
 }) {
+  const [directions] = React.useState(columns.map((col) => { return true }));
+  function sortTable(feildOrder: number) {
+    var table, rows, switching, i, x, y, shouldSwitch;
+    table = document.getElementById("mui-table") as HTMLTableElement;
+    switching = true;
+    /*Make a loop that will continue until
+  no switching has been done:*/
+    while (switching) {
+      //start by saying: no switching is done:
+      switching = false;
+      rows = table.rows;
+      /*Loop through all table rows (except the
+      first, which contains table headers):*/
+      for (i = 1; i < (rows.length - 1); i++) {
+        //start by saying there should be no switching:
+        shouldSwitch = false;
+        /*Get the two elements you want to compare,
+        one from current row and one from the next:*/
+        // x = rows[i].getElementsByTagName("td")[feildOrder];
+        x = rows[i].cells[feildOrder];
+        // y = rows[i + 1].getElementsByTagName("td")[feildOrder];
+        y = rows[i + 1].cells[feildOrder];
+        // console.log(rows,x,y,feildOrder)
+        //check if the two rows should switch place:
+        if (directions[feildOrder] === true) {
+          if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+            //if so, mark as a switch and break the loop:
+            shouldSwitch = true;
+            break;
+          }
+        }
+        else {
+          if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+            //if so, mark as a switch and break the loop:
+            shouldSwitch = true;
+            break;
+          }
+        }
+      }
+      if (shouldSwitch) {
+        /*If a switch has been marked, make the switch
+        and mark that a switch has been done:*/
+        rows[i].parentNode?.insertBefore(rows[i + 1], rows[i]);
+        switching = true;
+      }
+    }
+    directions[feildOrder] = !directions[feildOrder]
+  }
   return (
     // <div style={{ height: 400, width: '100%' }}>
     //   <DataGrid
@@ -29,14 +77,14 @@ export default function MuiTable({ columns, rows, limit }: {
     // </div>
     <TableContainer component={Paper}>
       {/* <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table"> */}
-      <Table>
+      <Table id='mui-table'>
         <TableHead>
           {/* <TableRow style={{ width: '70px' }}> */}
           <TableRow >
-            {columns.map((col) => (
+            {columns.map((col, idx) => (
               // <TableCell key={`${col.field}`} width="20px" style={{ width: '70px' }}>{col.headerName}</TableCell>
               // <TableCell key={`${col.field}`} style={{backgroundColor:'red', color: 'white', width:`${col.width}%`}}>{col.headerName}</TableCell>
-              <TableCell key={`${col.field}`} style={{...col.styles}}>{col.headerName}</TableCell>
+              <TableCell key={`${col.field}`} style={{ ...col.styles }} onClick={() => sortTable(idx)}>{col.headerName}</TableCell>
             ))}
             {/* <TableCell>Dessert (100g serving)</TableCell>
             <TableCell align="right">Calories</TableCell>
