@@ -77,11 +77,29 @@ const MenuCreate: React.FC<InferGetServerSidePropsType<typeof getServerSideProps
                             height={400}
                             width={500}
                             overflow={"scroll"}
+                            border='1px solid black'
+                            css={{
+                                '&::-webkit-scrollbar': {
+                                    width: '4px',
+                                },
+                                '&::-webkit-scrollbar-track': {
+                                    width: '6px',
+                                },
+                                '&::-webkit-scrollbar-thumb': {
+                                    background: 'black',
+                                    borderRadius: '24px',
+                                },
+                            }}
                         >
                             <List w={"100%"}>
                                 {data?.menus?.map((menu) => (
                                     <ListItem key={String(menu.id)}>
-                                        <Text fontSize="sm" paddingLeft={menu.depth * 20}>({menu.menuType})({menu.id}){menu.name}({menu.code})(순서:{menu.order})</Text>
+                                        {/* <Text fontSize="sm" paddingLeft={menu.depth * 20}>{Array(menu.depth) */}
+                                        <Text fontSize="sm">{Array(menu.depth)
+                                            .fill(0)
+                                            .map((x, idx) => (
+                                                <>-</>
+                                            ))}({menu.menuType})({menu.id}){menu.name}({menu.code})(순서:{menu.order})</Text>
                                     </ListItem>
                                 ))}
                             </List>
@@ -127,7 +145,7 @@ const MenuCreate: React.FC<InferGetServerSidePropsType<typeof getServerSideProps
                                         <option>{MenuType.DIR}</option>
                                         <option>{MenuType.BOARD}</option>
                                         <option>{MenuType.CONTENTS}</option> */}
-                                        {Object.values(MenuType).map((v)=>{
+                                        {Object.values(MenuType).map((v) => {
                                             return (<option key={v}>{v}</option>)
                                         })}
                                     </Select>
