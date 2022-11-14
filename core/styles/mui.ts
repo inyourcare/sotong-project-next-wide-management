@@ -79,6 +79,12 @@ export const MuiVariables: IMuiVariables = {
     }
   }
 }
-  ////////////////////////
+////////////////////////
 
-  export const menuTableLimit = 5
+export const menuTableLimit = 5
+export type TableColDef = {
+  field: string, headerName: string
+  styles: {
+    width?: string
+  }
+}

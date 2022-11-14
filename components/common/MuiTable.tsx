@@ -7,9 +7,10 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import { TableColDef } from '@core/styles/mui';
 
 export default function MuiTable({ columns, rows, limit }: {
-  columns: GridColDef[],
+  columns: TableColDef[],
   rows: Array<{
     id: string | number
     [key: string]: Date | String | string | number | boolean | undefined
@@ -27,13 +28,15 @@ export default function MuiTable({ columns, rows, limit }: {
     //   />
     // </div>
     <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+      {/* <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table"> */}
+      <Table>
         <TableHead>
           {/* <TableRow style={{ width: '70px' }}> */}
           <TableRow >
             {columns.map((col) => (
               // <TableCell key={`${col.field}`} width="20px" style={{ width: '70px' }}>{col.headerName}</TableCell>
-              <TableCell key={`${col.field}`}>{col.headerName}</TableCell>
+              // <TableCell key={`${col.field}`} style={{backgroundColor:'red', color: 'white', width:`${col.width}%`}}>{col.headerName}</TableCell>
+              <TableCell key={`${col.field}`} style={{...col.styles}}>{col.headerName}</TableCell>
             ))}
             {/* <TableCell>Dessert (100g serving)</TableCell>
             <TableCell align="right">Calories</TableCell>
@@ -51,8 +54,9 @@ export default function MuiTable({ columns, rows, limit }: {
               >
                 {columns.map((col) => (
                   // <TableCell key={`${row.id}-${col.field}`} component="th" scope="row" width="20px" style={{ width: '70px' }}>
+                  // <TableCell key={`${row.id}-${col.field}`} component="th" scope="row" style={{width:'10%'}}>
                   <TableCell key={`${row.id}-${col.field}`} component="th" scope="row">
-                    {row[col.field]?.toString() || "empty"}
+                    {row[col.field]?.toString() || ""}
                   </TableCell>
                 ))}
               </TableRow>

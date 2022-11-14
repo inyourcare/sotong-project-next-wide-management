@@ -30,7 +30,7 @@ import Table from '@components/common/Table';
 import { SearchBar } from '@components/common/SearchBar';
 import MuiTable from '@components/common/MuiTable';
 import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
-import { menuTableLimit } from '@core/styles/mui';
+import { menuTableLimit, TableColDef } from '@core/styles/mui';
 
 type MenuParams = {
     // props: {
@@ -137,14 +137,15 @@ const Menu: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (
     //     ],
     //     []
     // );
-    const columns: GridColDef[] = [
-        { field: 'id', headerName: 'ID', width: 70 },
-        { field: 'name', headerName: 'Name', width: 130 },
-        { field: 'menuType', headerName: 'MenuType', width: 70 },
-        { field: 'code', headerName: 'code', width: 70 },
-        { field: 'order', headerName: 'order', width: 70, type: 'number', },
-        { field: 'creator', headerName: 'creator', width: 100 },
-        { field: 'modifier', headerName: 'modifier', width: 100 },
+    const columns: TableColDef[] = [
+        { field: 'id', headerName: 'ID', styles: { width: '10%' } },
+        { field: 'name', headerName: 'Name', styles: { width: '20%' } },
+        { field: 'menuType', headerName: 'MenuType', styles: { width: '10%' } },
+        // { field: 'code', headerName: 'code', styles: { width: '10%' } },
+        { field: 'code', headerName: 'code', styles: { } },
+        { field: 'order', headerName: 'order', styles: { width: '10%' }, },
+        { field: 'creator', headerName: 'creator', styles: { width: '10%' } },
+        { field: 'modifier', headerName: 'modifier', styles: { width: '10%' } },
         // {
         //     field: 'age',
         //     headerName: 'Age',
@@ -203,12 +204,17 @@ const Menu: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (
                             {/* {(data?.menus as Array<TMenu>) && <Table columns={columns} data={(data.menus as Array<TMenu>).map(menu => { return { ...menu, creator: menu.creator?.email, modifier: menu.modifier?.email } })} />} */}
                             {/* {(tableData?.menus as Array<TMenu>) && <Table columns={columns} data={(tableData.menus as Array<TMenu>).map(menu => { return { ...menu, creator: menu.creator?.email, modifier: menu.modifier?.email } })} />} */}
                             {/* {<MuiTable columns={columns} rows={rows}/>} */}
-                            {(tableData?.menus as Array<TMenu>)
+                            {/* {(tableData?.menus as Array<TMenu>)
                                 && <MuiTable
                                     columns={columns}
                                     rows={(tableData.menus as Array<TMenu>).map(menu => { return { ...menu, creator: menu.creator?.email, modifier: menu.modifier?.email } })}
                                     limit={menuTableLimit}
-                                />}
+                                />} */}
+                            <MuiTable
+                                columns={columns}
+                                rows={(tableData.menus as Array<TMenu>).map(menu => { return { ...menu, creator: menu.creator?.email, modifier: menu.modifier?.email } })}
+                                limit={menuTableLimit}
+                            />
                         </Box>
                         <Pagination
                             count={tableData?.pages}
