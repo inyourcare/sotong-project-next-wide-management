@@ -143,22 +143,28 @@ export default function Header() {
                     padding: matches ? "0 16px" : "24px",
                 }}
             >
-                <Link href="/">
-                    {/* <Typography className={classes.logo}>Material-UI</Typography> */}
-                    <Typography>Material-UI</Typography>
-                </Link>
-                {session.status === 'authenticated'
-                    &&
-                    <Link
-                        href="/"
-                        type="button"
-                        // variant="contained"
-                        color="primary"
-                        onClick={() => { signOut() }}
-                    // className={`${classes.signIn_Btn} ${classes.width100P}`}
-                    >
-                        {"next auth 로그아웃"}
-                    </Link>}
+                <Grid container justifyContent="flex-start" spacing={4}>
+                    <Grid item key='layout-main-link'>
+                        <Link href="/">
+                            {/* <Typography className={classes.logo}>Material-UI</Typography> */}
+                            <Typography>Material-UI</Typography>
+                        </Link>
+                    </Grid>
+                    <Grid item key='layout-logout'>
+                        {session.status === 'authenticated'
+                            &&
+                            <Link
+                                href="/"
+                                type="button"
+                                // variant="contained"
+                                color="primary"
+                                onClick={() => { signOut() }}
+                            // className={`${classes.signIn_Btn} ${classes.width100P}`}
+                            >
+                                {"next auth 로그아웃"}
+                            </Link>}
+                    </Grid>
+                </Grid>
                 {matches ? drawer : tabs}
             </Toolbar>
         </AppBar>
