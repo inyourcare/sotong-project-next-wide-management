@@ -38,6 +38,7 @@ export function App({ Component, pageProps: { session, ...pageProps } }: AppProp
       window.Kakao.init(process.env.NEXT_PUBLIC_KAKAO_API_KEY);
     };
   }, []);
+  const [layout, setLayout] = useState(true)
   return (
     <QueryClientProvider client={queryClient}>
       <Hydrate state={pageProps.dehydratedState}>
@@ -47,10 +48,19 @@ export function App({ Component, pageProps: { session, ...pageProps } }: AppProp
               <StyledEngineProvider injectFirst>
                 {/* <AppHead /> */}
                 <CssBaseline />
+
+                <button onClick={() => setLayout(!layout)} style={{
+                  color: "red", 
+                  position: 'relative',
+                  // position: 'static',
+                  // top: '10%'
+                  zIndex: '100000'
+                }}>layout</button>
                 <Layout
                   // type your page title and page description.
                   title="Template - Next.js and Material-UI with Header and Footer"
                   description="This is a Template using Next.js and Material-UI with Header and Footer."
+                  enable={layout}
                 >
                   <NextNProgress />
                   <Component {...pageProps} />
