@@ -49,7 +49,7 @@ export function App({ Component, pageProps: { session, ...pageProps } }: AppProp
                 {/* <AppHead /> */}
                 <CssBaseline />
 
-                <button onClick={() => setLayout(!layout)} style={{
+                {/* <button onClick={() => setLayout(!layout)} style={{
                   color: "red", 
                   position: 'absolute',
                   // position: 'static',
@@ -58,16 +58,16 @@ export function App({ Component, pageProps: { session, ...pageProps } }: AppProp
                   // transform: 'translate(-50%,50%)',
                   transform: 'translateX(-50%)',
                   zIndex: '100000'
-                }}>layout</button>
-                <Layout
+                }}>layout</button> */}
+                {/* <Layout
                   // type your page title and page description.
                   title="Template - Next.js and Material-UI with Header and Footer"
                   description="This is a Template using Next.js and Material-UI with Header and Footer."
                   enable={layout}
-                >
+                > */}
                   <NextNProgress />
                   <Component {...pageProps} />
-                </Layout>
+                {/* </Layout> */}
               </StyledEngineProvider>
             </ThemeProvider>
           </Provider>
