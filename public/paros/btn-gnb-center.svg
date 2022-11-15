@@ -1,0 +1,18 @@
+<svg id="btn_gnb_center" xmlns="http://www.w3.org/2000/svg" width="15" height="15">
+    <defs>
+        <style>
+            .cls-3{fill:none;stroke:#404040;stroke-linecap:round}
+        </style>
+    </defs>
+    <path id="사각형_5217" data-name="사각형 5217" style="fill:none" d="M0 0h15v15H0z"/>
+    <g id="그룹_4912" data-name="그룹 4912" transform="translate(-1529.586 -59.906)">
+        <g id="그룹_4911" data-name="그룹 4911" transform="translate(9.903 -73.189)">
+            <g id="합치기_1" data-name="합치기 1" style="fill:none">
+                <path d="m6.3 12.666-1.05-1.948H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h10.367a2 2 0 0 1 2 2v6.718a2 2 0 0 1-2 2h-3.25l-1.054 1.948a1 1 0 0 1-1.759 0z" style="stroke:none" transform="translate(1520 134)"/>
+                <path d="m7.183 12.19 1.338-2.472h3.846a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v6.718a1 1 0 0 0 1 1h3.846l1.337 2.472m0 1a.99.99 0 0 1-.88-.524L5.25 10.718H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h10.367a2 2 0 0 1 2 2v6.718a2 2 0 0 1-2 2h-3.25l-1.054 1.948a.99.99 0 0 1-.88.524z" style="fill:#404040;stroke:none" transform="translate(1520 134)"/>
+            </g>
+            <path id="선_708" data-name="선 708" class="cls-3" transform="translate(1523.727 138.207)" d="M0 0h6.913"/>
+            <path id="선_709" data-name="선 709" class="cls-3" transform="translate(1523.727 140.51)" d="M0 0h6.913"/>
+        </g>
+    </g>
+</svg>

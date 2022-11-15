@@ -1,0 +1,15 @@
+<svg id="btn_gnb_search" xmlns="http://www.w3.org/2000/svg" width="24" height="24">
+    <defs>
+        <style>
+            .cls-1,.cls-2{fill:none}.cls-2{stroke:#bc202b}
+        </style>
+    </defs>
+    <path id="사각형_5218" data-name="사각형 5218" class="cls-1" d="M0 0h24v24H0z"/>
+    <g id="그룹_4923" data-name="그룹 4923" transform="translate(-908.75 -51.25)">
+        <g id="타원_103" data-name="타원 103" class="cls-2" transform="translate(910 53)">
+            <circle cx="9" cy="9" r="9" style="stroke:none"/>
+            <circle class="cls-1" cx="9" cy="9" r="8.5"/>
+        </g>
+        <path id="선_717" data-name="선 717" class="cls-2" transform="translate(925.5 67.5)" d="m0 0 6 6"/>
+    </g>
+</svg>

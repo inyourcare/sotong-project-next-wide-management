@@ -25,6 +25,9 @@
       ],
       "@core/*": [
         "core/*"
+      ],
+      "@styles/*": [
+        "styles/*"
       ]
     },
     "plugins": [

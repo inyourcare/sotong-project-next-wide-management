@@ -8,5 +8,6 @@ export const routes = [
     { name: "SignUp", link: "/auth/signup" },
     { name: "유지보수관리", link: "/boards/maintanance", authorized: [Role.ADMIN,Role.USER]},
     { name: "메뉴관리", link: "/admin/menu", authorized: [Role.ADMIN]},
+    { name: "파로스", link: "/paros/main"},
     // { name: "path name", link: "link url" }, like this
 ];

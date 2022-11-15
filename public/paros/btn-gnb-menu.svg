@@ -1,0 +1,20 @@
+<svg id="btn_gnb_menu" xmlns="http://www.w3.org/2000/svg" width="50" height="50">
+    <defs>
+        <style>
+            .cls-1{fill:#8b0607}.cls-2{fill:none;stroke:#fff;stroke-width:2px}
+        </style>
+    </defs>
+    <g id="그룹_5290" data-name="그룹 5290" transform="translate(13135 12508)">
+        <path id="사각형_1913" data-name="사각형 1913" class="cls-1" transform="translate(-13135 -12508)" d="M0 0h50v50H0z"/>
+        <g id="그룹_5290-2" data-name="그룹 5290" transform="rotate(135 -13330.244 -12856.74)">
+            <path id="선_714" data-name="선 714" class="cls-2" transform="rotate(90 34.25 -13255.25)" d="M0 0h25"/>
+            <path id="선_716" data-name="선 716" class="cls-2" transform="translate(-13233.5 -13277)" d="M0 0h25"/>
+        </g>
+    </g>
+    <path id="사각형_1912" data-name="사각형 1912" class="cls-1" d="M0 0h50v50H0z"/>
+    <g id="그룹_5288" data-name="그룹 5288" transform="translate(-319.5 -190.5)">
+        <path id="선_714-2" data-name="선 714" class="cls-2" transform="translate(334.5 207.5)" d="M0 0h20"/>
+        <path id="선_715" data-name="선 715" class="cls-2" transform="translate(334.5 215.5)" d="M0 0h20"/>
+        <path id="선_716-2" data-name="선 716" class="cls-2" transform="translate(334.5 223.5)" d="M0 0h20"/>
+    </g>
+</svg>

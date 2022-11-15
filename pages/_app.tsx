@@ -51,7 +51,7 @@ export function App({ Component, pageProps: { session, ...pageProps } }: AppProp
 
                 <button onClick={() => setLayout(!layout)} style={{
                   color: "red", 
-                  position: 'relative',
+                  position: 'absolute',
                   // position: 'static',
                   top: '10px',
                   left: '50%',

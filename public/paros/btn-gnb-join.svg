@@ -1,0 +1,14 @@
+<svg id="btn_gnb_join" xmlns="http://www.w3.org/2000/svg" width="15" height="15">
+    <defs>
+        <style>
+            .cls-2{fill:none;stroke:#404040;stroke-linecap:round;stroke-linejoin:round}
+        </style>
+    </defs>
+    <path id="사각형_5215" data-name="사각형 5215" style="fill:none" d="M0 0h15v15H0z"/>
+    <g id="그룹_4909" data-name="그룹 4909" transform="translate(-1322.717 -33.5)">
+        <g id="Icon_feather-edit-3" data-name="Icon feather-edit-3" transform="translate(1319.934 31.182)">
+            <path id="패스_159" data-name="패스 159" class="cls-2" d="M18 30h5.783" transform="translate(-7.717 -14.68)"/>
+            <path id="패스_160" data-name="패스 160" class="cls-2" d="M13.175 4.717A1.363 1.363 0 0 1 15.1 6.645l-8.03 8.032-2.57.643.643-2.57z"/>
+        </g>
+    </g>
+</svg>

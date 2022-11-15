@@ -1,0 +1,14 @@
+<svg id="btn_gnb_trip" xmlns="http://www.w3.org/2000/svg" width="15" height="15">
+    <defs>
+        <style>
+            .cls-2{fill:none;stroke:#404040;stroke-linecap:round;stroke-linejoin:round}
+        </style>
+    </defs>
+    <path id="사각형_5216" data-name="사각형 5216" style="fill:none" d="M0 0h15v15H0z"/>
+    <g id="그룹_4910" data-name="그룹 4910" transform="translate(-1405.23 -34.5)">
+        <g id="Icon_feather-check-circle" data-name="Icon feather-check-circle" transform="translate(1403.461 32.74)">
+            <path id="패스_161" data-name="패스 161" class="cls-2" d="M15.539 9.264a6.27 6.27 0 1 1-3.718-5.73"/>
+            <path id="패스_162" data-name="패스 162" class="cls-2" d="m21.651 6-6.27 6.276L13.5 10.4" transform="translate(-6.111 -1.752)"/>
+        </g>
+    </g>
+</svg>

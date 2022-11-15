@@ -1,0 +1,12 @@
+<svg id="picto_bar_hear" xmlns="http://www.w3.org/2000/svg" width="25" height="15">
+    <defs>
+        <style>
+            .cls-2{fill:none;stroke:#404040;stroke-width:2px}
+        </style>
+    </defs>
+    <path id="사각형_5346" data-name="사각형 5346" style="fill:none" d="M0 0h25v15H0z"/>
+    <g id="그룹_9143" data-name="그룹 9143" transform="translate(-1195.726 -651.5)">
+        <path id="패스_3321" data-name="패스 3321" class="cls-2" d="M0 0h7.469v7.469" transform="rotate(45 -188.105 1777.812)"/>
+        <path id="패스_3322" data-name="패스 3322" class="cls-2" d="M0 0h7.469v7.469" transform="rotate(45 -183.092 1789.913)"/>
+    </g>
+</svg>

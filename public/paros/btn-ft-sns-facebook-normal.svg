@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48">
+    <g data-name="타원 14" style="fill:#fff;stroke:#e4e4e4">
+        <circle cx="24" cy="24" r="24" style="stroke:none"/>
+        <circle cx="24" cy="24" r="23.5" style="fill:none"/>
+    </g>
+    <path data-name="Icon zocial-facebook" d="M13.257 11.7V7.542h3.357V5.449a5.477 5.477 0 0 1 1.47-3.858A4.678 4.678 0 0 1 21.648 0h3.335v4.163h-3.335a.734.734 0 0 0-.588.36 1.46 1.46 0 0 0-.262.883v2.135h4.184V11.7H20.8v10.094h-4.187V11.7z" transform="translate(4.879 14.102)" style="fill:#333"/>
+</svg>
