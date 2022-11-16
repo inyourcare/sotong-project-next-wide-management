@@ -20,7 +20,7 @@ import ParosBtnGnbCenter from 'public/paros/btn-gnb-center.svg';
 import ParosBtnGnbMenu from 'public/paros/btn-gnb-menu.svg';
 import ParosBtnGnbDrop from 'public/paros/btn-gnb-drop.svg';
 import { SearchBar } from '@components/common/SearchBar';
-import React from 'react';
+import React, { useState } from 'react';
 import { BiListCheck, BiSearchAlt2 } from "react-icons/bi";
 import Image from 'next/image'
 // const sections = [
@@ -172,6 +172,14 @@ export const useStyles = makeStyles((theme) => ({
     },
     justifyCenter: {
         justifyContent: "center",
+    },
+    innerListBox: {
+        position: 'absolute',
+        width: '100%',
+        // padding: '0 -15%',
+        transform: 'translateX(-15%)',
+        height: '40px',
+        backgroundColor: '#232323'
     }
 }))
 
@@ -187,6 +195,7 @@ const Paros: React.FC<Props> = (props) => {
     const classes = useStyles();
     const initialSearchVal = ''
     const [search, setSearch] = React.useState(initialSearchVal)
+    const [innerListVisible, setInnerListVisible] = useState(false)
     return (
         <>
             <ThemeProvider theme={theme}>
@@ -230,7 +239,7 @@ const Paros: React.FC<Props> = (props) => {
                                     />
                                 </Box>
                             </Grid>
-                            <Grid item height='50px' xs={0.5} display={{ xs: "block", xl: "none" }}>
+                            <Grid item height='50px' xs={0.5} display={{ xs: "none", sm:'block', xl: "none" }}>
                                 <ParosBtnGnbMenu with="50px" height='50px' object-fit='contain' />
                             </Grid>
                             {/* buttons */}
@@ -303,7 +312,7 @@ const Paros: React.FC<Props> = (props) => {
                                     }}
                                 >
                                     <Item style={{ minWidth: '120px' }}>
-                                        <span style={{ minWidth: '80px', textAlign: 'center', }}>
+                                        <span style={{ minWidth: '80px', textAlign: 'center', }} onClick={() => setInnerListVisible(!innerListVisible)}>
                                             지역별여행
                                             <ParosBtnGnbDrop width='10px' height='10px' />
                                         </span>
@@ -350,21 +359,67 @@ const Paros: React.FC<Props> = (props) => {
                                 />
                             </Grid>
                         </Grid>
+                        {/* inner list */}
+                        <Box
+                            className={`${classes.paddingCommon} ${classes.innerListBox}`}
+                            // className={`${classes.innerListBox}`}
+                            display={innerListVisible === true ? 'block' : 'none'}
+                        >
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    justifyContent: 'left',
+                                    alignItems: "center",
+                                    minWidth: '380px',
+                                    height: '40px',
+
+                                    fontFamily: ' NotoSansCJKKR',
+                                    fontSize: '12px',
+                                    fontWeight: 'normal',
+                                    fontStretch: 'normal',
+                                    fontStyle: 'normal',
+                                    lineHeight: 'normal',
+                                    letterSpacing: ' -0.48px',
+                                    // textAlign: 'center',
+                                    color: '#888',
+                                }}
+                            >
+                                <Item style={{ minWidth: '120px' }}>
+                                    <span style={{ minWidth: '80px', textAlign: 'center', }}>캐나다서부</span>
+                                </Item>
+                                <Item style={{ minWidth: '120px' }}>
+                                    <span style={{ minWidth: '80px', textAlign: 'center', }}>토론토·나이아가라</span>
+                                </Item>
+                                <Item style={{ minWidth: '120px' }}>
+                                    <span style={{ minWidth: '80px', textAlign: 'center', }}>캐나다극지방</span>
+                                </Item>
+                                <Item style={{ minWidth: '120px' }}>
+                                    <span style={{ minWidth: '80px', textAlign: 'center', }}>대서양지역</span>
+                                </Item>
+                            </Box>
+                        </Box>
                     </Box>
                     {/* banners */}
-                    <Box></Box>
+                    <Box>
+                        <Box>main banner</Box>
+                    </Box>
                     {/* recommendations */}
-                    <Box></Box>
+                    <Box>recommendations</Box>
                     {/* canada train trip */}
-                    <Box></Box>
+                    <Box>canada train trip</Box>
                     {/* theme traveling */}
-                    <Box></Box>
+                    <Box>them traveling</Box>
                     {/* bottom banner */}
-                    <Box></Box>
+                    <Box>bottom banner</Box>
                     {/* bottom banners */}
-                    <Box></Box>
+                    <Box>bottom banners</Box>
                     {/* footer */}
-                    <Box></Box>
+                    <Box>
+                        <Footer
+                            title="Sotong Five"
+                            description="Something here to give the footer a purpose!"
+                        />
+                    </Box>
                 </Container>
                 {/* <CssBaseline /> */}
                 {/* <Container maxWidth="xl"> */}
