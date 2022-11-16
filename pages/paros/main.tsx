@@ -8,7 +8,7 @@ import { getCsrfToken } from 'next-auth/react';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import styles from '@styles/Paros.module.css'
 import { makeStyles, ThemeProvider, useTheme } from '@mui/styles';
-import { Box, Container, CssBaseline, Grid, Typography } from '@mui/material';
+import { Box, BoxProps, Container, CssBaseline, Grid, Typography } from '@mui/material';
 import Header from './Header';
 import { createTheme } from '@mui/system';
 import Footer from './Footer';
@@ -17,9 +17,12 @@ import ParosBtnGnbLogin from 'public/paros/btn-gnb-login.svg';
 import ParosBtnGnbJoin from 'public/paros/btn-gnb-join.svg';
 import ParosBtnGnbTrip from 'public/paros/btn-gnb-trip.svg';
 import ParosBtnGnbCenter from 'public/paros/btn-gnb-center.svg';
+import ParosBtnGnbMenu from 'public/paros/btn-gnb-menu.svg';
+import ParosBtnGnbDrop from 'public/paros/btn-gnb-drop.svg';
 import { SearchBar } from '@components/common/SearchBar';
 import React from 'react';
 import { BiListCheck, BiSearchAlt2 } from "react-icons/bi";
+import Image from 'next/image'
 // const sections = [
 //     { title: 'Technology', url: '#' },
 //     { title: 'Design', url: '#' },
@@ -39,8 +42,33 @@ import { BiListCheck, BiSearchAlt2 } from "react-icons/bi";
 //         paddingRight: string
 //     }
 // }
-const sidePadding = '15%'
-export const useStyles = makeStyles(() => ({
+function Item(props: BoxProps) {
+    const { sx, ...other } = props;
+    return (
+        <Box
+            sx={{
+                p: 0,
+                m: 0,
+                // bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#101010' : 'grey.100'),
+                // color: (theme) => (theme.palette.mode === 'dark' ? 'grey.300' : 'grey.800'),
+                // border: '1px solid',
+                // borderColor: (theme) =>
+                //     theme.palette.mode === 'dark' ? 'grey.800' : 'grey.300',
+                // borderRadius: 2,
+                // fontSize: '0.875rem',
+                // fontWeight: '700',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: "center",
+                // margin: '0',
+                // padding: '0',
+                ...sx,
+            }}
+            {...other}
+        />
+    );
+}
+export const useStyles = makeStyles((theme) => ({
     // common
     paddingCommon: {
         padding: '0 15%'
@@ -91,7 +119,7 @@ export const useStyles = makeStyles(() => ({
         justifyContent: "center",
         alignItems: "center",
         // flexDirection: "column",
-        height: '80px'
+        minHeight: '80px'
     },
     gridItem: {
         display: "flex",
@@ -99,6 +127,7 @@ export const useStyles = makeStyles(() => ({
         alignItems: "center",
     },
     gridSearchBar: {
+        // display: { xs: 'block', md:'none' },
         '& div': {
             display: "flex",
             justifyContent: "center",
@@ -137,6 +166,12 @@ export const useStyles = makeStyles(() => ({
             // margin: '0 0 0 22px',
             objectFit: 'contain'
         }
+    },
+    borderBottom: {
+        borderBottom: '1px solid #e4e4e4'
+    },
+    justifyCenter: {
+        justifyContent: "center",
     }
 }))
 
@@ -164,52 +199,157 @@ const Paros: React.FC<Props> = (props) => {
                         </Box>
                     </Box>
                     {/* top nav */}
-                    <Box className={`${classes.paddingCommon}`}>
+                    <Box className={`${classes.paddingCommon} ${classes.borderBottom}`}>
                         <Grid container className={`${classes.gridContainer}`}>
                             {/* logo */}
-                            <Grid className={`${classes.gridItem}`} item xl={3} lg={3} md={5} sm={5}>
+                            <Grid className={`${classes.gridItem}`} item xl={3} lg={4.5} md={4.5} sm={4.5}>
                                 <ParosLogoGnb width="200px" height="40px" />
                             </Grid>
                             {/* search */}
-                            <Grid className={`${classes.gridItem} ${classes.gridSearchBar}`} item xl={5} lg={5} md={7} sm={7}>
-                                <SearchBar
-                                    onChange={(e) => { setSearch(e.target.value) }}
-                                    // onClick={() => {
-                                    //     // routePush(1, email)
-                                    //     alert(search)
-                                    //     setSearch(initialSearchVal)
-                                    // }}
-                                    onSubmit={(e) => {
-                                        // routePush(1, email)
-                                        e.preventDefault()
-                                        alert(search)
-                                        setSearch(initialSearchVal)
-                                    }}
-                                    placeHolder=''
-                                    searchImg='ParosBtnGnbSearch'
-                                />
+                            <Grid className={`${classes.gridItem}`}
+                                item xl={5} lg={7} md={7} sm={7}
+                            >
+                                <Box
+                                    className={`${classes.gridSearchBar}`}
+                                    display={{ xs: "none", lg: "block" }}>
+                                    <SearchBar
+                                        onChange={(e) => { setSearch(e.target.value) }}
+                                        // onClick={() => {
+                                        //     // routePush(1, email)
+                                        //     alert(search)
+                                        //     setSearch(initialSearchVal)
+                                        // }}
+                                        onSubmit={(e) => {
+                                            // routePush(1, email)
+                                            e.preventDefault()
+                                            alert(search)
+                                            setSearch(initialSearchVal)
+                                        }}
+                                        placeHolder=''
+                                        searchImg='ParosBtnGnbSearch'
+                                    />
+                                </Box>
+                            </Grid>
+                            <Grid item height='50px' xs={0.5} display={{ xs: "block", xl: "none" }}>
+                                <ParosBtnGnbMenu with="50px" height='50px' object-fit='contain' />
                             </Grid>
                             {/* buttons */}
-                            <Grid className={`${classes.gridItem}`} item xl={4} lg={4}>
-                                <ParosBtnGnbLogin with="15px" />
-                                <span style={{ minWidth: '80px' }}>로그인</span>
-                                <span>|</span>
-                                <ParosBtnGnbJoin with="15px" />
-                                <span style={{ minWidth: '80px' }}>회원가입</span>
-                                <span>|</span>
-                                <ParosBtnGnbTrip with="15px" />
-                                <span style={{ minWidth: '80px' }}>맞춤여행</span>
-                                <span>|</span>
-                                <ParosBtnGnbCenter with="15px" />
-                                <span style={{ minWidth: '80px' }}>고객센터</span>
+                            <Grid className={`${classes.gridItem} ${classes.justifyCenter}`} item xl={4} xs={12}>
+                                <Box
+                                    sx={{
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        p: 1,
+                                        m: 1,
+                                        // bgcolor: 'background.paper',
+                                        // borderRadius: 1,
+                                        minWidth: '380px'
+                                    }}
+                                >
+                                    <Item style={{ minWidth: '120px' }}>
+                                        <ParosBtnGnbLogin with="15px" />
+                                        <span style={{ minWidth: '80px', textAlign: 'center', }}>로그인</span>
+                                    </Item>
+                                    <Item>
+                                        <span>|</span>
+                                    </Item>
+                                    <Item style={{ minWidth: '120px' }}>
+                                        <ParosBtnGnbJoin with="15px" />
+                                        <span style={{ minWidth: '80px', textAlign: 'center', }}>회원가입</span>
+                                    </Item>
+                                    <Item>
+                                        <span>|</span>
+                                    </Item>
+                                    <Item style={{ minWidth: '120px' }}>
+                                        <ParosBtnGnbTrip with="15px" />
+                                        <span style={{ minWidth: '80px', textAlign: 'center', }}>맞춤여행</span>
+                                    </Item>
+                                    <Item>
+                                        <span>|</span>
+                                    </Item>
+                                    <Item style={{ minWidth: '120px' }}>
+                                        <ParosBtnGnbCenter with="15px" />
+                                        <span style={{ minWidth: '80px', textAlign: 'center', }}>고객센터</span>
+                                    </Item>
+                                </Box>
                             </Grid>
                         </Grid>
                     </Box>
                     {/* sub nav */}
-                    <Box>
-                        <Grid></Grid>
-                        <Grid></Grid>
-                        <Grid></Grid>
+                    <Box className={`${classes.paddingCommon}`} display={{ xs: "none", xl: "block" }}>
+                        <Grid container>
+                            {/* <Grid item height='50px' xs={0.5} display={{ xs: "none", xl: "block" }}> */}
+                            <Grid item height='50px' xs={0.5}>
+                                <ParosBtnGnbMenu with="50px" height='50px' object-fit='contain' />
+                            </Grid>
+                            <Grid item xs={9.5} height='50px'
+                                sx={{
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: "center",
+                                }}>
+                                <Box
+                                    sx={{
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        alignItems: "center",
+                                        // p: 0.5,
+                                        // m: 0.5,
+                                        // bgcolor: 'background.paper',
+                                        // borderRadius: 1,
+                                        minWidth: '380px',
+                                        // margin: '0',
+                                        // padding: '0',
+                                    }}
+                                >
+                                    <Item style={{ minWidth: '120px' }}>
+                                        <span style={{ minWidth: '80px', textAlign: 'center', }}>
+                                            지역별여행
+                                            <ParosBtnGnbDrop width='10px' height='10px' />
+                                        </span>
+                                    </Item>
+                                    <Item style={{ minWidth: '120px' }}>
+                                        <span style={{ minWidth: '80px', textAlign: 'center', }}>
+                                            테마여행
+                                            <ParosBtnGnbDrop width='10px' height='10px' />
+                                        </span>
+                                    </Item>
+                                    <Item style={{ minWidth: '120px' }}>
+                                        <span style={{ minWidth: '80px', textAlign: 'center', }}>
+                                            기차여행
+                                            <ParosBtnGnbDrop width='10px' height='10px' />
+                                        </span>
+                                    </Item>
+                                    <Item style={{ minWidth: '120px' }}>
+                                        <span style={{ minWidth: '80px', textAlign: 'center', }}>맞춤여행컨설팅</span>
+                                    </Item>
+                                    <Item style={{ minWidth: '120px' }}>
+                                        <span style={{ minWidth: '80px', textAlign: 'center', }}>현지투어·패스</span>
+                                    </Item>
+                                    <Item style={{ minWidth: '120px' }}>
+                                        <span style={{ minWidth: '80px', textAlign: 'center', }}>추천호텔</span>
+                                    </Item>
+                                    <Item style={{ minWidth: '120px' }}>
+                                        <span style={{ minWidth: '80px', textAlign: 'center', }}>기획전·프로모션</span>
+                                    </Item>
+                                    <Item style={{ minWidth: '120px' }}>
+                                        <span style={{ minWidth: '80px', textAlign: 'center', }}>
+                                            여헹정보
+                                            <ParosBtnGnbDrop width='10px' height='10px' />
+                                        </span>
+                                    </Item>
+                                </Box>
+                            </Grid>
+                            {/* <Grid item height='50px' xs={2} display={{ xs: "none", xl: "block" }}> */}
+                            <Grid item height='50px' xs={2}>
+                                <img src="/paros/img-gnb-banner.png"
+                                    srcSet="/paros/img-gnb-banner@2x.png 2x,/paros/img-gnb-banner@3x.png 3x"
+                                    width={'220px'}
+                                    height='50px'
+                                    object-fit='contain'
+                                />
+                            </Grid>
+                        </Grid>
                     </Box>
                     {/* banners */}
                     <Box></Box>
