@@ -126,10 +126,12 @@ export const useStyles = makeStyles((theme) => ({
 export interface CarouselProps {
     children?: ReactNode,
     // containerUniqueId: string
+    sideControl?: boolean,
+    dotControl?: boolean,
 }
 export const Carousel = (props: CarouselProps) => {
     // const { children, containerUniqueId } = props;
-    const { children } = props;
+    const { children, sideControl = false, dotControl = false } = props;
     // const [items, setItems] = useState(children)
     const classes = useStyles();
     // const containerUniqueId = `carousel_container_${(Math.random() + 1).toString(36).substring(7)}`
@@ -145,6 +147,7 @@ export const Carousel = (props: CarouselProps) => {
         //짝수개 이미지인 경우
         initialTransX: 0
     })
+    // const [sideControl, dotControl] = [false, false]
 
     // page initialize (이미지 개수가 짝수일 경우 initialTransX 와 화면 변경)
     // 6개 알경우 3번째 이미지가 메인
@@ -213,29 +216,29 @@ export const Carousel = (props: CarouselProps) => {
         <div style={{ position: 'relative' }}>
             <div>
                 <ul className={`${classes.controlDots}`}>
-                    {
+                    {dotControl &&
                         // Array.isArray(children) ?
                         //     children.map((child, index) => {
                         Array.isArray(children) ?
-                            children.map((child, index) => {
-                                // return (<li key={index} className={`${classes.controlDot}`}></li>)
-                                return (
-                                    <li
-                                        key={index}
-                                        className={
-                                            `${classes.controlDot} 
+                        children.map((child, index) => {
+                            // return (<li key={index} className={`${classes.controlDot}`}></li>)
+                            return (
+                                <li
+                                    key={index}
+                                    className={
+                                        `${classes.controlDot} 
                                             ${children.length % 2 === 0 ?
-                                                (children.length - 1 - index) === state.carouselIdx + Math.floor(children.length / 2) - 1 ? 'selected' : ''
-                                                : (children.length - 1 - index) === state.carouselIdx + Math.floor(children.length / 2) ? 'selected' : ''
-                                            }`
-                                        }
-                                        onClick={() => { transferSlider(children.length, (children.length - 1 - index) - Math.floor(children.length / 2)) }}
-                                    ></li>
-                                )
-                                // return (<li key={index} className={`${classes.item}`}>{child}</li>)
-                            })
-                            :
-                            (<>empty</>)
+                                            (children.length - 1 - index) === state.carouselIdx + Math.floor(children.length / 2) - 1 ? 'selected' : ''
+                                            : (children.length - 1 - index) === state.carouselIdx + Math.floor(children.length / 2) ? 'selected' : ''
+                                        }`
+                                    }
+                                    onClick={() => { transferSlider(children.length, (children.length - 1 - index) - Math.floor(children.length / 2)) }}
+                                ></li>
+                            )
+                            // return (<li key={index} className={`${classes.item}`}>{child}</li>)
+                        })
+                        :
+                        (<>empty</>)
                     }
                 </ul>
             </div>
@@ -256,11 +259,11 @@ export const Carousel = (props: CarouselProps) => {
                     }
                 </ul>
             </div>
-            <div className={`${classes.controls}`}>
+            {sideControl && <div className={`${classes.controls}`}>
                 <button className="prev" ref={prevRef} onClick={prevCallback}>{'<'}</button>
                 {/* <div className={`${classes.progressBar}`}></div> */}
                 <button className="next" ref={nextRef} onClick={nextCallback}>{'>'}</button>
-            </div>
+            </div>}
         </div>
     </>)
 }

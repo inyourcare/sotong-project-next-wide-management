@@ -406,6 +406,7 @@ const Paros: React.FC<Props> = (props) => {
                     {/* banners */}
                     <Box>
                         {/* <Box>main banner</Box> */}
+                        {/* <Carousel sideControl dotControl> */}
                         <Carousel>
                             {/* <Carousel containerUniqueId={containerUniqueId}> */}
                             <img src="/paros/test1.png"
@@ -439,9 +440,6 @@ const Paros: React.FC<Props> = (props) => {
                                 object-fit='contain'
                             /> */}
                         </Carousel>
-                    </Box>
-                    <Box>
-                        <TestRRCarousel/>
                     </Box>
                     {/* recommendations */}
                     <Box>recommendations</Box>
