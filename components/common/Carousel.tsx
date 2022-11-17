@@ -30,23 +30,59 @@ export const useStyles = makeStyles((theme) => ({
         }
     },
     controls: {
-        marginTop: '20px',
-        flext: '1 1 100%',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
+        position: 'absolute',
+        // zIndex: '1',
+        top: '0',
+        // marginTop: '20px',
+        // flex: '1 1 100%',
+        width: '100%',
+        height: '100%',
+        display: 'inline-block',
+        // justifyContent: 'center',
+        // alignItems: 'center',
 
-        '& button': {
+        // '& button': {
+        //     border: 'none',
+        //     borderRadius: '25px',
+        //     background: 'hsla(0,90%,65%,1)',
+        //     padding: '12px 15px',
+        //     color: 'white',
+        //     fontSize: '18px',
+        //     fontWeight: 'bold',
+        //     lineHeight: '18px',
+        //     '-webkit-appearance': 'none',
+        //     cursor: 'pointer',
+        // },
+        '& .prev': {
+            float: 'left',
+            color: '#fff',
+            height: '100%',
+            opecity: '.4',
+            transition: 'all .25s ease-in',
+            background: 'none',
             border: 'none',
-            borderRadius: '25px',
-            background: 'hsla(0,90%,65%,1)',
-            padding: '12px 15px',
-            color: 'white',
-            fontSize: '18px',
-            fontWeight: 'bold',
-            lineHeight: '18px',
-            '-webkit-appearance': 'none',
             cursor: 'pointer',
+        },
+        '& .next': {
+            float: 'right',
+            // top: "0",
+            color: '#fff',
+            // fontSize: '26px',
+            // bottom: '0',
+            // marginTop: '0',
+            // padding: '5px',
+            height: '100%',
+            opecity: '.4',
+            transition: 'all .25s ease-in',
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+        },
+        '& .prev:hover': {
+            backgroundColor: '#fafafa',
+        },
+        '& .next:hover': {
+            backgroundColor: '#fafafa',
         }
     },
     progressBar: {
@@ -57,6 +93,31 @@ export const useStyles = makeStyles((theme) => ({
         bckground: 'hsla(0,90%,65%,1)',
         transform: 'scaleX(0)',
         transformOrigin: '0% 50%',
+    },
+    controlDots: {
+        position: 'absolute',
+        textAlign: 'center',
+        width: '100%',
+        listStyle: 'none',
+        margin: '10px 0',
+        zIndex: '1',
+        bottom: '0',
+    },
+    controlDot: {
+        transition: 'opacity .25s ease-in',
+        opacity: '.3',
+        filter: 'alpha(opacity=30)',
+        boxShadow: '1px 1px 2px rgb(0 0 0 / 90%)',
+        background: '#fff',
+        borderRadius: '50%',
+        width: '8px',
+        height: '8px',
+        cursor: 'pointer',
+        display: 'inline-block',
+        margin: '0 8px',
+        '&:hover': {
+            opacity: '1'
+        }
     }
 }))
 export interface CarouselProps {
@@ -86,21 +147,22 @@ export const Carousel = (props: CarouselProps) => {
         return right - left;
     }
 
-    const transferSlider = (len: number, nextIdx: number, slider: Element) => {
+    const transferSlider = useCallback((len: number, nextIdx: number) => {
         const transRatio = 100 / len
         const finalTransferX = transRatio * (nextIdx)
-        // const slider = containerRef.current?.querySelector(`.${sliderClassName}`)
+        const slider = containerRef.current?.querySelector(`.${sliderClassName}`)
         slider?.setAttribute('style', `transform: translate3d(${finalTransferX}%, 0px, 0px); transition-duration: 350ms;`)
         setState({ ...state, carouselIdx: nextIdx })
-    }
+    },[state, items, children])
 
     const prevCallback = useCallback(() => {
         if (Array.isArray(children)) {
             const len = children.length
             const nextIdx = Math.min(state.carouselIdx + 1, Math.floor(len / 2))
-            const slider = containerRef.current?.querySelector(`.${sliderClassName}`)
-            if (slider)
-                transferSlider(len, nextIdx, slider)
+            // const slider = containerRef.current?.querySelector(`.${sliderClassName}`)
+            // if (slider)
+                // transferSlider(len, nextIdx, slider)
+                transferSlider(len, nextIdx)
         }
         // setItems([items[1], items[2], items[3], items[4], items[0]])
         // const filtered = items.filter((item, idx) => { if (idx !== items.length - 1) return true })
@@ -113,9 +175,10 @@ export const Carousel = (props: CarouselProps) => {
             const len = children.length
             // const nextIdx = state.carouselIdx - 1
             const nextIdx = Math.max(state.carouselIdx - 1, -Math.floor(len / 2))
-            const slider = containerRef.current?.querySelector(`.${sliderClassName}`)
-            if (slider)
-                transferSlider(len, nextIdx, slider)
+            // const slider = containerRef.current?.querySelector(`.${sliderClassName}`)
+            // if (slider)
+                // transferSlider(len, nextIdx, slider)
+                transferSlider(len, nextIdx)
         }
         // if (Array.isArray(items)) {
         // const filtered = items.filter((item, idx) => { if (idx !== 0) return true })
@@ -126,27 +189,51 @@ export const Carousel = (props: CarouselProps) => {
     return (<>
 
         {/* <div className={`${containerUniqueKey} ${classes.container}`}> */}
-        <div className={`${classes.container}`} ref={containerRef}>
-            <ul className={`${sliderClassName} ${classes.slider}`}>
-                {/* <ul className={`${classes.slider}`}> */}
-                {
-                    // Array.isArray(children) ?
-                    //     children.map((child, index) => {
-                    Array.isArray(items) ?
-                        items.map((child, index) => {
-                            return (<li key={index} className={`${itemClassName} ${classes.item}`}>{child}</li>)
-                            // return (<li key={index} className={`${classes.item}`}>{child}</li>)
-                        })
-                        :
-                        (<>empty</>)
+        <div style={{ position: 'relative' }}>
+            <div>
+                <ul className={`${classes.controlDots}`}>
+                    {
+                        // Array.isArray(children) ?
+                        //     children.map((child, index) => {
+                        Array.isArray(items) ?
+                            items.map((child, index) => {
+                                // return (<li key={index} className={`${classes.controlDot}`}></li>)
+                                return (
+                                    <li
+                                        key={index}
+                                        className={`${classes.controlDot}`}
+                                        onClick={()=>{transferSlider(items.length,(items.length - 1 - index)-Math.floor(items.length/2))}}
+                                    ></li>
+                                )
+                                // return (<li key={index} className={`${classes.item}`}>{child}</li>)
+                            })
+                            :
+                            (<>empty</>)
+                    }
+                </ul>
+            </div>
+            <div className={`${classes.container}`} ref={containerRef}>
+                <ul className={`${sliderClassName} ${classes.slider}`}>
+                    {/* <ul className={`${classes.slider}`}> */}
+                    {
+                        // Array.isArray(children) ?
+                        //     children.map((child, index) => {
+                        Array.isArray(items) ?
+                            items.map((child, index) => {
+                                return (<li key={index} className={`${itemClassName} ${classes.item}`}>{child}</li>)
+                                // return (<li key={index} className={`${classes.item}`}>{child}</li>)
+                            })
+                            :
+                            (<>empty</>)
 
-                }
-            </ul>
-        </div>
-        <div className={`${classes.controls}`}>
-            <button className="prev" ref={prevRef} onClick={prevCallback}>Prev</button>
-            <div className={`${classes.progressBar}`}></div>
-            <button className="next" ref={nextRef} onClick={nextCallback}>Next</button>
+                    }
+                </ul>
+            </div>
+            <div className={`${classes.controls}`}>
+                <button className="prev" ref={prevRef} onClick={prevCallback}>{'<'}</button>
+                {/* <div className={`${classes.progressBar}`}></div> */}
+                <button className="next" ref={nextRef} onClick={nextCallback}>{'>'}</button>
+            </div>
         </div>
     </>)
 }
