@@ -171,8 +171,8 @@ export const Carousel = (props: CarouselProps) => {
         // const items = slider?.querySelectorAll(`.${itemClassName}`)
         // console.log(items)
         // if (items) {
-            // console.log('hi',items[0].classList,items[0].classList.add('selected'))
-            // items[0].classList.add('selected')
+        // console.log('hi',items[0].classList,items[0].classList.add('selected'))
+        // items[0].classList.add('selected')
         // }
     }, [state, children])
 
@@ -222,7 +222,13 @@ export const Carousel = (props: CarouselProps) => {
                                 return (
                                     <li
                                         key={index}
-                                        className={`${classes.controlDot}`}
+                                        className={
+                                            `${classes.controlDot} 
+                                            ${children.length % 2 === 0 ?
+                                                (children.length - 1 - index) === state.carouselIdx + Math.floor(children.length / 2) - 1 ? 'selected' : ''
+                                                : (children.length - 1 - index) === state.carouselIdx + Math.floor(children.length / 2) ? 'selected' : ''
+                                            }`
+                                        }
                                         onClick={() => { transferSlider(children.length, (children.length - 1 - index) - Math.floor(children.length / 2)) }}
                                     ></li>
                                 )
