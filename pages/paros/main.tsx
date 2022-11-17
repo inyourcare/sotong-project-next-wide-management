@@ -23,6 +23,7 @@ import { SearchBar } from '@components/common/SearchBar';
 import React, { useState } from 'react';
 import { BiListCheck, BiSearchAlt2 } from "react-icons/bi";
 import Image from 'next/image'
+import Carousel from '@components/common/Carousel';
 // const sections = [
 //     { title: 'Technology', url: '#' },
 //     { title: 'Design', url: '#' },
@@ -191,6 +192,7 @@ const Paros: React.FC<Props> = (props) => {
     //         paddingRight: '15%'
     //     }
     // }
+    // const { containerUniqueId } = props
     const theme = useTheme()
     const classes = useStyles();
     const initialSearchVal = ''
@@ -239,7 +241,7 @@ const Paros: React.FC<Props> = (props) => {
                                     />
                                 </Box>
                             </Grid>
-                            <Grid item height='50px' xs={0.5} display={{ xs: "none", sm:'block', xl: "none" }}>
+                            <Grid item height='50px' xs={0.5} display={{ xs: "none", sm: 'block', xl: "none" }}>
                                 <ParosBtnGnbMenu with="50px" height='50px' object-fit='contain' />
                             </Grid>
                             {/* buttons */}
@@ -401,7 +403,35 @@ const Paros: React.FC<Props> = (props) => {
                     </Box>
                     {/* banners */}
                     <Box>
-                        <Box>main banner</Box>
+                        {/* <Box>main banner</Box> */}
+                        <Carousel>
+                        {/* <Carousel containerUniqueId={containerUniqueId}> */}
+                            <img src="/paros/test1.png"
+                                width={'1060px'}
+                                height='500px'
+                                object-fit='contain'
+                            />
+                            <img src="/paros/test2.jpg"
+                                width={'1060px'}
+                                height='500px'
+                                object-fit='contain'
+                            />
+                            <img src="/paros/test3.jpg"
+                                width={'1060px'}
+                                height='500px'
+                                object-fit='contain'
+                            />
+                            <img src="/paros/test4.jpg"
+                                width={'1060px'}
+                                height='500px'
+                                object-fit='contain'
+                            />
+                            <img src="/paros/test5.jpeg"
+                                width={'1060px'}
+                                height='500px'
+                                object-fit='contain'
+                            />
+                        </Carousel>
                     </Box>
                     {/* recommendations */}
                     <Box>recommendations</Box>
@@ -455,7 +485,9 @@ export const getServerSideProps: GetServerSideProps<any> = async (context) => {
     }
     return {
         props: {
-            data: { csrfToken: await getCsrfToken(context), },
+            data: { csrfToken: await getCsrfToken(context), 
+                // containerUniqueId: `carousel_container_${(Math.random() + 1).toString(36).substring(7)}` 
+            },
             ...(await serverSideTranslations(locale as string))
         },
     };
