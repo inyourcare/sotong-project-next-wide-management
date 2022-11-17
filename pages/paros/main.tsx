@@ -433,11 +433,11 @@ const Paros: React.FC<Props> = (props) => {
                                 height='500px'
                                 object-fit='contain'
                             />
-                            <img src="/paros/test5.jpeg"
+                            {/* <img src="/paros/test5.jpeg"
                                 width={'1060px'}
                                 height='500px'
                                 object-fit='contain'
-                            />
+                            /> */}
                         </Carousel>
                     </Box>
                     <Box>

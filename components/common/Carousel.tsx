@@ -13,7 +13,7 @@ export const useStyles = makeStyles((theme) => ({
     },
     slider: {
         display: 'flex',
-        flex: '1 1 500px',
+        // flex: '1 1 500px',
         listStyle: 'none',
         padding: '0',
         margin: '0 10px',
@@ -117,6 +117,9 @@ export const useStyles = makeStyles((theme) => ({
         margin: '0 8px',
         '&:hover': {
             opacity: '1'
+        },
+        '&.selected': {
+            opacity: '1'
         }
     }
 }))
@@ -127,7 +130,7 @@ export interface CarouselProps {
 export const Carousel = (props: CarouselProps) => {
     // const { children, containerUniqueId } = props;
     const { children } = props;
-    const [items, setItems] = useState(children)
+    // const [items, setItems] = useState(children)
     const classes = useStyles();
     // const containerUniqueId = `carousel_container_${(Math.random() + 1).toString(36).substring(7)}`
     const sliderClassName = 'slider'
@@ -138,38 +141,56 @@ export const Carousel = (props: CarouselProps) => {
     const [state, setState] = useState({
         // maxXOffset: 0,
         // minXOffset: 0,
-        carouselIdx: 0
+        carouselIdx: 0,
+        //짝수개 이미지인 경우
+        initialTransX: 0
     })
 
-    function getTotalItemsWidth(items: NodeListOf<Element>) {
-        const { left } = items[0].getBoundingClientRect();
-        const { right } = items[items.length - 1].getBoundingClientRect();
-        return right - left;
-    }
+    // page initialize (이미지 개수가 짝수일 경우 initialTransX 와 화면 변경)
+    // 6개 알경우 3번째 이미지가 메인
+    useEffect(() => {
+        if (Array.isArray(children)) {
+            const len = children.length
+            if (children.length % 2 === 0) {
+                const transRatio = 100 / len
+                setState({ ...state, initialTransX: transRatio / 2 })
+                const slider = containerRef.current?.querySelector(`.${sliderClassName}`)
+                slider?.setAttribute('style', `transform: translate3d(${transRatio / 2}%, 0px, 0px); transition-duration: 350ms;`)
+                // transferSlider(len,0)
+            }
+        }
+    }, [children])
 
     const transferSlider = useCallback((len: number, nextIdx: number) => {
         const transRatio = 100 / len
-        const finalTransferX = transRatio * (nextIdx)
+        const finalTransferX = state.initialTransX + (transRatio * (nextIdx))
         const slider = containerRef.current?.querySelector(`.${sliderClassName}`)
         slider?.setAttribute('style', `transform: translate3d(${finalTransferX}%, 0px, 0px); transition-duration: 350ms;`)
         setState({ ...state, carouselIdx: nextIdx })
-    },[state, items, children])
+
+        // const items = slider?.querySelectorAll(`.${itemClassName}`)
+        // console.log(items)
+        // if (items) {
+            // console.log('hi',items[0].classList,items[0].classList.add('selected'))
+            // items[0].classList.add('selected')
+        // }
+    }, [state, children])
 
     const prevCallback = useCallback(() => {
         if (Array.isArray(children)) {
             const len = children.length
-            const nextIdx = Math.min(state.carouselIdx + 1, Math.floor(len / 2))
+            const nextIdx = Math.min(state.carouselIdx + 1, len % 2 === 0 ? Math.floor(len / 2) - 1 : Math.floor(len / 2))
             // const slider = containerRef.current?.querySelector(`.${sliderClassName}`)
             // if (slider)
-                // transferSlider(len, nextIdx, slider)
-                transferSlider(len, nextIdx)
+            // transferSlider(len, nextIdx, slider)
+            transferSlider(len, nextIdx)
         }
         // setItems([items[1], items[2], items[3], items[4], items[0]])
         // const filtered = items.filter((item, idx) => { if (idx !== items.length - 1) return true })
         // setItems([items[items.length - 1], ...filtered])
         // }
 
-    }, [state, items, children])
+    }, [state, children])
     const nextCallback = useCallback(() => {
         if (Array.isArray(children)) {
             const len = children.length
@@ -177,14 +198,14 @@ export const Carousel = (props: CarouselProps) => {
             const nextIdx = Math.max(state.carouselIdx - 1, -Math.floor(len / 2))
             // const slider = containerRef.current?.querySelector(`.${sliderClassName}`)
             // if (slider)
-                // transferSlider(len, nextIdx, slider)
-                transferSlider(len, nextIdx)
+            // transferSlider(len, nextIdx, slider)
+            transferSlider(len, nextIdx)
         }
         // if (Array.isArray(items)) {
         // const filtered = items.filter((item, idx) => { if (idx !== 0) return true })
         // setItems([...filtered, items[0]])
         // }
-    }, [state, items, children])
+    }, [state, children])
 
     return (<>
 
@@ -195,14 +216,14 @@ export const Carousel = (props: CarouselProps) => {
                     {
                         // Array.isArray(children) ?
                         //     children.map((child, index) => {
-                        Array.isArray(items) ?
-                            items.map((child, index) => {
+                        Array.isArray(children) ?
+                            children.map((child, index) => {
                                 // return (<li key={index} className={`${classes.controlDot}`}></li>)
                                 return (
                                     <li
                                         key={index}
                                         className={`${classes.controlDot}`}
-                                        onClick={()=>{transferSlider(items.length,(items.length - 1 - index)-Math.floor(items.length/2))}}
+                                        onClick={() => { transferSlider(children.length, (children.length - 1 - index) - Math.floor(children.length / 2)) }}
                                     ></li>
                                 )
                                 // return (<li key={index} className={`${classes.item}`}>{child}</li>)
@@ -218,8 +239,8 @@ export const Carousel = (props: CarouselProps) => {
                     {
                         // Array.isArray(children) ?
                         //     children.map((child, index) => {
-                        Array.isArray(items) ?
-                            items.map((child, index) => {
+                        Array.isArray(children) ?
+                            children.map((child, index) => {
                                 return (<li key={index} className={`${itemClassName} ${classes.item}`}>{child}</li>)
                                 // return (<li key={index} className={`${classes.item}`}>{child}</li>)
                             })
