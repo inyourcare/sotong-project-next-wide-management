@@ -20,10 +20,12 @@ import ParosBtnGnbCenter from 'public/paros/btn-gnb-center.svg';
 import ParosBtnGnbMenu from 'public/paros/btn-gnb-menu.svg';
 import ParosBtnGnbDrop from 'public/paros/btn-gnb-drop.svg';
 import { SearchBar } from '@components/common/SearchBar';
-import React, { useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import { BiListCheck, BiSearchAlt2 } from "react-icons/bi";
 import Image from 'next/image'
 import Carousel from '@components/common/Carousel';
+import TestCarousel from '@components/common/carousel/TestCarousel';
+import TestRRCarousel from '@components/common/carousel/TestRRCarousel';
 // const sections = [
 //     { title: 'Technology', url: '#' },
 //     { title: 'Design', url: '#' },
@@ -405,7 +407,7 @@ const Paros: React.FC<Props> = (props) => {
                     <Box>
                         {/* <Box>main banner</Box> */}
                         <Carousel>
-                        {/* <Carousel containerUniqueId={containerUniqueId}> */}
+                            {/* <Carousel containerUniqueId={containerUniqueId}> */}
                             <img src="/paros/test1.png"
                                 width={'1060px'}
                                 height='500px'
@@ -431,7 +433,15 @@ const Paros: React.FC<Props> = (props) => {
                                 height='500px'
                                 object-fit='contain'
                             />
+                            {/* <img src="/paros/test5.jpeg"
+                                width={'1060px'}
+                                height='500px'
+                                object-fit='contain'
+                            /> */}
                         </Carousel>
+                    </Box>
+                    <Box>
+                        <TestRRCarousel/>
                     </Box>
                     {/* recommendations */}
                     <Box>recommendations</Box>
@@ -485,7 +495,8 @@ export const getServerSideProps: GetServerSideProps<any> = async (context) => {
     }
     return {
         props: {
-            data: { csrfToken: await getCsrfToken(context), 
+            data: {
+                csrfToken: await getCsrfToken(context),
                 // containerUniqueId: `carousel_container_${(Math.random() + 1).toString(36).substring(7)}` 
             },
             ...(await serverSideTranslations(locale as string))
