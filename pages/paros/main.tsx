@@ -28,7 +28,7 @@ import testImage4 from 'public/paros/test4.jpg'
 import testImage5 from 'public/paros/test5.jpeg'
 
 import { SearchBar } from '@components/common/SearchBar';
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { BiListCheck, BiSearchAlt2 } from "react-icons/bi";
 import Image from 'next/image'
 import Carousel from '@components/common/Carousel';
@@ -238,6 +238,10 @@ const Paros: React.FC<Props> = (props) => {
     //     }
     // }
     // const { containerUniqueId } = props
+    const { isMobile, csrfToken } = props.data
+    // useEffect(()=>{
+    //     console.log(isMobile, csrfToken)
+    // },[isMobile])
     const theme = useTheme()
     const classes = useStyles();
     const initialSearchVal = ''
@@ -499,7 +503,7 @@ const Paros: React.FC<Props> = (props) => {
                                 position: 'relative',
                                 margin: '0 25px'
                             }}>
-                                <Box className={`${classes.mainBannerMenu}`}
+                                {isMobile === false && (<Box className={`${classes.mainBannerMenu}`}
                                     sx={{
 
                                     }}
@@ -513,7 +517,7 @@ const Paros: React.FC<Props> = (props) => {
                                     <Item style={{ minWidth: '120px', borderTop: '1px solid rgba(255, 255, 255, .15)' }}>
                                         <span style={{ minWidth: '80px', textAlign: 'center', }}>캐나다극지방</span>
                                     </Item>
-                                </Box>
+                                </Box>)}
                             </Box>
                             <Box sx={{
                                 width: `${mainBannerImageSize}`,
@@ -601,6 +605,11 @@ export const getServerSideProps: GetServerSideProps<any> = async (context) => {
         res as NextApiResponse<any> | ServerResponse<IncomingMessage>,
         authOptions
     )
+    //userAgent
+    const userAgent = req.headers['user-agent'] || navigator.userAgent
+    //Mobile
+    const mobile = userAgent?.indexOf('Mobi')
+
     // redirect check
     if (session && checkAuthorized(session, resolvedUrl) === false) {
         return {
@@ -615,6 +624,7 @@ export const getServerSideProps: GetServerSideProps<any> = async (context) => {
             data: {
                 csrfToken: await getCsrfToken(context),
                 // containerUniqueId: `carousel_container_${(Math.random() + 1).toString(36).substring(7)}` 
+                isMobile: (mobile !== -1) ? true : false
             },
             ...(await serverSideTranslations(locale as string))
         },
