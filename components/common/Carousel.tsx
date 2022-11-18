@@ -5,6 +5,7 @@ import { ReactNode, RefObject, useCallback, useEffect, useRef, useState } from "
 export const useStyles = makeStyles((theme) => ({
     container: {
         overflow: 'hidden',
+        // overflow: 'scroll',
         width: '100%',
         display: 'flex',
         alignItems: 'center',
@@ -12,6 +13,7 @@ export const useStyles = makeStyles((theme) => ({
         flexWrap: 'wrap',
     },
     slider: {
+        // width: '150%',
         display: 'flex',
         // flex: '1 1 500px',
         listStyle: 'none',
@@ -19,6 +21,7 @@ export const useStyles = makeStyles((theme) => ({
         margin: '0 10px',
     },
     item: {
+        // width: '100%',
         flext: '0 0 150px',
         // height: '215px',
         marginLeft: '10px',
@@ -243,21 +246,21 @@ export const Carousel = (props: CarouselProps) => {
                 </ul>
             </div>
             <div className={`${classes.container}`} ref={containerRef}>
-                <ul className={`${sliderClassName} ${classes.slider}`}>
+                <div className={`${sliderClassName} ${classes.slider}`}>
                     {/* <ul className={`${classes.slider}`}> */}
                     {
                         // Array.isArray(children) ?
                         //     children.map((child, index) => {
                         Array.isArray(children) ?
                             children.map((child, index) => {
-                                return (<li key={index} className={`${itemClassName} ${classes.item}`}>{child}</li>)
+                                return (<div key={index} className={`${itemClassName} ${classes.item}`}>{child}</div>)
                                 // return (<li key={index} className={`${classes.item}`}>{child}</li>)
                             })
                             :
                             (<>empty</>)
 
                     }
-                </ul>
+                </div>
             </div>
             {sideControl && <div className={`${classes.controls}`}>
                 <button className="prev" ref={prevRef} onClick={prevCallback}>{'<'}</button>

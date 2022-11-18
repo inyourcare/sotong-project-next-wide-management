@@ -12,6 +12,7 @@ import { Box, BoxProps, Container, CssBaseline, Grid, Typography } from '@mui/ma
 import Header from './Header';
 import { createTheme } from '@mui/system';
 import Footer from './Footer';
+
 import ParosLogoGnb from 'public/paros/logo-gnb.svg';
 import ParosBtnGnbLogin from 'public/paros/btn-gnb-login.svg';
 import ParosBtnGnbJoin from 'public/paros/btn-gnb-join.svg';
@@ -19,6 +20,10 @@ import ParosBtnGnbTrip from 'public/paros/btn-gnb-trip.svg';
 import ParosBtnGnbCenter from 'public/paros/btn-gnb-center.svg';
 import ParosBtnGnbMenu from 'public/paros/btn-gnb-menu.svg';
 import ParosBtnGnbDrop from 'public/paros/btn-gnb-drop.svg';
+import testImage2 from 'public/paros/test2.jpg'
+import testImage3 from 'public/paros/test3.jpg'
+import testImage4 from 'public/paros/test4.jpg'
+
 import { SearchBar } from '@components/common/SearchBar';
 import React, { Fragment, useState } from 'react';
 import { BiListCheck, BiSearchAlt2 } from "react-icons/bi";
@@ -183,6 +188,20 @@ export const useStyles = makeStyles((theme) => ({
         transform: 'translateX(-15%)',
         height: '40px',
         backgroundColor: '#232323'
+    },
+    frontLayerBox: {
+        // minWidth: '1060px',
+        float: 'right'
+        // position: 'relative',
+    },
+    mainBannerMenu: {
+        position: 'absolute',
+        width: '220px',
+        height: '500px',
+        backgroundColor: '#bc3c46',
+        zIndex: '2',
+        // right: '0',
+        transform: 'translateX(-100%)'
     }
 }))
 
@@ -404,11 +423,16 @@ const Paros: React.FC<Props> = (props) => {
                         </Box>
                     </Box>
                     {/* banners */}
+                    {/* <Box sx={{width:'100%'}}> */}
                     <Box>
                         {/* <Box>main banner</Box> */}
                         {/* <Carousel sideControl dotControl> */}
-                        <Carousel>
-                            {/* <Carousel containerUniqueId={containerUniqueId}> */}
+                        {/* <Box className={`${classes.paddingCommon} ${classes.frontLayerBox}`}> */}
+                        {/* front layer */}
+                        {/* <Box className={`${classes.mainBannerMenu}`}>hi</Box> */}
+                        {/* </Box> */}
+                        {/* <Carousel containerUniqueId={containerUniqueId}> */}
+                        {/* <Carousel>
                             <img src="/paros/test1.png"
                                 width={'1060px'}
                                 height='500px'
@@ -418,30 +442,38 @@ const Paros: React.FC<Props> = (props) => {
                                 width={'1060px'}
                                 height='500px'
                                 object-fit='contain'
-                                style={{opacity:'.4'}}
+                                style={{ opacity: '.4', padding: '0 50px' }}
                             />
                             <img src="/paros/test3.jpg"
                                 width={'1060px'}
                                 height='500px'
                                 object-fit='contain'
-                                style={{padding:'0 50px'}}
+                                style={{ padding: '0' }}
                             />
-                            <img src="/paros/test4.jpg"
-                                width={'1060px'}
-                                height='500px'
-                                object-fit='contain'
-                                style={{opacity:'.4'}}
-                            />
-                            <img src="/paros/test5.jpeg"
-                                width={'1060px'}
-                                height='500px'
-                                object-fit='contain'
-                            />
-                            {/* <img src="/paros/test5.jpeg"
-                                width={'1060px'}
-                                height='500px'
-                                object-fit='contain'
-                            /> */}
+                        </Carousel> */}
+                        {/* <Carousel> */}
+                        <Carousel sideControl dotControl> 
+                            <Box sx={{
+                                // width: '100%',
+                                width: '1060px',
+                                height: '500px',
+                                backgroundImage: `url(${testImage2.src})`,
+                                backgroundSize: '100% 100%'
+                            }}></Box>
+                            <Box sx={{
+                                // width: '100%',
+                                width: '1060px',
+                                height: '500px',
+                                backgroundImage: `url(${testImage3.src})`,
+                                backgroundSize: '100% 100%'
+                            }}></Box>
+                            <Box sx={{
+                                // width: '100%',
+                                width: '1060px',
+                                height: '500px',
+                                backgroundImage: `url(${testImage4.src})`,
+                                backgroundSize: '100% 100%'
+                            }}></Box>
                         </Carousel>
                     </Box>
                     {/* recommendations */}
