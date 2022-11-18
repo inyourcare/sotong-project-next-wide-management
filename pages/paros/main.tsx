@@ -194,12 +194,12 @@ export const useStyles = makeStyles((theme) => ({
         zIndex: '4'
     },
     mainBannerMenu: {
-        position: 'absolute',
+        // position: 'absolute',
         width: '220px',
         height: '500px',
         backgroundColor: '#bc3c46',
         zIndex: '2',
-        right: '0',
+        // right: '0',
         // transform: 'translateX(-100%)'
     },
     recommendationBox: {
@@ -456,6 +456,31 @@ const Paros: React.FC<Props> = (props) => {
                     </Box>
                     {/* banners */}
                     {/* <Box sx={{width:'100%'}}> */}
+                    <Box //className={`${classes.paddingCommon}`}
+                        sx={{
+                            // position: 'relative',
+                            // width: '1500px',
+                            // float: 'right'
+                        }}>
+                        {isMobile === false && (
+                            <Box className={`${classes.mainBannerMenu}`}
+                                sx={{
+                                    position: 'absolute',
+                                    right: '15%',
+                                }}
+                            >
+                                <Item style={{ minWidth: '120px', borderTop: '1px solid rgba(255, 255, 255, .15)' }}>
+                                    <span style={{ minWidth: '80px', textAlign: 'center', }}>캐나다서부</span>
+                                </Item>
+                                <Item style={{ minWidth: '120px', borderTop: '1px solid rgba(255, 255, 255, .15)' }}>
+                                    <span style={{ minWidth: '80px', textAlign: 'center', }}>토론토·나이아가라</span>
+                                </Item>
+                                <Item style={{ minWidth: '120px', borderTop: '1px solid rgba(255, 255, 255, .15)' }}>
+                                    <span style={{ minWidth: '80px', textAlign: 'center', }}>캐나다극지방</span>
+                                </Item>
+                            </Box>
+                        )}
+                    </Box>
                     <Box>
                         {/* <Box>main banner</Box> */}
                         {/* <Carousel sideControl dotControl> */}
@@ -491,7 +516,7 @@ const Paros: React.FC<Props> = (props) => {
                                 height: '500px',
                                 backgroundImage: `url(${testImage2.src})`,
                                 backgroundSize: '100% 100%',
-                                opacity: '.4',
+                                // opacity: '.4',
                             }}></Box>
                             <Box sx={{
                                 width: `${mainBannerImageSize}`,
@@ -500,32 +525,16 @@ const Paros: React.FC<Props> = (props) => {
                                 backgroundImage: `url(${testImage3.src})`,
                                 backgroundSize: '100% 100%',
                                 // float: 'right',
-                                position: 'relative',
-                                margin: '0 25px'
-                            }}>
-                                {isMobile === false && (<Box className={`${classes.mainBannerMenu}`}
-                                    sx={{
-
-                                    }}
-                                >
-                                    <Item style={{ minWidth: '120px', borderTop: '1px solid rgba(255, 255, 255, .15)' }}>
-                                        <span style={{ minWidth: '80px', textAlign: 'center', }}>캐나다서부</span>
-                                    </Item>
-                                    <Item style={{ minWidth: '120px', borderTop: '1px solid rgba(255, 255, 255, .15)' }}>
-                                        <span style={{ minWidth: '80px', textAlign: 'center', }}>토론토·나이아가라</span>
-                                    </Item>
-                                    <Item style={{ minWidth: '120px', borderTop: '1px solid rgba(255, 255, 255, .15)' }}>
-                                        <span style={{ minWidth: '80px', textAlign: 'center', }}>캐나다극지방</span>
-                                    </Item>
-                                </Box>)}
-                            </Box>
+                                // position: 'relative',
+                                // margin: '0 25px'
+                            }}></Box>
                             <Box sx={{
                                 width: `${mainBannerImageSize}`,
                                 // width: '1060px',
                                 height: '500px',
                                 backgroundImage: `url(${testImage4.src})`,
                                 backgroundSize: '100% 100%',
-                                opacity: '.4',
+                                // opacity: '.4',
                             }}></Box>
                         </Carousel>
                     </Box>
