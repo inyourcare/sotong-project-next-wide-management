@@ -296,7 +296,9 @@ const Paros: React.FC<Props> = (props) => {
                                 {/* <ParosBtnGnbMenu with="50px" height='50px' object-fit='contain' /> */}
                             </Grid>
                             {/* buttons */}
-                            <Grid className={`${classes.gridItem} ${classes.justifyCenter}`} item xl={4} xs={12}>
+                            <Grid className={`${classes.gridItem} ${classes.justifyCenter}`} item xl={4} xs={12}
+                                sx={{ minWidth: '485px' }}
+                            >
                                 <Box
                                     sx={{
                                         display: 'flex',
@@ -305,7 +307,7 @@ const Paros: React.FC<Props> = (props) => {
                                         m: 1,
                                         // bgcolor: 'background.paper',
                                         // borderRadius: 1,
-                                        minWidth: '380px'
+                                        // minWidth: '380px'
                                     }}
                                 >
                                     <Item style={{ minWidth: '120px' }}>
@@ -461,7 +463,9 @@ const Paros: React.FC<Props> = (props) => {
                             // position: 'relative',
                             // width: '1500px',
                             // float: 'right'
-                        }}>
+                        }}
+                        display={{ xs: "none", sm: 'block', xl: "block" }}
+                    >
                         {isMobile === false && (
                             <Box className={`${classes.mainBannerMenu}`}
                                 sx={{
