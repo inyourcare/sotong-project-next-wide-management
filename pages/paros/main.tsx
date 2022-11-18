@@ -190,7 +190,8 @@ export const useStyles = makeStyles((theme) => ({
         // padding: '0 -15%',
         transform: 'translateX(-15%)',
         height: '40px',
-        backgroundColor: '#232323'
+        backgroundColor: '#232323',
+        zIndex: '4'
     },
     mainBannerMenu: {
         position: 'absolute',
