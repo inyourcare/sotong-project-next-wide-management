@@ -20,6 +20,7 @@ import ParosBtnGnbTrip from 'public/paros/btn-gnb-trip.svg';
 import ParosBtnGnbCenter from 'public/paros/btn-gnb-center.svg';
 import ParosBtnGnbMenu from 'public/paros/btn-gnb-menu.svg';
 import ParosBtnGnbDrop from 'public/paros/btn-gnb-drop.svg';
+import ParosGnbBanner from 'public/paros/img-gnb-banner.png';
 import testImage1 from 'public/paros/test1.png'
 import testImage2 from 'public/paros/test2.jpg'
 import testImage3 from 'public/paros/test3.jpg'
@@ -257,7 +258,7 @@ const Paros: React.FC<Props> = (props) => {
                     <Box className={`${classes.paddingCommon} ${classes.borderBottom}`}>
                         <Grid container className={`${classes.gridContainer}`}>
                             {/* logo */}
-                            <Grid className={`${classes.gridItem}`} item xl={3} lg={4.5} md={4.5} sm={4.5}>
+                            <Grid className={`${classes.gridItem}`} item xl={3} lg={4.4} md={4.2} sm={4}>
                                 <ParosLogoGnb width="200px" height="40px" />
                             </Grid>
                             {/* search */}
@@ -285,8 +286,9 @@ const Paros: React.FC<Props> = (props) => {
                                     />
                                 </Box>
                             </Grid>
-                            <Grid item height='50px' xs={0.5} display={{ xs: "none", sm: 'block', xl: "none" }}>
-                                <ParosBtnGnbMenu with="50px" height='50px' object-fit='contain' />
+                            <Grid item height='50px' lg={0.6} md={0.8} sm={1} display={{ xs: "none", sm: 'block', xl: "none" }}
+                                sx={{ backgroundImage: `url('/paros/btn-gnb-menu.svg')`, }}>
+                                {/* <ParosBtnGnbMenu with="50px" height='50px' object-fit='contain' /> */}
                             </Grid>
                             {/* buttons */}
                             <Grid className={`${classes.gridItem} ${classes.justifyCenter}`} item xl={4} xs={12}>
@@ -334,8 +336,9 @@ const Paros: React.FC<Props> = (props) => {
                     <Box className={`${classes.paddingCommon}`} display={{ xs: "none", xl: "block" }}>
                         <Grid container>
                             {/* <Grid item height='50px' xs={0.5} display={{ xs: "none", xl: "block" }}> */}
-                            <Grid item height='50px' xs={0.5}>
-                                <ParosBtnGnbMenu with="50px" height='50px' object-fit='contain' />
+                            {/* <Grid item height='50px' xs={0.5} sx={{ backgroundImage: `url(${ParosBtnGnbMenu.src})`, }}> */}
+                            <Grid item height='50px' xs={0.5} sx={{ backgroundImage: `url('/paros/btn-gnb-menu.svg')`, }}>
+                                {/* <ParosBtnGnbMenu with="50px" height='50px' object-fit='contain' /> */}
                             </Grid>
                             <Grid item xs={9.5} height='50px'
                                 sx={{
@@ -396,13 +399,14 @@ const Paros: React.FC<Props> = (props) => {
                                 </Box>
                             </Grid>
                             {/* <Grid item height='50px' xs={2} display={{ xs: "none", xl: "block" }}> */}
-                            <Grid item height='50px' xs={2}>
-                                <img src="/paros/img-gnb-banner.png"
+                            <Grid item height='50px' xs={2}
+                                sx={{ backgroundImage: `url(${ParosGnbBanner.src})`, }}>
+                                {/* <img src="/paros/img-gnb-banner.png"
                                     srcSet="/paros/img-gnb-banner@2x.png 2x,/paros/img-gnb-banner@3x.png 3x"
                                     width={'220px'}
                                     height='50px'
                                     object-fit='contain'
-                                />
+                                /> */}
                             </Grid>
                         </Grid>
                         {/* inner list */}
@@ -525,7 +529,7 @@ const Paros: React.FC<Props> = (props) => {
                         <Box className={`${classes.boldTitles}`}>헬로캐나다 추천여행</Box>
                         <Box className={`${classes.subTitles}`}>travel recommendation</Box>
                         <Carousel sideControl>
-                        <Box sx={{
+                            <Box sx={{
                                 width: '290px',
                                 height: '200px',
                                 backgroundImage: `url(${testImage1.src})`,
