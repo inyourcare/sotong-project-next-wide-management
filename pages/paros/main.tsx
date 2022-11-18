@@ -454,22 +454,22 @@ const Paros: React.FC<Props> = (props) => {
                         {/* <Carousel> */}
                         <Carousel sideControl dotControl> 
                             <Box sx={{
-                                // width: '100%',
-                                width: '1060px',
+                                width: '70vw',
+                                // width: '1060px',
                                 height: '500px',
                                 backgroundImage: `url(${testImage2.src})`,
                                 backgroundSize: '100% 100%'
                             }}></Box>
                             <Box sx={{
-                                // width: '100%',
-                                width: '1060px',
+                                width: '70vw',
+                                // width: '1060px',
                                 height: '500px',
                                 backgroundImage: `url(${testImage3.src})`,
                                 backgroundSize: '100% 100%'
                             }}></Box>
                             <Box sx={{
-                                // width: '100%',
-                                width: '1060px',
+                                width: '70vw',
+                                // width: '1060px',
                                 height: '500px',
                                 backgroundImage: `url(${testImage4.src})`,
                                 backgroundSize: '100% 100%'
