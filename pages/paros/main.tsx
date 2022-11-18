@@ -418,16 +418,19 @@ const Paros: React.FC<Props> = (props) => {
                                 width={'1060px'}
                                 height='500px'
                                 object-fit='contain'
+                                style={{opacity:'.4'}}
                             />
                             <img src="/paros/test3.jpg"
                                 width={'1060px'}
                                 height='500px'
                                 object-fit='contain'
+                                style={{padding:'0 50px'}}
                             />
                             <img src="/paros/test4.jpg"
                                 width={'1060px'}
                                 height='500px'
                                 object-fit='contain'
+                                style={{opacity:'.4'}}
                             />
                             <img src="/paros/test5.jpeg"
                                 width={'1060px'}
