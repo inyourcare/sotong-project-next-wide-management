@@ -483,7 +483,7 @@ const Paros: React.FC<Props> = (props) => {
                                 style={{ padding: '0' }}
                             />
                         </Carousel> */}
-                        <Carousel>
+                        <Carousel autoSlide>
                             {/* <Carousel sideControl dotControl> */}
                             <Box sx={{
                                 width: `${mainBannerImageSize}`,

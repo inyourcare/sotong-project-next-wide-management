@@ -131,10 +131,12 @@ export interface CarouselProps {
     // containerUniqueId: string
     sideControl?: boolean,
     dotControl?: boolean,
+    autoSlide?: boolean,
+    slideInterval?: number,
 }
 export const Carousel = (props: CarouselProps) => {
     // const { children, containerUniqueId } = props;
-    const { children, sideControl = false, dotControl = false } = props;
+    const { children, sideControl = false, dotControl = false, autoSlide = false, slideInterval = 3000 } = props;
     // const [items, setItems] = useState(children)
     const classes = useStyles();
     // const containerUniqueId = `carousel_container_${(Math.random() + 1).toString(36).substring(7)}`
@@ -167,7 +169,33 @@ export const Carousel = (props: CarouselProps) => {
         }
     }, [children])
 
+    function getMaxIdx(len: number) {
+        return len % 2 === 0 ? Math.floor(len / 2) - 1 : Math.floor(len / 2);
+    }
+    function getMinIdx(len: number) {
+        return -Math.floor(len / 2)
+    }
+    //auto slide
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (autoSlide && Array.isArray(children)) {
+                const len = children.length
+                const maxIdx = getMaxIdx(len)
+                const minIdx = getMinIdx(len)
+                var nextIdx = state.carouselIdx - 1
+                if (nextIdx > maxIdx) {
+                    nextIdx = minIdx
+                } else if (nextIdx < minIdx) {
+                    nextIdx = maxIdx
+                }
+                transferSlider(len, nextIdx)
+            }
+        }, slideInterval);
+        return () => clearInterval(interval);
+    }, [autoSlide, slideInterval, state])
+
     const transferSlider = useCallback((len: number, nextIdx: number) => {
+        console.log('slide change', len, nextIdx)
         const transRatio = 100 / len
         const finalTransferX = state.initialTransX + (transRatio * (nextIdx))
         const slider = containerRef.current?.querySelector(`.${sliderClassName}`)
@@ -185,7 +213,8 @@ export const Carousel = (props: CarouselProps) => {
     const prevCallback = useCallback(() => {
         if (Array.isArray(children)) {
             const len = children.length
-            const nextIdx = Math.min(state.carouselIdx + 1, len % 2 === 0 ? Math.floor(len / 2) - 1 : Math.floor(len / 2))
+            // const nextIdx = Math.min(state.carouselIdx + 1, len % 2 === 0 ? Math.floor(len / 2) - 1 : Math.floor(len / 2))
+            const nextIdx = Math.min(state.carouselIdx + 1, getMaxIdx(len))
             // const slider = containerRef.current?.querySelector(`.${sliderClassName}`)
             // if (slider)
             // transferSlider(len, nextIdx, slider)
@@ -201,7 +230,8 @@ export const Carousel = (props: CarouselProps) => {
         if (Array.isArray(children)) {
             const len = children.length
             // const nextIdx = state.carouselIdx - 1
-            const nextIdx = Math.max(state.carouselIdx - 1, -Math.floor(len / 2))
+            // const nextIdx = Math.max(state.carouselIdx - 1, -Math.floor(len / 2))
+            const nextIdx = Math.max(state.carouselIdx - 1, getMinIdx(len))
             // const slider = containerRef.current?.querySelector(`.${sliderClassName}`)
             // if (slider)
             // transferSlider(len, nextIdx, slider)
