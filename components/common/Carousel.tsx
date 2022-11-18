@@ -2,6 +2,11 @@ import { HlsSharp } from "@mui/icons-material";
 import { makeStyles } from "@mui/styles";
 import { ReactNode, RefObject, useCallback, useEffect, useRef, useState } from "react";
 
+interface StyleProps {
+    // blurred: boolean,
+    itemOpacity: string
+}
+// export const useStyles = (props:any) => makeStyles((theme) => ({
 export const useStyles = makeStyles((theme) => ({
     container: {
         overflow: 'hidden',
@@ -20,6 +25,24 @@ export const useStyles = makeStyles((theme) => ({
         padding: '0',
         margin: '0 10px',
     },
+    // item: ({ itemOpacity }: StyleProps) => ({
+    //     // width: '100%',
+    //     flext: '0 0 150px',
+    //     // height: '215px',
+    //     // marginLeft: '10px',
+    //     // borderRadius: '5px',
+    //     borderRadius: '50px',
+    //     display: 'flex',
+    //     flexDirection: 'column',
+    //     '&:first-child': {
+    //         marginLeft: '0',
+    //     },
+    //     opacity: true && '.4',
+    //     // opacity: itemOpacity,
+    //     '&.selected': {
+    //         opacity: '1',
+    //     }
+    // }),
     item: {
         // width: '100%',
         flext: '0 0 150px',
@@ -30,7 +53,15 @@ export const useStyles = makeStyles((theme) => ({
         flexDirection: 'column',
         '&:first-child': {
             marginLeft: '0',
+        },
+        // c,
+        // opacity: itemOpacity,
+        '&.selected': {
+            opacity: '1',
         }
+    },
+    itemBlurred: {
+        opacity: '.4',
     },
     controls: {
         position: 'absolute',
@@ -133,12 +164,14 @@ export interface CarouselProps {
     dotControl?: boolean,
     autoSlide?: boolean,
     slideInterval?: number,
+    blurred?: boolean
 }
 export const Carousel = (props: CarouselProps) => {
     // const { children, containerUniqueId } = props;
-    const { children, sideControl = false, dotControl = false, autoSlide = false, slideInterval = 3000 } = props;
+    const { children, sideControl = false, dotControl = false, autoSlide = false, slideInterval = 3000
+        , blurred = false } = props;
     // const [items, setItems] = useState(children)
-    const classes = useStyles();
+    const classes = useStyles({ itemOpacity: blurred ? '.4' : '1' });
     // const containerUniqueId = `carousel_container_${(Math.random() + 1).toString(36).substring(7)}`
     const sliderClassName = 'slider'
     const itemClassName = 'item'
@@ -210,6 +243,12 @@ export const Carousel = (props: CarouselProps) => {
         // }
     }, [state, children])
 
+    const detectSelected = useCallback((len: number, idx: number) => {
+        return len % 2 === 0 ?
+            (len - 1 - idx) === state.carouselIdx + Math.floor(len / 2) - 1 ? 'selected' : ''
+            : (len - 1 - idx) === state.carouselIdx + Math.floor(len / 2) ? 'selected' : ''
+    }, [state])
+
     const prevCallback = useCallback(() => {
         if (Array.isArray(children)) {
             const len = children.length
@@ -258,12 +297,15 @@ export const Carousel = (props: CarouselProps) => {
                             return (
                                 <li
                                     key={index}
+                                    // className={
+                                    //     `${classes.controlDot} 
+                                    //         ${children.length % 2 === 0 ?
+                                    //         (children.length - 1 - index) === state.carouselIdx + Math.floor(children.length / 2) - 1 ? 'selected' : ''
+                                    //         : (children.length - 1 - index) === state.carouselIdx + Math.floor(children.length / 2) ? 'selected' : ''}
+                                    //     `
+                                    // }
                                     className={
-                                        `${classes.controlDot} 
-                                            ${children.length % 2 === 0 ?
-                                            (children.length - 1 - index) === state.carouselIdx + Math.floor(children.length / 2) - 1 ? 'selected' : ''
-                                            : (children.length - 1 - index) === state.carouselIdx + Math.floor(children.length / 2) ? 'selected' : ''
-                                        }`
+                                        `${classes.controlDot} ${detectSelected(children.length, index)}`
                                     }
                                     onClick={() => { transferSlider(children.length, (children.length - 1 - index) - Math.floor(children.length / 2)) }}
                                 ></li>
@@ -283,7 +325,14 @@ export const Carousel = (props: CarouselProps) => {
                         //     children.map((child, index) => {
                         Array.isArray(children) ?
                             children.map((child, index) => {
-                                return (<div key={index} className={`${itemClassName} ${classes.item}`}>{child}</div>)
+                                return (
+                                    <div key={index}
+                                        className={`${blurred ? classes.itemBlurred : ''} ${itemClassName} ${classes.item} ${detectSelected(children.length, index)}`}
+                                    // style={{opacity:`${blurred === true? '.4':'1'}`}}
+                                    >
+                                        {child}
+                                    </div>
+                                )
                                 // return (<li key={index} className={`${classes.item}`}>{child}</li>)
                             })
                             :

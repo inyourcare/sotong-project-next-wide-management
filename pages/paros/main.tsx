@@ -508,7 +508,7 @@ const Paros: React.FC<Props> = (props) => {
                                 style={{ padding: '0' }}
                             />
                         </Carousel> */}
-                        <Carousel autoSlide>
+                        <Carousel autoSlide blurred>
                             {/* <Carousel sideControl dotControl> */}
                             <Box sx={{
                                 width: `${mainBannerImageSize}`,
@@ -542,7 +542,8 @@ const Paros: React.FC<Props> = (props) => {
                     <Box className={`${classes.paddingCommon} ${classes.recommendationBox}`}>
                         <Box className={`${classes.boldTitles}`}>헬로캐나다 추천여행</Box>
                         <Box className={`${classes.subTitles}`}>travel recommendation</Box>
-                        <Carousel sideControl>
+                        {/* <Carousel sideControl dotControl> */}
+                        <Carousel sideControl blurred>
                             <Box sx={{
                                 width: '290px',
                                 height: '200px',
