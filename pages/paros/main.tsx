@@ -219,6 +219,7 @@ const Paros: React.FC<Props> = (props) => {
     const initialSearchVal = ''
     const [search, setSearch] = React.useState(initialSearchVal)
     const [innerListVisible, setInnerListVisible] = useState(false)
+    const mainBannerImageSize = '70vw'
     return (
         <>
             <ThemeProvider theme={theme}>
@@ -454,21 +455,21 @@ const Paros: React.FC<Props> = (props) => {
                         {/* <Carousel> */}
                         <Carousel sideControl dotControl> 
                             <Box sx={{
-                                width: '70vw',
+                                width: `${mainBannerImageSize}`,
                                 // width: '1060px',
                                 height: '500px',
                                 backgroundImage: `url(${testImage2.src})`,
                                 backgroundSize: '100% 100%'
                             }}></Box>
                             <Box sx={{
-                                width: '70vw',
+                                width: `${mainBannerImageSize}`,
                                 // width: '1060px',
                                 height: '500px',
                                 backgroundImage: `url(${testImage3.src})`,
                                 backgroundSize: '100% 100%'
                             }}></Box>
                             <Box sx={{
-                                width: '70vw',
+                                width: `${mainBannerImageSize}`,
                                 // width: '1060px',
                                 height: '500px',
                                 backgroundImage: `url(${testImage4.src})`,
