@@ -20,9 +20,11 @@ import ParosBtnGnbTrip from 'public/paros/btn-gnb-trip.svg';
 import ParosBtnGnbCenter from 'public/paros/btn-gnb-center.svg';
 import ParosBtnGnbMenu from 'public/paros/btn-gnb-menu.svg';
 import ParosBtnGnbDrop from 'public/paros/btn-gnb-drop.svg';
+import testImage1 from 'public/paros/test1.png'
 import testImage2 from 'public/paros/test2.jpg'
 import testImage3 from 'public/paros/test3.jpg'
 import testImage4 from 'public/paros/test4.jpg'
+import testImage5 from 'public/paros/test5.jpeg'
 
 import { SearchBar } from '@components/common/SearchBar';
 import React, { Fragment, useState } from 'react';
@@ -189,19 +191,39 @@ export const useStyles = makeStyles((theme) => ({
         height: '40px',
         backgroundColor: '#232323'
     },
-    frontLayerBox: {
-        // minWidth: '1060px',
-        float: 'right'
-        // position: 'relative',
-    },
     mainBannerMenu: {
         position: 'absolute',
         width: '220px',
         height: '500px',
         backgroundColor: '#bc3c46',
         zIndex: '2',
-        // right: '0',
-        transform: 'translateX(-100%)'
+        right: '0',
+        // transform: 'translateX(-100%)'
+    },
+    recommendationBox: {
+        marginTop: '50px'
+    },
+    boldTitles: {
+        fontFamily: ' NotoSansCJKKR',
+        fontSize: '24px',
+        fontWeight: 'bold',
+        fontStretch: 'normal',
+        fontStyle: 'normal',
+        lineHeight: 'normal',
+        letterSpacing: ' -0.96px',
+        textAlign: 'left',
+        color: '#000',
+    },
+    subTitles: {
+        fontFamily: ' NotoSansCJKKR',
+        fontSize: '14px',
+        fontWeight: '300',
+        fontStretch: 'normal',
+        fontStyle: 'normal',
+        lineHeight: 'normal',
+        letterSpacing: ' -0.56px',
+        textAlign: 'left',
+        color: '#888',
     }
 }))
 
@@ -452,33 +474,89 @@ const Paros: React.FC<Props> = (props) => {
                                 style={{ padding: '0' }}
                             />
                         </Carousel> */}
-                        {/* <Carousel> */}
-                        <Carousel sideControl dotControl> 
+                        <Carousel>
+                            {/* <Carousel sideControl dotControl> */}
                             <Box sx={{
                                 width: `${mainBannerImageSize}`,
                                 // width: '1060px',
                                 height: '500px',
                                 backgroundImage: `url(${testImage2.src})`,
-                                backgroundSize: '100% 100%'
+                                backgroundSize: '100% 100%',
+                                opacity: '.4',
                             }}></Box>
                             <Box sx={{
                                 width: `${mainBannerImageSize}`,
                                 // width: '1060px',
                                 height: '500px',
                                 backgroundImage: `url(${testImage3.src})`,
-                                backgroundSize: '100% 100%'
-                            }}></Box>
+                                backgroundSize: '100% 100%',
+                                // float: 'right',
+                                position: 'relative',
+                                margin: '0 25px'
+                            }}>
+                                <Box className={`${classes.mainBannerMenu}`}
+                                    sx={{
+
+                                    }}
+                                >
+                                    <Item style={{ minWidth: '120px', borderTop: '1px solid rgba(255, 255, 255, .15)' }}>
+                                        <span style={{ minWidth: '80px', textAlign: 'center', }}>캐나다서부</span>
+                                    </Item>
+                                    <Item style={{ minWidth: '120px', borderTop: '1px solid rgba(255, 255, 255, .15)' }}>
+                                        <span style={{ minWidth: '80px', textAlign: 'center', }}>토론토·나이아가라</span>
+                                    </Item>
+                                    <Item style={{ minWidth: '120px', borderTop: '1px solid rgba(255, 255, 255, .15)' }}>
+                                        <span style={{ minWidth: '80px', textAlign: 'center', }}>캐나다극지방</span>
+                                    </Item>
+                                </Box>
+                            </Box>
                             <Box sx={{
                                 width: `${mainBannerImageSize}`,
                                 // width: '1060px',
                                 height: '500px',
                                 backgroundImage: `url(${testImage4.src})`,
-                                backgroundSize: '100% 100%'
+                                backgroundSize: '100% 100%',
+                                opacity: '.4',
                             }}></Box>
                         </Carousel>
                     </Box>
                     {/* recommendations */}
-                    <Box>recommendations</Box>
+                    <Box className={`${classes.paddingCommon} ${classes.recommendationBox}`}>
+                        <Box className={`${classes.boldTitles}`}>헬로캐나다 추천여행</Box>
+                        <Box className={`${classes.subTitles}`}>travel recommendation</Box>
+                        <Carousel sideControl>
+                        <Box sx={{
+                                width: '290px',
+                                height: '200px',
+                                backgroundImage: `url(${testImage1.src})`,
+                                backgroundSize: '100% 100%',
+                            }}></Box>
+                            <Box sx={{
+                                width: '290px',
+                                height: '200px',
+                                backgroundImage: `url(${testImage2.src})`,
+                                backgroundSize: '100% 100%',
+                            }}></Box>
+                            <Box sx={{
+                                width: '290px',
+                                height: '200px',
+                                backgroundImage: `url(${testImage3.src})`,
+                                backgroundSize: '100% 100%',
+                            }}></Box>
+                            <Box sx={{
+                                width: '290px',
+                                height: '200px',
+                                backgroundImage: `url(${testImage4.src})`,
+                                backgroundSize: '100% 100%',
+                            }}></Box>
+                            <Box sx={{
+                                width: '290px',
+                                height: '200px',
+                                backgroundImage: `url(${testImage5.src})`,
+                                backgroundSize: '100% 100%',
+                            }}></Box>
+                        </Carousel>
+                    </Box>
                     {/* canada train trip */}
                     <Box>canada train trip</Box>
                     {/* theme traveling */}

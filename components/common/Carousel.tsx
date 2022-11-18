@@ -24,7 +24,7 @@ export const useStyles = makeStyles((theme) => ({
         // width: '100%',
         flext: '0 0 150px',
         // height: '215px',
-        marginLeft: '10px',
+        // marginLeft: '10px',
         borderRadius: '5px',
         display: 'flex',
         flexDirection: 'column',
@@ -241,7 +241,7 @@ export const Carousel = (props: CarouselProps) => {
                             // return (<li key={index} className={`${classes.item}`}>{child}</li>)
                         })
                         :
-                        (<>empty</>)
+                        (<></>)
                     }
                 </ul>
             </div>
@@ -257,7 +257,7 @@ export const Carousel = (props: CarouselProps) => {
                                 // return (<li key={index} className={`${classes.item}`}>{child}</li>)
                             })
                             :
-                            (<>empty</>)
+                            (<></>)
 
                     }
                 </div>
