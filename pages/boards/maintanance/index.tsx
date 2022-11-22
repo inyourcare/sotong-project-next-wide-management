@@ -243,6 +243,9 @@ const Maintanance: React.FC<Props> = (props) => {
                         >
                             {"Logout"}
                         </Button>} */}
+                    <Link href={'/'}>
+                        <Typography color="inherit">Home</Typography>
+                    </Link>
                     {session.status === 'authenticated'
                         && <Box sx={{ flexGrow: 0 }}>
                             <Tooltip title="Open settings">
@@ -366,7 +369,7 @@ const Maintanance: React.FC<Props> = (props) => {
                                 color="#3c8039"
                                 bgColor="#e6f4ea"
                             />
-                            </>)}
+                        </>)}
                     </StyledTreeItem>
                     <StyledTreeItem nodeId="2" labelText="All Mail" labelIcon={MailIcon} />
                     <StyledTreeItem nodeId="3" labelText="Trash" labelIcon={DeleteIcon} />
