@@ -22,6 +22,7 @@ export default function Home(props: HomeProps) {
   const path = routes;
   const signInPath = path.filter(({ name, link }) => name === 'SignIn').pop()
   const maintanancePath = path.filter(({ name, link }) => name === '유지보수관리').pop()
+  const signUpPath = path.filter(({ name, link }) => name === 'SignUp').pop()
   // const classes = useStyles();
   // const signInPath = props.signInPath;
   useEffect(() => {
@@ -55,19 +56,25 @@ export default function Home(props: HomeProps) {
               </Link>
             </Box>}
           {session.status === 'authenticated'
-            && (<Box><Button
-              onClick={() => { signOut() }}
-            // className={`${classes.signIn_Btn} ${classes.width100P}`}
-            >
-              {"next auth 로그아웃"}
-            </Button>
+            && (<Box>
+              <Button
+                onClick={() => { signOut() }}
+              // className={`${classes.signIn_Btn} ${classes.width100P}`}
+              >
+                {"next auth 로그아웃"}
+              </Button>
 
               <Link href={maintanancePath?.link as string}>
                 <Typography color="inherit">유지보수관리</Typography>
               </Link>
+              <Link href={signUpPath?.link as string}>
+                <Typography color="inherit">회원가입</Typography>
+              </Link>
             </Box>
             )}
-          {session.data?.expires}하이루?(Role:{session.data?.user?.role}){session.data?.user?.name}<br />
+
+          <Box>{session.data?.expires}하이루?(Role:{session.data?.user?.role}){session.data?.user?.name}</Box>
+          <br />
           <KakaoShareBtn />
         </Stack>
       </Stack>
