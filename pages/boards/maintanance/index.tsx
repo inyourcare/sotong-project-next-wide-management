@@ -248,7 +248,7 @@ const Maintanance: React.FC<Props> = (props) => {
                     </Link>
                     {session.status === 'authenticated'
                         && <Box sx={{ flexGrow: 0 }}>
-                            <Tooltip title="Open settings">
+                            <Tooltip title={`안녕하세요 ${session.data.user.name}님`}>
                                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                                     <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
                                 </IconButton>
