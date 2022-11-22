@@ -322,12 +322,56 @@ const Maintanance: React.FC<Props> = (props) => {
                     defaultExpandIcon={<ArrowRightIcon />}
                     defaultEndIcon={<div style={{ width: 24 }} />}
                     sx={{ height: 264, flexGrow: 1, maxWidth: 400, overflowY: 'auto' }}
-                    
+
                 >
-                    <StyledTreeItem nodeId="1" labelText="All Mail" labelIcon={MailIcon} />
-                    <StyledTreeItem nodeId="2" labelText="Trash" labelIcon={DeleteIcon} />
+                    <StyledTreeItem nodeId="1" labelText="유지보수관리" labelIcon={MailIcon} >
+                        {open && (<>
+                            <StyledTreeItem
+                                nodeId="1_1"
+                                labelText="프로젝트관리"
+                                labelIcon={SupervisorAccountIcon}
+                                // labelInfo="90"
+                                color="#1a73e8"
+                                bgColor="#e8f0fe"
+                            />
+                            <StyledTreeItem
+                                nodeId="1_2"
+                                labelText="프로젝트상세관리"
+                                labelIcon={InfoIcon}
+                                // labelInfo="2,294"
+                                color="#e3742f"
+                                bgColor="#fcefe3"
+                            />
+                            <StyledTreeItem
+                                nodeId="1_3"
+                                labelText="유지보수관리"
+                                labelIcon={ForumIcon}
+                                // labelInfo="3,566"
+                                color="#a250f5"
+                                bgColor="#f3e8fd"
+                            />
+                            <StyledTreeItem
+                                nodeId="1_4"
+                                labelText="업무일지"
+                                labelIcon={LocalOfferIcon}
+                                // labelInfo="733"
+                                color="#3c8039"
+                                bgColor="#e6f4ea"
+                            />
+                            <StyledTreeItem
+                                nodeId="1_5"
+                                labelText="개발 게시판"
+                                labelIcon={LocalOfferIcon}
+                                // labelInfo="733"
+                                color="#3c8039"
+                                bgColor="#e6f4ea"
+                            />
+                            </>)}
+                    </StyledTreeItem>
+                    <StyledTreeItem nodeId="2" labelText="All Mail" labelIcon={MailIcon} />
+                    <StyledTreeItem nodeId="3" labelText="Trash" labelIcon={DeleteIcon} />
                     {/* <StyledTreeItem nodeId="3" labelText="Categories" labelIcon={Label} disabled={open}> */}
-                    <StyledTreeItem nodeId="3" labelText="Categories" labelIcon={Label} >
+                    <StyledTreeItem nodeId="4" labelText="Categories" labelIcon={Label} >
                         {open && (<><StyledTreeItem
                             nodeId="5"
                             labelText="Social"
@@ -336,32 +380,32 @@ const Maintanance: React.FC<Props> = (props) => {
                             color="#1a73e8"
                             bgColor="#e8f0fe"
                         />
-                        <StyledTreeItem
-                            nodeId="6"
-                            labelText="Updates"
-                            labelIcon={InfoIcon}
-                            labelInfo="2,294"
-                            color="#e3742f"
-                            bgColor="#fcefe3"
-                        />
-                        <StyledTreeItem
-                            nodeId="7"
-                            labelText="Forums"
-                            labelIcon={ForumIcon}
-                            labelInfo="3,566"
-                            color="#a250f5"
-                            bgColor="#f3e8fd"
-                        />
-                        <StyledTreeItem
-                            nodeId="8"
-                            labelText="Promotions"
-                            labelIcon={LocalOfferIcon}
-                            labelInfo="733"
-                            color="#3c8039"
-                            bgColor="#e6f4ea"
-                        /></>)}
+                            <StyledTreeItem
+                                nodeId="6"
+                                labelText="Updates"
+                                labelIcon={InfoIcon}
+                                labelInfo="2,294"
+                                color="#e3742f"
+                                bgColor="#fcefe3"
+                            />
+                            <StyledTreeItem
+                                nodeId="7"
+                                labelText="Forums"
+                                labelIcon={ForumIcon}
+                                labelInfo="3,566"
+                                color="#a250f5"
+                                bgColor="#f3e8fd"
+                            />
+                            <StyledTreeItem
+                                nodeId="8"
+                                labelText="Promotions"
+                                labelIcon={LocalOfferIcon}
+                                labelInfo="733"
+                                color="#3c8039"
+                                bgColor="#e6f4ea"
+                            /></>)}
                     </StyledTreeItem>
-                    <StyledTreeItem nodeId="4" labelText="History" labelIcon={Label} />
+                    <StyledTreeItem nodeId="5" labelText="History" labelIcon={Label} />
                 </TreeView>
                 {/* <Divider />
                 <List>
