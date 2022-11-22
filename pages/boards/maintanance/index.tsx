@@ -18,6 +18,19 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { routes } from '@core/reference';
 import Link from 'next/link';
+import TreeView from '@mui/lab/TreeView';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ArrowRightIcon from '@mui/icons-material/ArrowRight';
+import DeleteIcon from '@mui/icons-material/Delete';
+import Label from '@mui/icons-material/Label';
+import TreeItem, { TreeItemProps, treeItemClasses } from '@mui/lab/TreeItem';
+import { SvgIconProps } from '@mui/material/SvgIcon';
+import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
+import InfoIcon from '@mui/icons-material/Info';
+import ForumIcon from '@mui/icons-material/Forum';
+import LocalOfferIcon from '@mui/icons-material/LocalOffer';
+
 
 
 const drawerWidth = 240;
@@ -37,8 +50,10 @@ const closedMixin = (theme: Theme): CSSObject => ({
         duration: theme.transitions.duration.leavingScreen,
     }),
     overflowX: 'hidden',
+    // width: `calc(${theme.spacing(7)} + 1px)`,
     width: `calc(${theme.spacing(7)} + 1px)`,
     [theme.breakpoints.up('sm')]: {
+        // width: `calc(${theme.spacing(8)} + 1px)`,
         width: `calc(${theme.spacing(8)} + 1px)`,
     },
 });
@@ -90,6 +105,85 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
         }),
     }),
 );
+
+///// Tree view
+declare module 'react' {
+    interface CSSProperties {
+        '--tree-view-color'?: string;
+        '--tree-view-bg-color'?: string;
+    }
+}
+type StyledTreeItemProps = TreeItemProps & {
+    bgColor?: string;
+    color?: string;
+    labelIcon: React.ElementType<SvgIconProps>;
+    labelInfo?: string;
+    labelText: string;
+};
+
+const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
+    color: theme.palette.text.secondary,
+    [`& .${treeItemClasses.content}`]: {
+        color: theme.palette.text.secondary,
+        borderTopRightRadius: theme.spacing(2),
+        borderBottomRightRadius: theme.spacing(2),
+        paddingRight: theme.spacing(1),
+        fontWeight: theme.typography.fontWeightMedium,
+        '&.Mui-expanded': {
+            fontWeight: theme.typography.fontWeightRegular,
+        },
+        '&:hover': {
+            backgroundColor: theme.palette.action.hover,
+        },
+        '&.Mui-focused, &.Mui-selected, &.Mui-selected.Mui-focused': {
+            backgroundColor: `var(--tree-view-bg-color, ${theme.palette.action.selected})`,
+            color: 'var(--tree-view-color)',
+        },
+        [`& .${treeItemClasses.label}`]: {
+            fontWeight: 'inherit',
+            color: 'inherit',
+        },
+    },
+    [`& .${treeItemClasses.group}`]: {
+        marginLeft: 0,
+        [`& .${treeItemClasses.content}`]: {
+            paddingLeft: theme.spacing(2),
+        },
+    },
+}));
+
+function StyledTreeItem(props: StyledTreeItemProps) {
+    const {
+        bgColor,
+        color,
+        labelIcon: LabelIcon,
+        labelInfo,
+        labelText,
+        ...other
+    } = props;
+
+    return (
+        <StyledTreeItemRoot
+            label={
+                <Box sx={{ display: 'flex', alignItems: 'center', p: 0.5, pr: 0 }}>
+                    <Box component={LabelIcon} color="inherit" sx={{ mr: 1 }} />
+                    <Typography variant="body2" sx={{ fontWeight: 'inherit', flexGrow: 1 }}>
+                        {labelText}
+                    </Typography>
+                    <Typography variant="caption" color="inherit">
+                        {labelInfo}
+                    </Typography>
+                </Box>
+            }
+            style={{
+                '--tree-view-color': color,
+                '--tree-view-bg-color': bgColor,
+            }}
+            {...other}
+        />
+    );
+}
+
 
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 const Maintanance: React.FC<Props> = (props) => {
@@ -176,7 +270,7 @@ const Maintanance: React.FC<Props> = (props) => {
                                     if (setting === 'Logout')
                                         return (
                                             <MenuItem key={setting} onClick={() => { handleCloseUserMenu(); signOut(); }}>
-                                            {/* <MenuItem key={setting} onClick={handleCloseUserMenu}> */}
+                                                {/* <MenuItem key={setting} onClick={handleCloseUserMenu}> */}
                                                 <Typography textAlign="center">{setting}</Typography>
                                             </MenuItem>
                                         )
@@ -197,7 +291,7 @@ const Maintanance: React.FC<Props> = (props) => {
                     </IconButton>
                 </DrawerHeader>
                 <Divider />
-                <List>
+                {/* <List>
                     {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
                         <ListItem key={text} disablePadding sx={{ display: 'block' }}>
                             <ListItemButton
@@ -220,8 +314,56 @@ const Maintanance: React.FC<Props> = (props) => {
                             </ListItemButton>
                         </ListItem>
                     ))}
-                </List>
-                <Divider />
+                </List> */}
+                <TreeView
+                    aria-label="gmail"
+                    defaultExpanded={['3']}
+                    defaultCollapseIcon={<ArrowDropDownIcon />}
+                    defaultExpandIcon={<ArrowRightIcon />}
+                    defaultEndIcon={<div style={{ width: 24 }} />}
+                    sx={{ height: 264, flexGrow: 1, maxWidth: 400, overflowY: 'auto' }}
+                    
+                >
+                    <StyledTreeItem nodeId="1" labelText="All Mail" labelIcon={MailIcon} />
+                    <StyledTreeItem nodeId="2" labelText="Trash" labelIcon={DeleteIcon} />
+                    {/* <StyledTreeItem nodeId="3" labelText="Categories" labelIcon={Label} disabled={open}> */}
+                    <StyledTreeItem nodeId="3" labelText="Categories" labelIcon={Label} >
+                        {open && (<><StyledTreeItem
+                            nodeId="5"
+                            labelText="Social"
+                            labelIcon={SupervisorAccountIcon}
+                            labelInfo="90"
+                            color="#1a73e8"
+                            bgColor="#e8f0fe"
+                        />
+                        <StyledTreeItem
+                            nodeId="6"
+                            labelText="Updates"
+                            labelIcon={InfoIcon}
+                            labelInfo="2,294"
+                            color="#e3742f"
+                            bgColor="#fcefe3"
+                        />
+                        <StyledTreeItem
+                            nodeId="7"
+                            labelText="Forums"
+                            labelIcon={ForumIcon}
+                            labelInfo="3,566"
+                            color="#a250f5"
+                            bgColor="#f3e8fd"
+                        />
+                        <StyledTreeItem
+                            nodeId="8"
+                            labelText="Promotions"
+                            labelIcon={LocalOfferIcon}
+                            labelInfo="733"
+                            color="#3c8039"
+                            bgColor="#e6f4ea"
+                        /></>)}
+                    </StyledTreeItem>
+                    <StyledTreeItem nodeId="4" labelText="History" labelIcon={Label} />
+                </TreeView>
+                {/* <Divider />
                 <List>
                     {['All mail', 'Trash', 'Spam'].map((text, index) => (
                         <ListItem key={text} disablePadding sx={{ display: 'block' }}>
@@ -245,7 +387,7 @@ const Maintanance: React.FC<Props> = (props) => {
                             </ListItemButton>
                         </ListItem>
                     ))}
-                </List>
+                </List> */}
             </Drawer>
             <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
                 <DrawerHeader />
