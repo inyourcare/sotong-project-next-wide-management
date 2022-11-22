@@ -191,6 +191,7 @@ const Maintanance: React.FC<Props> = (props) => {
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+    const [currentView, setCurrentView] = React.useState<''|'workJournal'>('');
     const session = useSession();
     const path = routes;
     const signInPath = path.filter(({ name, link }) => name === 'SignIn').pop()
@@ -360,6 +361,7 @@ const Maintanance: React.FC<Props> = (props) => {
                                 // labelInfo="733"
                                 color="#3c8039"
                                 bgColor="#e6f4ea"
+                                onClick={()=>setCurrentView('workJournal')}
                             />
                             <StyledTreeItem
                                 nodeId="1_5"

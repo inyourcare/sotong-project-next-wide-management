@@ -142,7 +142,7 @@ const Menu: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (
         { field: 'name', headerName: 'Name', styles: { width: '20%' } },
         { field: 'menuType', headerName: 'MenuType', styles: { width: '10%' } },
         // { field: 'code', headerName: 'code', styles: { width: '10%' } },
-        { field: 'code', headerName: 'code', styles: { } },
+        { field: 'code', headerName: 'code', styles: {} },
         { field: 'order', headerName: 'order', styles: { width: '10%' }, },
         { field: 'creator', headerName: 'creator', styles: { width: '10%' } },
         { field: 'modifier', headerName: 'modifier', styles: { width: '10%' } },
@@ -229,12 +229,17 @@ const Menu: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (
                                 Menu Create
                             </Link>
                         </Text>
+                        <Text align={"center"}>
+                            <Link color={"blue.400"} href="/">
+                                Home
+                            </Link>
+                        </Text>
                         <SearchBar
                             // onChange={() => { }}
                             // onChange={(e) => { setChangingEmail(e.target.value) }}
                             onChange={(e) => { setEmail(e.target.value) }}
                             // onClick={() => { }}
-                            onClick={() => {
+                            onSubmit={() => {
                                 // let resultEmail
                                 // if (changingEmail) resultEmail = changingEmail
                                 // else resultEmail = undefined
@@ -252,7 +257,8 @@ const Menu: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (
                                 routePush(1, email)
                             }}
                             // onClick={() => { router.push(`menu/?page=${page}`, undefined, { shallow: true }); }} 
-                            placeHolder='' />
+                            placeHolder=''
+                            searchImg='BiSearchAlt2' />
                         {/* <button onClick={() => { setPage(1) }}>test</button> */}
                     </Stack>
                 </Stack>
