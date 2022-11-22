@@ -1,5 +1,5 @@
 import { checkAuthorized } from '@core/logics';
-import { Box, Button, CssBaseline, CSSObject, Divider, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, styled, Theme, Toolbar, Typography, useTheme } from '@mui/material';
+import { Avatar, Box, Button, CssBaseline, CSSObject, Divider, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Menu, MenuItem, styled, Theme, Toolbar, Tooltip, Typography, useTheme } from '@mui/material';
 import { Props } from 'framer-motion/types/types';
 import { IncomingMessage, ServerResponse } from 'http';
 import { GetServerSideProps, InferGetServerSidePropsType, NextApiRequest, NextApiResponse } from 'next';
@@ -90,10 +90,13 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
         }),
     }),
 );
+
+const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 const Maintanance: React.FC<Props> = (props) => {
     const { t } = useTranslation('maintanance');
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
+    const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
     const session = useSession();
     const path = routes;
     const signInPath = path.filter(({ name, link }) => name === 'SignIn').pop()
@@ -104,6 +107,12 @@ const Maintanance: React.FC<Props> = (props) => {
 
     const handleDrawerClose = () => {
         setOpen(false);
+    };
+    const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorElUser(event.currentTarget);
+    };
+    const handleCloseUserMenu = () => {
+        setAnchorElUser(null);
     };
 
     return (
@@ -126,7 +135,7 @@ const Maintanance: React.FC<Props> = (props) => {
                     <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
                         Mini variant drawer
                     </Typography>
-                    {session.status !== 'authenticated'
+                    {/* {session.status !== 'authenticated'
                         && <Link href={signInPath?.link as string}>
                             <Typography color="inherit">Login</Typography>
                         </Link>}
@@ -139,7 +148,46 @@ const Maintanance: React.FC<Props> = (props) => {
                         // className={`${classes.signIn_Btn} ${classes.width100P}`}
                         >
                             {"Logout"}
-                        </Button>}
+                        </Button>} */}
+                    {session.status === 'authenticated'
+                        && <Box sx={{ flexGrow: 0 }}>
+                            <Tooltip title="Open settings">
+                                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                                    <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                                </IconButton>
+                            </Tooltip>
+                            <Menu
+                                sx={{ mt: '45px' }}
+                                id="menu-appbar"
+                                anchorEl={anchorElUser}
+                                anchorOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                keepMounted
+                                transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                open={Boolean(anchorElUser)}
+                                onClose={handleCloseUserMenu}
+                            >
+                                {settings.map((setting) => {
+                                    if (setting === 'Logout')
+                                        return (
+                                            <MenuItem key={setting} onClick={() => { handleCloseUserMenu(); signOut(); }}>
+                                            {/* <MenuItem key={setting} onClick={handleCloseUserMenu}> */}
+                                                <Typography textAlign="center">{setting}</Typography>
+                                            </MenuItem>
+                                        )
+                                    return (
+                                        <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                                            <Typography textAlign="center">{setting}</Typography>
+                                        </MenuItem>
+                                    )
+                                })}
+                            </Menu>
+                        </Box>}
                 </Toolbar>
             </AppBar>
             <Drawer variant="permanent" open={open}>
