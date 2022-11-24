@@ -31,6 +31,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import ForumIcon from '@mui/icons-material/Forum';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import WorkJournal from '@components/boards/maintanance/WorkJournal';
+import ProjectManage from '@components/boards/maintanance/ProjectManage';
 
 
 
@@ -185,14 +186,14 @@ function StyledTreeItem(props: StyledTreeItemProps) {
     );
 }
 
-
+// component
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 const Maintanance: React.FC<Props> = (props) => {
     const { t } = useTranslation('maintanance');
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
-    const [currentView, setCurrentView] = React.useState<'' | 'workJournal'>('');
+    const [currentView, setCurrentView] = React.useState<'' | 'workJournal' | 'projectManage'>('');
     const session = useSession();
     const path = routes;
     const signInPath = path.filter(({ name, link }) => name === 'SignIn').pop()
@@ -229,7 +230,7 @@ const Maintanance: React.FC<Props> = (props) => {
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
-                        Mini variant drawer
+                        {`Mini variant drawer :: ${currentView}`}
                     </Typography>
                     {/* {session.status !== 'authenticated'
                         && <Link href={signInPath?.link as string}>
@@ -338,6 +339,7 @@ const Maintanance: React.FC<Props> = (props) => {
                                 // labelInfo="90"
                                 color="#1a73e8"
                                 bgColor="#e8f0fe"
+                                onClick={() => setCurrentView('projectManage')}
                             />
                             <StyledTreeItem
                                 nodeId="1_2"
@@ -442,6 +444,7 @@ const Maintanance: React.FC<Props> = (props) => {
             <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
                 <DrawerHeader />
                 {currentView === 'workJournal' && <WorkJournal />}
+                {currentView === 'projectManage' && <ProjectManage />}
                 {currentView === '' && (<>
                     <Typography paragraph>
                         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
