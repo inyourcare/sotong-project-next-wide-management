@@ -1,22 +1,14 @@
 import { logger } from '@core/logger';
-import { Box, Button, Checkbox, FormControl, FormControlLabel, Input, InputLabel, Paper, Stack, TextareaAutosize, TextField } from '@mui/material';
+import { Box, Button, Checkbox, FormControl, FormControlLabel, FormGroup, Input, InputLabel, Paper, Stack, TextareaAutosize, TextField } from '@mui/material';
 import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 import { Props } from 'framer-motion/types/types';
 import { useTranslation } from 'next-i18next';
 import { styled } from '@mui/material/styles';
-import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import React from 'react';
 import dayjs, { Dayjs } from 'dayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider/LocalizationProvider';
-// date-fns
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-// or for Day.js
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-// or for Luxon
-import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
-// or for Moment.js
-import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { getYYYYMMDDString } from '@core/time';
+import { FieldValues, useForm } from "react-hook-form";
+import { useRouter } from 'next/router';
 
 const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', width: 90 },
@@ -72,13 +64,35 @@ const Item = styled(Paper)(({ theme }) => ({
 
 const WorkJournal: React.FC<Props> = ({ props }) => {
     // const { t } = useTranslation('maintanance');
-    const [value, setValue] = React.useState<Dayjs | null>(
-        dayjs('2014-08-18T21:11:54'),
-    );
-
-    const handleChange = (newValue: Dayjs | null) => {
-        setValue(newValue);
-    };
+    const {
+        handleSubmit,
+        register,
+        reset,
+        formState: { errors, isSubmitting },
+    } = useForm();
+    const router = useRouter();
+    async function onSubmit(values: FieldValues) {
+        try {
+            const body = { ...values };
+            console.log(`POSTing ${JSON.stringify(body, null, 2)}`);
+            const res = await fetch(`/api/workjournal/create`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(body),
+            });
+            logger.debug(`res`, res);
+            // todo:: 만약 네이버 등으로 먼저 로그읺해서 메일이 등록된 유저는 create 가 되지 않는다. 해결 필요
+            reset();
+            router.push(
+                `boards/maintanance${router.query.callbackUrl
+                    ? `?callbackUrl=${router.query.callbackUrl}`
+                    : ""
+                }`,
+            );
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
     return (
         <>
@@ -95,62 +109,69 @@ const WorkJournal: React.FC<Props> = ({ props }) => {
             </Box>
             <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
                 <form
-                    onSubmit={() => { }}
+                    onSubmit={handleSubmit(onSubmit)}
                 >
-                    <FormControlLabel
-                        sx={{ marginLeft: '0' }}
-                        control={<TextField
-                            // id="date"
-                            // label="Birthday"
-                            type="date"
-                            // defaultValue="2017-05-24"
-                            defaultValue={getYYYYMMDDString(new Date())}
-                            sx={{ width: 220 }}
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                        />}
-                        label="업무일자"
-                        labelPlacement='top' />
-                    <FormControlLabel
-                        control={<TextField
-                            // id="date"
-                            // label="Birthday"
-                            type="text"
-                            // defaultValue="2017-05-24"
-                            // defaultValue={}
-                            sx={{ margin: 0, padding: 0 }}
-                        />}
-                        label="프로젝트"
-                        labelPlacement='top'
-                    />
-                    <FormControlLabel control={<Checkbox defaultChecked />} label="오전" />
-                    <FormControlLabel control={<Checkbox defaultChecked />} label="오후" />
-                    <FormControlLabel control={<Checkbox defaultChecked />} label="야간" />
-                    <FormControlLabel control={<TextareaAutosize
-                        name="journalContent"
-                        autoComplete="journalContent"
-                        maxRows={4}
-                        aria-label="maximum height"
-                        placeholder="Maximum 4 rows"
-                        defaultValue=""
-                        style={{ width: 200, marginLeft: 10 }}
-                    />}
-                        label="업무내용"
-                        labelPlacement='start'
-                    />
+                    <FormGroup row={true}>
+                        <FormControlLabel
+                            sx={{ marginLeft: '0' }}
+                            control={<TextField
+                                // id="date"
+                                // label="Birthday"
+                                type="date"
+                                // defaultValue="2017-05-24"
+                                defaultValue={getYYYYMMDDString(new Date())}
+                                sx={{ width: 220 }}
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                                {...register('workdate')}
+                            />}
+                            label="업무일자"
+                            labelPlacement='top' />
+                        <FormControlLabel
+                            control={<TextField
+                                // id="date"
+                                // label="Birthday"
+                                type="text"
+                                // defaultValue="2017-05-24"
+                                // defaultValue={}
+                                {...register('projectName')}
+                                sx={{ margin: 0, padding: 0 }}
+                            />}
+                            label="프로젝트"
+                            labelPlacement='top'
+                        />
+                        <FormControlLabel control={<Checkbox defaultChecked {...register('ckMorning')} />} label="오전" />
+                        <FormControlLabel control={<Checkbox defaultChecked {...register('ckAfternoon')} />} label="오후" />
+                        <FormControlLabel control={<Checkbox {...register('ckNight')} />} label="야간" />
+                        <FormControlLabel
+                            control={<TextareaAutosize
+                                // name="journalContent"
+                                autoComplete="journalContent"
+                                maxRows={4}
+                                aria-label="maximum height"
+                                placeholder="Maximum 4 rows"
+                                defaultValue=""
+                                style={{ width: 200, marginLeft: 10 }}
+                                {...register('journalContent')}
+                            />}
+                            label="업무내용"
+                            labelPlacement='start'
+                        />
 
-                    <Button
-                        // disabled={!this.isValid()}
-                        disableRipple
-                        fullWidth
-                        variant="outlined"
-                        // className={classes.button}
-                        type="submit"
-                    // onClick={this.submitRegistration}
-                    >
-                        Join
-                    </Button>
+                        <Button
+                            // disabled={!this.isValid()}
+                            disableRipple
+                            fullWidth
+                            variant="outlined"
+                            // className={classes.button}
+                            type="submit"
+                        // onClick={this.submitRegistration}
+                        >
+                            입력
+                        </Button>
+
+                    </FormGroup>
                 </form>
             </Box>
         </>
