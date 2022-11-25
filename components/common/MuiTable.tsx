@@ -13,7 +13,7 @@ export default function MuiTable({ columns, rows, limit }: {
   columns: TableColDef[],
   rows: Array<{
     id: string | number
-    [key: string]: Date | String | string | number | boolean | undefined
+    [key: string]: Date | String | string | number | boolean | undefined | React.ReactNode
   }>
   , limit: number
 }) {
@@ -104,7 +104,10 @@ export default function MuiTable({ columns, rows, limit }: {
                   // <TableCell key={`${row.id}-${col.field}`} component="th" scope="row" width="20px" style={{ width: '70px' }}>
                   // <TableCell key={`${row.id}-${col.field}`} component="th" scope="row" style={{width:'10%'}}>
                   <TableCell key={`${row.id}-${col.field}`} component="th" scope="row">
-                    {row[col.field]?.toString() || ""}
+                    {
+                      // row[col.field]?.toString() || ""
+                      React.isValidElement(row[col.field]) ? row[col.field] as React.ReactNode : row[col.field]?.toString()
+                    }
                   </TableCell>
                 ))}
               </TableRow>

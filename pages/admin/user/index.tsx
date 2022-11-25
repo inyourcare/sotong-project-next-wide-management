@@ -22,7 +22,7 @@ import { CgChevronLeft, CgChevronRight } from 'react-icons/cg';
 import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { FiTrash2, FiUser } from "react-icons/fi";
 import { dehydrate, DehydratedState, QueryClient, useQuery } from 'react-query';
-import { Pagination } from '@mui/material';
+import { MenuItem, Pagination, Select } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
@@ -32,6 +32,7 @@ import MuiTable from '@components/common/MuiTable';
 import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 import { userTableLimit, TableColDef } from '@core/styles/mui';
 import { TUser } from '@core/types/TUser';
+import { Role } from '@prisma/client';
 
 type MenuParams = {
     // props: {
@@ -99,7 +100,26 @@ const Menu: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (
                         >
                             <MuiTable
                                 columns={columns}
-                                rows={(tableData.users as Array<TUser>).map(user => { return { ...user } })}
+                                rows={
+                                    (tableData.users as Array<TUser>)
+                                        .map(user => {
+                                            return {
+                                                ...user,
+                                                role: (<>
+                                                    <Select
+                                                        // labelId="demo-simple-select-label"
+                                                        value={user.role}
+                                                        // label="Age"
+                                                        onChange={()=>{}}
+                                                    >
+                                                        <MenuItem value={Role.ADMIN}>Admin</MenuItem>
+                                                        <MenuItem value={Role.USER}>User</MenuItem>
+                                                        <MenuItem value={Role.MEMBER}>Member</MenuItem>
+                                                    </Select>
+                                                </>)
+                                            }
+                                        })
+                                }
                                 limit={userTableLimit}
                             />
                         </Box>
@@ -142,8 +162,8 @@ const getUsers = async (page: any, email: any) =>
             limit: userTableLimit,
             conditions: {
                 // creator: {
-                    // email: 'admin@sotong.co.kr'
-                    // email
+                // email: 'admin@sotong.co.kr'
+                // email
                 //     ...(email && { email: email })
                 // }
             }

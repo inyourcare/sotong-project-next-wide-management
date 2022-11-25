@@ -3,6 +3,7 @@ import { getSession } from "next-auth/react";
 import { prisma } from '@core/prisma'
 import { Role } from "@prisma/client";
 import { logger } from "@core/logger";
+import { TUser } from "@core/types/TUser";
 
 // POST /api/post
 // Required fields in body: title
@@ -32,6 +33,17 @@ export default async function handle(
         ...(page && limit && { skip: page * limit }),
         ...(limit && { take: limit }),
         ...(lastId && { skip: 1, cursor: { id: lastId } }),
+        select: {
+            id: true,
+            name: true,
+            email: true,
+            emailVerified: true,
+            // password:true,
+            image: true,
+            role: true,
+            createdAt: true,
+            updatedAt: true
+        },
         where: whereConditions,
         // where: {
         //     creator: {
