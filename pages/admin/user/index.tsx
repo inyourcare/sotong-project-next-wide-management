@@ -6,9 +6,7 @@ import { GetServerSideProps, GetServerSidePropsResult, InferGetServerSidePropsTy
 import { unstable_getServerSession } from 'next-auth';
 import { getCsrfToken } from 'next-auth/react';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import MenuList from '@components/admin/menu/MenuList';
 import { logger } from '@core/logger';
-import { TMenu } from '@core/types/TMenu';
 import {
     ChakraProvider, Flex, Spacer, Avatar,
     Text,
@@ -34,25 +32,28 @@ import { userTableLimit, TableColDef } from '@core/styles/mui';
 import { TUser } from '@core/types/TUser';
 import { Role } from '@prisma/client';
 
-type MenuParams = {
+type UserParams = {
     // props: {
     data: {
         csrfToken: string,
-        // menus: Array<TMenu>
     },
     [key: string | number | symbol]: any,
     // }
 }
-const Menu: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (result) => {
+const User: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (result) => {
     const router = useRouter();
-    // const props = result as MenuParams
     const initializePage = () => parseInt(router.query.page as string) || 1
     const initializeEmail = () => router.query.email as string || ''
     const [page, setPage] = useState(initializePage());
     const [email, setEmail] = useState(initializeEmail());
-    const { t } = useTranslation('menu');
-    const { data } = useQuery("userList") as any
+    const { t } = useTranslation('user');
+    const { data } = useQuery("userList", () => getUsers(page, email)) as any
     const tableData = { ...data }
+    // const [roleMap,setRoleMap] = useState((tableData.users as Array<TUser>).reduce((map,obj)=>{
+    //     map.set(obj.id,obj.role)
+    //     return map;
+    // }, new Map<string,any>))
+    const [roleMap, setRoleMap] = useState(new Map<string, any>())
 
     function handlePaginationChange(event: ChangeEvent<unknown>, page: number) {
         routePush(page, email)
@@ -63,7 +64,7 @@ const Menu: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (
         setEmail(initializeEmail())
     }, [router.query])
     const routePush = (page: number, email: string) => {
-        let link = 'menu/?'
+        let link = 'user/?'
         // let link = 'listTest/?'
         if (page)
             link = link.concat(`page=${page}&`)
@@ -75,15 +76,53 @@ const Menu: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (
     const columns: TableColDef[] = [
         { field: 'id', headerName: 'ID', styles: { width: '10%' } },
         { field: 'name', headerName: 'Name', styles: { width: '20%' } },
-        { field: 'email', headerName: 'MenuType', styles: { width: '10%' } },
+        { field: 'email', headerName: 'Email', styles: { width: '10%' } },
         // { field: 'code', headerName: 'code', styles: { width: '10%' } },
-        { field: 'password', headerName: 'password', styles: {} },
+        { field: 'password', headerName: 'Password', styles: {} },
         // { field: 'order', headerName: 'order', styles: { width: '10%' }, },
         { field: 'image', headerName: 'image', styles: { width: '10%' } },
         { field: 'role', headerName: 'role', styles: { width: '10%' } },
         { field: 'createdAt', headerName: 'CreatedAt', styles: { width: '10%' } },
         { field: 'updatedAt', headerName: 'UpdatedAt', styles: { width: '10%' } },
     ];
+
+    const saveRoleChanges = async () => {
+        console.log('saveRoleChanges', roleMap)
+        roleMap.forEach(async (role, userId) => {
+            console.log(`POSTing ${JSON.stringify({ role, userId }, null, 2)}`);
+            const res = await fetch(`/api/user/${userId}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ role }),
+            })
+                .catch((error) => {
+                    console.error(`${userId} :: ${error}`);
+                })
+        })
+        // try {
+        //     // const body = { ...values };
+        //     const body = Object.fromEntries(roleMap);
+        //     console.log(`POSTing ${JSON.stringify(body, null, 2)}`);
+        //     const res = await fetch(`/api/user/update`, {
+        //         method: "POST",
+        //         headers: { "Content-Type": "application/json" },
+        //         body: JSON.stringify(body),
+        //     });
+        //     logger.debug(`res`, res);
+        //     // todo:: 만약 네이버 등으로 먼저 로그읺해서 메일이 등록된 유저는 create 가 되지 않는다. 해결 필요
+        //     // reset();
+        //     router.push(
+        //         `admin/user/${router.query.callbackUrl
+        //             ? `?callbackUrl=${router.query.callbackUrl}`
+        //             : ""
+        //         }`,
+        //     );
+        // } catch (error) {
+        //     console.error(error);
+        // }
+        roleMap.clear()
+        routePush(page, email)
+    }
     return (
         <>
             <Flex minH={"100vh"} w={"100%"} align={"center"} justify={"center"}>
@@ -108,9 +147,12 @@ const Menu: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (
                                                 role: (<>
                                                     <Select
                                                         // labelId="demo-simple-select-label"
-                                                        value={user.role}
+                                                        // value={user.role}
+                                                        defaultValue={user.role}
+                                                        // value={roleMap.get(user.id)}
                                                         // label="Age"
-                                                        onChange={()=>{}}
+                                                        // onChange={(e)=>{user.role = e.target.value}}
+                                                        onChange={(e) => { roleMap.set(user.id, e.target.value) }}
                                                     >
                                                         <MenuItem value={Role.ADMIN}>Admin</MenuItem>
                                                         <MenuItem value={Role.USER}>User</MenuItem>
@@ -132,15 +174,11 @@ const Menu: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (
                             onChange={handlePaginationChange}
                         />
                         <Text align={"center"}>
-                            <Link color={"blue.400"} href="menu/create">
-                                Menu Create
-                            </Link>
-                        </Text>
-                        <Text align={"center"}>
                             <Link color={"blue.400"} href="/">
                                 Home
                             </Link>
                         </Text>
+                        <Button onClick={saveRoleChanges}>Save</Button>
                         <SearchBar
                             onChange={(e) => { setEmail(e.target.value) }}
                             onSubmit={() => {
@@ -155,7 +193,7 @@ const Menu: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (
     )
 }
 const getUsers = async (page: any, email: any) =>
-    await fetch(`${process.env.NEXTAPI_BASE_URL}/user/list`, {
+    await fetch(`${process.env.NEXTAPI_BASE_URL || '/api'}/user/list`, {
         method: 'POST',
         body: JSON.stringify({
             page: page - 1,
@@ -170,7 +208,7 @@ const getUsers = async (page: any, email: any) =>
         }),
         headers: { "Content-Type": "application/json" }
     }).then((result) => result.json())
-export const getServerSideProps: GetServerSideProps<MenuParams> = async (context) => {
+export const getServerSideProps: GetServerSideProps<UserParams> = async (context) => {
     const { req, res, locale, resolvedUrl } = context;
     const session = await unstable_getServerSession(
         req as NextApiRequest | (IncomingMessage & { cookies: Partial<{ [key: string]: string; }>; }),
@@ -184,7 +222,6 @@ export const getServerSideProps: GetServerSideProps<MenuParams> = async (context
     const email = context.query.email;
     const queryClient = new QueryClient();
     await Promise.all([queryClient.prefetchQuery(
-        // ["menuList", page],
         "userList",
         () => getUsers(page, email)
     )])
@@ -201,11 +238,10 @@ export const getServerSideProps: GetServerSideProps<MenuParams> = async (context
         props: ({
             data: {
                 csrfToken: await getCsrfToken(context),
-                // menus: (await menus.json()),
             },
             dehydratedState: dehydrate(queryClient),
             ...(await serverSideTranslations(locale as string))
-        }) as MenuParams
+        }) as UserParams
     }
 }
-export default Menu;
+export default User;
