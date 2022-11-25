@@ -75,7 +75,6 @@ model User {
   menusCreator  Menu[]        @relation("creator")
   menusModifier Menu[]        @relation("modifier")
   projectUser   ProjectUser[]
-  Project       Project[]
 }
 
 model VerificationToken {
@@ -321,9 +320,6 @@ model Project {
   id Int @id @default(autoincrement())
 
   projectUser ProjectUser[]
-
-  userId String?
-  user   User?   @relation(fields: [userId], references: [id])
 
   projectName        String
   projectEnglishName String
