@@ -75,7 +75,7 @@ model User {
   sessions      Session[]
   menusCreator  Menu[]        @relation("creator")
   menusModifier Menu[]        @relation("modifier")
-  projectUser   ProjectUser[]
+  projects   ProjectUser[]
 }
 
 model VerificationToken {
@@ -320,7 +320,7 @@ model ProjectUser {
 model Project {
   id Int @id @default(autoincrement())
 
-  projectUser ProjectUser[]
+  users ProjectUser[]
 
   projectName        String
   projectEnglishName String

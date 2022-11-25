@@ -32,6 +32,8 @@ import ForumIcon from '@mui/icons-material/Forum';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import WorkJournal from '@components/boards/maintanance/WorkJournal';
 import ProjectManage from '@components/boards/maintanance/ProjectManage';
+import { projectTableLimit } from '@core/styles/mui';
+import { dehydrate, QueryClient } from 'react-query';
 
 
 
@@ -477,6 +479,24 @@ const Maintanance: React.FC<Props> = (props) => {
         </Box>
     );
 }
+
+export const getProjects = async (page: any) =>
+    await fetch(`${process.env.NEXTAPI_BASE_URL || '/api'}/project/list`, {
+        method: 'POST',
+        body: JSON.stringify({
+            page: page - 1,
+            limit: projectTableLimit,
+            conditions: {
+                // creator: {
+                    // email: 'admin@sotong.co.kr'
+                    // email
+                    // ...(email && { email: email })
+                // }
+            }
+        }),
+        headers: { "Content-Type": "application/json" }
+    }).then((result) => result.json())
+
 export const getServerSideProps: GetServerSideProps<any> = async (context) => {
     const { req, res, locale, resolvedUrl } = context;
     const session = await unstable_getServerSession(
@@ -484,6 +504,16 @@ export const getServerSideProps: GetServerSideProps<any> = async (context) => {
         res as NextApiResponse<any> | ServerResponse<IncomingMessage>,
         authOptions
     )
+    let page = 1;
+    if (context.query.page && typeof context.query.page === 'string') {
+        page = parseInt(context.query.page);
+    }
+    const email = context.query.email;
+    const queryClient = new QueryClient();
+    await queryClient.prefetchQuery(
+        "projectList",
+        () => getProjects(page)
+    );
     // redirect check
     if (checkAuthorized(session, resolvedUrl) === false) {
         return {
@@ -496,7 +526,8 @@ export const getServerSideProps: GetServerSideProps<any> = async (context) => {
     return {
         props: {
             data: { csrfToken: await getCsrfToken(context), },
-            ...(await serverSideTranslations(locale as string))
+            ...(await serverSideTranslations(locale as string)),
+            dehydratedState: dehydrate(queryClient),
         },
     };
 }

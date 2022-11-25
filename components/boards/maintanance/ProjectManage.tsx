@@ -4,42 +4,87 @@ import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 import { Props } from 'framer-motion/types/types';
 import { useTranslation } from 'next-i18next';
 import { styled } from '@mui/material/styles';
-import React from 'react';
+import React, { useEffect } from 'react';
 import dayjs, { Dayjs } from 'dayjs';
 import { getYYYYMMDDString } from '@core/time';
 import { FieldValues, useForm } from "react-hook-form";
 import { useRouter } from 'next/router';
+import { GetServerSideProps, NextApiRequest, NextApiResponse } from 'next';
+import { unstable_getServerSession } from 'next-auth';
+import { IncomingMessage, ServerResponse } from 'http';
+import { authOptions } from 'pages/api/auth/[...nextauth]';
+import { checkAuthorized } from '@core/logics';
+import { getCsrfToken } from 'next-auth/react';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { projectTableLimit } from '@core/styles/mui';
+import { dehydrate, QueryClient, useQuery } from 'react-query';
+import { getProjects } from 'pages/boards/maintanance';
 
 const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', width: 90 },
     {
-        field: 'firstName',
-        headerName: 'First name',
+        field: 'projectName',
+        headerName: 'projectName',
         width: 150,
         editable: true,
     },
     {
-        field: 'lastName',
-        headerName: 'Last name',
+        field: 'projectEnglishName',
+        headerName: 'projectEnglishName',
         width: 150,
         editable: true,
     },
     {
-        field: 'age',
-        headerName: 'Age',
-        type: 'number',
-        width: 110,
+        field: 'projectStartDate',
+        headerName: 'projectStartDate',
+        type: 'date',
+        // width: 110,
         editable: true,
     },
     {
-        field: 'fullName',
-        headerName: 'Full name',
-        description: 'This column has a value getter and is not sortable.',
-        sortable: false,
-        width: 160,
-        valueGetter: (params: GridValueGetterParams) =>
-            `${params.row.firstName || ''} ${params.row.lastName || ''}`,
+        field: 'projectEndDate',
+        headerName: 'projectEndDate',
+        type: 'date',
+        // width: 110,
+        editable: true,
     },
+    {
+        field: 'projectMaintananceStartDate',
+        headerName: 'projectMaintananceStartDate',
+        type: 'date',
+        // width: 110,
+        editable: true,
+    },
+    {
+        field: 'projectMaintananceEndDate',
+        headerName: 'projectMaintananceEndDate',
+        type: 'date',
+        // width: 110,
+        editable: true,
+    },
+    {
+        field: 'createdAt',
+        headerName: 'createdAt',
+        type: 'date',
+        // width: 110,
+        editable: true,
+    },
+    {
+        field: 'updatedAt',
+        headerName: 'updatedAt',
+        type: 'date',
+        // width: 110,
+        editable: true,
+    },
+    // {
+    //     field: 'fullName',
+    //     headerName: 'Full name',
+    //     description: 'This column has a value getter and is not sortable.',
+    //     sortable: false,
+    //     width: 160,
+    //     valueGetter: (params: GridValueGetterParams) =>
+    //         `${params.row.firstName || ''} ${params.row.lastName || ''}`,
+    // },
 ];
 
 const rows = [
@@ -64,6 +109,8 @@ const Item = styled(Paper)(({ theme }) => ({
 
 const ProjectManage: React.FC<Props> = ({ props }) => {
     // const { t } = useTranslation('maintanance');
+    const { data } = useQuery("projectList",()=>getProjects(1)) as any
+    const tableData = { ...data }
     const {
         handleSubmit,
         register,
@@ -93,12 +140,16 @@ const ProjectManage: React.FC<Props> = ({ props }) => {
             console.error(error);
         }
     }
+    useEffect(()=>{
+        logger.debug('project list -> ' , tableData)
+    },[tableData])
 
     return (
         <>
             <Box sx={{ height: 400, width: '100%' }}>
                 <DataGrid
-                    rows={rows}
+                    // rows={rows}
+                    rows={tableData.projects}
                     columns={columns}
                     pageSize={5}
                     rowsPerPageOptions={[5]}
@@ -221,4 +272,56 @@ const ProjectManage: React.FC<Props> = ({ props }) => {
         </>
     )
 }
+// const getProjects = async (page: any, email: any) =>
+//     await fetch(`${process.env.NEXTAPI_BASE_URL}/project/list`, {
+//         method: 'POST',
+//         body: JSON.stringify({
+//             page: page - 1,
+//             limit: projectTableLimit,
+//             conditions: {
+//                 creator: {
+//                     // email: 'admin@sotong.co.kr'
+//                     // email
+//                     ...(email && { email: email })
+//                 }
+//             }
+//         }),
+//         headers: { "Content-Type": "application/json" }
+//     }).then((result) => result.json())
+// export const getServerSideProps: GetServerSideProps<any> = async (context) => {
+//     const { req, res, locale, resolvedUrl } = context;
+//     const session = await unstable_getServerSession(
+//         req as NextApiRequest | (IncomingMessage & { cookies: Partial<{ [key: string]: string; }>; }),
+//         res as NextApiResponse<any> | ServerResponse<IncomingMessage>,
+//         authOptions
+//     )
+//     let page = 1;
+//     if (context.query.page && typeof context.query.page === 'string') {
+//         page = parseInt(context.query.page);
+//     }
+//     const email = context.query.email;
+//     const queryClient = new QueryClient();
+//     await queryClient.prefetchQuery(
+//         "projectList",
+//         () => getProjects(page, email)
+//     );
+//     // redirect check
+//     if (checkAuthorized(session, resolvedUrl) === false) {
+//         return {
+//             redirect: {
+//                 destination: '/',
+//                 permanent: false,
+//             },
+//         }
+//     }
+//     return {
+//         props: {
+//             data: { csrfToken: await getCsrfToken(context), },
+//             // ...(await serverSideTranslations(locale as string)),
+//             dehydratedState: dehydrate(queryClient),
+//         },
+//     };
+// }
+
 export default ProjectManage;
+
