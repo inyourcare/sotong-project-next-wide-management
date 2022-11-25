@@ -27,7 +27,7 @@ async function handlePOST(
     req: NextApiRequest,
     res: NextApiResponse,
 ) {
-    logger.debug('project/create->', req.body)
+    // logger.debug('project/create->', req.body)
     const session = await getSession({ req })
     const creatorId = session?.user.id
     if (!session || !creatorId) {
@@ -37,66 +37,25 @@ async function handlePOST(
         return;
     }
 
-
-    // // logger.debug('api/menu/create' , session)
-    // const parentId = Number(req.body.parentId)
-    // logger.debug("creating menu", {
-    //     ...req.body,
-    // });
-
-    // // const [posts, totalPosts] = await prisma.$transaction([
-    // //     prisma.post.findMany({ where: { title: { contains: 'prisma' } } }),
-    // //     prisma.post.count(),
-    // // ])
-    // // const client = new PrismaClient()
-    // await prisma.$transaction(async (tx) => {
-    //     const me = await tx.menu.create({
-    //         data: { ...req.body, creatorId, modifierId: creatorId, parentId },
-    //     })
-    //     // 부모가 없는 경우
-    //     if (me.parentId === 0)
-    //         await tx.menu.update({
-    //             where: { id: me.id },
-    //             data: {
-    //                 ...me,
-    //                 groupId: me.id,
-    //                 parentId: me.id
-    //             }
-    //         })
-    //     // 부모가 있는 경우
-    //     else {
-    //         // 먼저 부모를 찾고
-    //         const parent = await tx.menu.findFirstOrThrow({
-    //             where: { id: me.parentId },
-    //         })
-    //         // 같은 부모를 가진 기존 글중 최대 step + 1
-    //         const maxStepRecord = await tx.menu.findFirstOrThrow({
-    //             where: { parentId: me.parentId },
-    //             orderBy: [{
-    //                 step: 'desc'
-    //             }]
-    //         })
-    //         const newStep = Math.max(maxStepRecord.step, parent.step) + 1;
-    //         // 해당 그룹에 step 이 더 크거나 하면 increment
-    //         await tx.menu.updateMany({
-    //             where: { groupId: parent.groupId, step: { gte: newStep } },
-    //             data: {
-    //                 step: {
-    //                     increment: 1
-    //                 }
-    //             }
-    //         })
-    //         // 자기자신 업데이트
-    //         await tx.menu.update({
-    //             where: { id: me.id },
-    //             data: {
-    //                 ...me,
-    //                 depth: parent.depth + 1,
-    //                 step: newStep,
-    //                 groupId: parent.groupId,
-    //             }
-    //         })
-    //     }
-    //     res.json(me);
-    // })
+    await prisma.$transaction(async (tx) => {
+        await tx.project.create({
+            data: {
+                projectName: req.body.projectName,
+                projectEnglishName: req.body.projectEnglishName,
+                projectStartDate: new Date(req.body.projectStartDate),
+                projectEndDate: new Date(req.body.projectEndDate),
+                projectMaintananceStartDate: new Date(req.body.projectMaintananceStartDate),
+                projectMaintananceEndDate: new Date(req.body.projectMaintananceEndDate)
+                // users: { create: { userId: req.body.userId } },
+            },
+        })
+    })
+    .then((data) => {
+        res.json(data);
+        logger.debug("Insert a project: ", data);
+    })
+    .catch((err) => {
+        res.json(err);
+        logger.debug("Error while Insert a project: ", err);
+    })
 }

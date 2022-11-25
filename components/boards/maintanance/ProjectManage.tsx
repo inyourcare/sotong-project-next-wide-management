@@ -84,7 +84,7 @@ const ProjectManage: React.FC<Props> = ({ props }) => {
             // todo:: 만약 네이버 등으로 먼저 로그읺해서 메일이 등록된 유저는 create 가 되지 않는다. 해결 필요
             reset();
             router.push(
-                `boards/maintanance${router.query.callbackUrl
+                `maintanance${router.query.callbackUrl
                     ? `?callbackUrl=${router.query.callbackUrl}`
                     : ""
                 }`,
@@ -198,7 +198,7 @@ const ProjectManage: React.FC<Props> = ({ props }) => {
                                 InputLabelProps={{
                                     shrink: true,
                                 }}
-                                {...register('projectMaintanancEndDate')}
+                                {...register('projectMaintananceEndDate')}
                             />}
                             label="유지보수 종료일"
                             labelPlacement='top' />
