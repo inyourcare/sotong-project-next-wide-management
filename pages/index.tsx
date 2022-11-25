@@ -24,6 +24,7 @@ export default function Home(props: HomeProps) {
   const maintanancePath = path.filter(({ name, link }) => name === '유지보수관리').pop()
   const signUpPath = path.filter(({ name, link }) => name === 'SignUp').pop()
   const menusPath = path.filter(({ name, link }) => name === '메뉴관리').pop()
+  const userManagementPath = path.filter(({ name, link }) => name === '유저관리').pop()
   // const classes = useStyles();
   // const signInPath = props.signInPath;
   useEffect(() => {
@@ -70,6 +71,9 @@ export default function Home(props: HomeProps) {
               </Link>
               <Link href={menusPath?.link as string}>
                 <Typography color="inherit">메뉴관리</Typography>
+              </Link>
+              <Link href={userManagementPath?.link as string}>
+                <Typography color="inherit">유저관리</Typography>
               </Link>
               <Link href={signUpPath?.link as string}>
                 <Typography color="inherit">회원가입</Typography>
