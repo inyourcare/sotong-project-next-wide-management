@@ -72,8 +72,10 @@ model User {
   comments      Comment[]
   accounts      Account[]
   sessions      Session[]
-  menusCreator  Menu[]    @relation("creator")
-  menusModifier Menu[]    @relation("modifier")
+  menusCreator  Menu[]        @relation("creator")
+  menusModifier Menu[]        @relation("modifier")
+  projectUser   ProjectUser[]
+  Project       Project[]
 }
 
 model VerificationToken {
@@ -306,3 +308,31 @@ model Popup {
 }
 
 // Admin managemet end
+
+model ProjectUser {
+  id        String   @id @default(uuid())
+  project   Project? @relation(fields: [projectId], references: [id])
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    String?
+  projectId Int?
+}
+
+model Project {
+  id Int @id @default(autoincrement())
+
+  projectUser ProjectUser[]
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id])
+
+  projectName        String
+  projectEnglishName String
+
+  projectStartDate            DateTime?
+  projectEndDate              DateTime?
+  projectMaintananceStartDate DateTime?
+  projectMaintananceEndDate   DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

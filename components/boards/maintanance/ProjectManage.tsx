@@ -75,7 +75,7 @@ const ProjectManage: React.FC<Props> = ({ props }) => {
         try {
             const body = { ...values };
             console.log(`POSTing ${JSON.stringify(body, null, 2)}`);
-            const res = await fetch(`/api/workjournal/create`, {
+            const res = await fetch(`/api/project/create`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(body),
