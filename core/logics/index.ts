@@ -14,9 +14,12 @@ export const checkAuthorized = (session: Session | null, resolvedUrl: string) =>
         logger.debug('session need', resolvedUrl)
         return false
     }
-    const sessionRole = session.user.role;
+    // const sessionRole = session.user.role;
+    const sessionRole = session.user.roles;
+    const filtered = sessionRole?.filter(role=>authorized.includes(role.role))
     if (sessionRole) {
-        const check = authorized.includes(sessionRole)
+        // const check = authorized.includes(sessionRole)
+        const check = filtered && filtered.length > 0
         logger.debug('checker', authorized, sessionRole, check)
         if (check) {
             logger.debug('authorized', sessionRole)

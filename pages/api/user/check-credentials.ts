@@ -35,7 +35,8 @@ async function handlePOST(
             email: true,
             image: true,
             password: true,
-            role: true
+            role: true,
+            roles: true
         },
     });
     logger.debug("password", user,user?.password,hashPassword(req.body.password));

@@ -9,6 +9,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { logger } from '@core/logger';
 import { prisma } from '@core/prisma';
 import { Role } from '@prisma/client';
+import { TUserRoles } from '@core/types/TUserRoles';
 
 const kakaoClientId = process.env.KAKAO_CLIENT_ID
 const kakaoClientSecret = process.env.KAKAO_CLIENT_SECRET
@@ -106,16 +107,18 @@ export const authOptions: NextAuthOptions = {
         },
         async session({ session, token, user }) {
             logger.debug("session callback", session, token, user)
-            const userRole = token.role as Role;
+            const userRole = token.roles as TUserRoles[];
             const userId = token.sub
-            if (userRole) session.user.role = userRole; // Add role value to user object so it is passed along with session
+            // if (userRole) session.user.role = userRole; // Add role value to user object so it is passed along with session
+            if (userRole) session.user.roles = userRole; // Add role value to user object so it is passed along with session
             if (userId) session.user.id = userId
             return session;
         },
         async jwt({ token, user, account, profile, isNewUser }) {
             logger.debug("jwt callback", token, user, account, profile, isNewUser)
-            const userRole = user?.role;
-            if (userRole) token.role = userRole
+            // const userRole = user?.role;
+            const userRole = user?.roles;
+            if (userRole) token.roles = userRole
             return token
         },
         async signIn({ user, account, profile, email, credentials }) {
