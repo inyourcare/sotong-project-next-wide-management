@@ -19,6 +19,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { projectTableLimit } from '@core/styles/mui';
 import { dehydrate, QueryClient, useQuery } from 'react-query';
 import { getProjects } from 'pages/boards/maintanance';
+import { TProject } from '@core/types/TProject';
 
 const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', width: 90 },
@@ -163,25 +164,29 @@ const ProjectManage: React.FC<Props> = ({ props }) => {
     > | null>(null);
     const noButtonRef = React.useRef<HTMLButtonElement>(null);
 
-    interface User {
-        name: string;
-        age: number;
-        // id: GridRowId;
-        dateCreated: Date;
-        lastLogin: Date;
-    }
     const mutateRow = React.useCallback(
-        (user: Partial<User>) =>
-            new Promise<Partial<User>>((resolve, reject) =>
-                setTimeout(() => {
-                    if (user.name?.trim() === '') {
-                        reject();
-                    } else {
-                        resolve(user);
-                    }
-                }, 200),
-            ),
-        [],
+        // (user: Partial<User>) =>
+        //     new Promise<Partial<User>>((resolve, reject) =>
+        //         setTimeout(() => {
+        //             if (user.name?.trim() === '') {
+        //                 reject();
+        //             } else {
+        //                 resolve(user);
+        //             }
+        //         }, 200),
+        //     ),
+        // [],
+        async (project: Partial<TProject>) => {
+            const res = await fetch(`/api/project/${project.id}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ ...project }),
+            })
+                .catch((error) => {
+                    console.error(`${project.id} 수정 중 에러 :: ${error}`);
+                })
+        }
+        , []
     );
 
     const processRowUpdate = React.useCallback(
