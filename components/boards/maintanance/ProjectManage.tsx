@@ -347,7 +347,7 @@ Praesent commodo cursus magna, vel scelerisque nisl consectetur et.`,
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={handleCloseDialog}>Cancel</Button>
-                        <Button onClick={handleCloseDialog}>Subscribe</Button>
+                        <Button onClick={handleCloseDialog}>추가</Button>
                     </DialogActions>
                 </Dialog>
             </div>

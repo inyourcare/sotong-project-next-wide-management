@@ -55,15 +55,23 @@ enum Role {
   MEMBER
 }
 
+model UserRoles {
+  id     Int     @id @default(autoincrement())
+  user   User?   @relation(fields: [userId], references: [id])
+  userId String?
+  role   Role    @default(USER)
+}
+
 model User {
   id String @id @default(cuid())
 
   name          String?
-  email         String?   @unique
+  email         String?     @unique
   emailVerified DateTime?
   password      String?
   image         String?
-  role          Role      @default(USER)
+  role          Role        @default(USER)
+  roles         UserRoles[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -75,7 +83,7 @@ model User {
   sessions      Session[]
   menusCreator  Menu[]        @relation("creator")
   menusModifier Menu[]        @relation("modifier")
-  projects   ProjectUser[]
+  projects      ProjectUser[]
 }
 
 model VerificationToken {
