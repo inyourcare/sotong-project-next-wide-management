@@ -99,6 +99,7 @@ export const authOptions: NextAuthOptions = {
     adapter: PrismaAdapter(prisma),
     callbacks: {
         async redirect({ url, baseUrl }: RedirectParam) {
+            logger.debug("redirect callback", url, baseUrl)
             // Allows relative callback URLs
             if (url.startsWith("/")) return `${baseUrl}${url}`
             // Allows callback URLs on the same origin
