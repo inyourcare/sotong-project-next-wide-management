@@ -7,9 +7,14 @@ export type TUser = {
     email: string,
     emailVerified: string,
     password: string,
-    image: string
-    role: String
+    image: string,
+    role: String,
 
     createdAt: Date
     updatedAt: Date
+    roles: [{
+        id: number,
+        userId: string,
+        role: Role
+    }]
 }

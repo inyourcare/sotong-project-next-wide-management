@@ -17,10 +17,10 @@ import {
     Stack
 } from '@chakra-ui/react';
 import { CgChevronLeft, CgChevronRight } from 'react-icons/cg';
-import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { FiTrash2, FiUser } from "react-icons/fi";
 import { dehydrate, DehydratedState, QueryClient, useQuery } from 'react-query';
-import { MenuItem, Pagination, Select } from '@mui/material';
+import { AlertProps, Dialog, DialogActions, DialogContent, DialogContentText, DialogProps, DialogTitle, Divider, MenuItem, Pagination, Select } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
@@ -86,45 +86,135 @@ const User: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (
         { field: 'updatedAt', headerName: 'UpdatedAt', styles: { width: '10%' } },
     ];
 
-    const saveRoleChanges = async () => {
-        console.log('saveRoleChanges', roleMap)
-        roleMap.forEach(async (role, userId) => {
-            console.log(`POSTing ${JSON.stringify({ role, userId }, null, 2)}`);
-            const res = await fetch(`/api/user/${userId}`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ role }),
-            })
-                .catch((error) => {
-                    console.error(`${userId} :: ${error}`);
-                })
-        })
-        // try {
-        //     // const body = { ...values };
-        //     const body = Object.fromEntries(roleMap);
-        //     console.log(`POSTing ${JSON.stringify(body, null, 2)}`);
-        //     const res = await fetch(`/api/user/update`, {
-        //         method: "POST",
-        //         headers: { "Content-Type": "application/json" },
-        //         body: JSON.stringify(body),
-        //     });
-        //     logger.debug(`res`, res);
-        //     // todo:: 만약 네이버 등으로 먼저 로그읺해서 메일이 등록된 유저는 create 가 되지 않는다. 해결 필요
-        //     // reset();
-        //     router.push(
-        //         `admin/user/${router.query.callbackUrl
-        //             ? `?callbackUrl=${router.query.callbackUrl}`
-        //             : ""
-        //         }`,
-        //     );
-        // } catch (error) {
-        //     console.error(error);
-        // }
-        roleMap.clear()
-        routePush(page, email)
+    // const saveRoleChanges = async () => {
+    //     console.log('saveRoleChanges', roleMap)
+    //     roleMap.forEach(async (role, userId) => {
+    //         console.log(`POSTing ${JSON.stringify({ role, userId }, null, 2)}`);
+    //         const res = await fetch(`/api/user/${userId}`, {
+    //             method: "POST",
+    //             headers: { "Content-Type": "application/json" },
+    //             body: JSON.stringify({ role }),
+    //         })
+    //             .catch((error) => {
+    //                 console.error(`${userId} :: ${error}`);
+    //             })
+    //     })
+    //     // try {
+    //     //     // const body = { ...values };
+    //     //     const body = Object.fromEntries(roleMap);
+    //     //     console.log(`POSTing ${JSON.stringify(body, null, 2)}`);
+    //     //     const res = await fetch(`/api/user/update`, {
+    //     //         method: "POST",
+    //     //         headers: { "Content-Type": "application/json" },
+    //     //         body: JSON.stringify(body),
+    //     //     });
+    //     //     logger.debug(`res`, res);
+    //     //     // todo:: 만약 네이버 등으로 먼저 로그읺해서 메일이 등록된 유저는 create 가 되지 않는다. 해결 필요
+    //     //     // reset();
+    //     //     router.push(
+    //     //         `admin/user/${router.query.callbackUrl
+    //     //             ? `?callbackUrl=${router.query.callbackUrl}`
+    //     //             : ""
+    //     //         }`,
+    //     //     );
+    //     // } catch (error) {
+    //     //     console.error(error);
+    //     // }
+    //     roleMap.clear()
+    //     routePush(page, email)
+    // }
+
+    // dialog 
+    const [scroll, setScroll] = React.useState<DialogProps['scroll']>('paper');
+    const [snackbar, setSnackbar] = React.useState<Pick<
+        AlertProps,
+        'children' | 'severity'
+    > | null>(null);
+    const noButtonRef = React.useRef<HTMLButtonElement>(null);
+    const initialDialogRoleToAdd = Role.USER
+    const [dialogUser, setDialogUser] = React.useState<TUser | null>(null);
+    const [dialogRoleToAdd, setDialogRoleToAdd] = React.useState<Role>(initialDialogRoleToAdd);
+    const [dialogOpen, setDialogOpen] = React.useState(false);
+
+    const handleCloseSnackbar = () => setSnackbar(null);
+    const handleCloseDialog = () => {
+        setDialogOpen(false);
+    };
+    const descriptionElementRef = React.useRef<HTMLElement>(null);
+    React.useEffect(() => {
+        if (dialogOpen) {
+            const { current: descriptionElement } = descriptionElementRef;
+            if (descriptionElement !== null) {
+                descriptionElement.focus();
+            }
+        }
+    }, [dialogOpen]);
+
+    const openRolesDialog = (user: TUser) => {
+        setDialogUser(user)
+        setDialogOpen(true)
+        setDialogRoleToAdd(initialDialogRoleToAdd)
     }
+    const addNewRoleToUser = useCallback(async () => {
+        console.log(`addNewRoleToUser POSTing ${JSON.stringify({ dialogRoleToAdd, ...dialogUser }, null, 2)}`);
+        const res = await fetch(`/api/user/${dialogUser?.id}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            // body: JSON.stringify({ role:dialogRoleToAdd }),
+            body: JSON.stringify({ roles: { create: { role: dialogRoleToAdd } } }),
+        })
+            .catch((error) => {
+                console.error(`addNewRoleToUser :: ${error}`);
+            })
+        routePush(page, email)
+        setDialogOpen(false)
+    }, [dialogRoleToAdd, dialogUser])
+
     return (
         <>
+            <div>
+                <Dialog
+                    open={dialogOpen}
+                    onClose={handleCloseDialog}
+                    scroll={'paper'}
+                    aria-labelledby="scroll-dialog-title"
+                // aria-describedby="scroll-dialog-description"
+                >
+                    <DialogTitle id="scroll-dialog-title">역활추가</DialogTitle>
+                    <DialogContent dividers={scroll === 'paper'}>
+                        <Box>기존</Box>
+                        {dialogUser?.roles.map(role => {
+                            return <DialogContentText
+                                id="scroll-dialog-description"
+                                ref={descriptionElementRef}
+                                tabIndex={-1}
+                            >
+                                {role.role}
+                            </DialogContentText>
+                        })}
+                        <Divider />
+                        <Box sx={{ marginTop: '20px' }}>신규</Box>
+                        <Select
+                            // labelId="demo-simple-select-label"
+                            // value={user.role}
+                            defaultValue={initialDialogRoleToAdd}
+                            // value={roleMap.get(user.id)}
+                            // label="Age"
+                            // onChange={(e)=>{user.role = e.target.value}}
+                            // onChange={(e) => { roleMap.set(user.id, e.target.value) }}
+                            onChange={(e) => { setDialogRoleToAdd(e.target.value as Role) }}
+                        >
+                            <MenuItem value={Role.ADMIN}>Admin</MenuItem>
+                            <MenuItem value={Role.USER}>User</MenuItem>
+                            <MenuItem value={Role.MEMBER}>Member</MenuItem>
+                        </Select>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleCloseDialog}>Cancel</Button>
+                        <Button onClick={addNewRoleToUser}>추가</Button>
+                    </DialogActions>
+                </Dialog>
+            </div>
             <Flex minH={"100vh"} w={"100%"} align={"center"} justify={"center"}>
                 <Stack w={"100%"} spacing={20} mx={"auto"} py={12} px={20}>
                     <Stack w={"full"} align={"center"}>
@@ -145,7 +235,7 @@ const User: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (
                                             return {
                                                 ...user,
                                                 role: (<>
-                                                    <Select
+                                                    {/* <Select
                                                         // labelId="demo-simple-select-label"
                                                         // value={user.role}
                                                         defaultValue={user.role}
@@ -157,8 +247,10 @@ const User: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (
                                                         <MenuItem value={Role.ADMIN}>Admin</MenuItem>
                                                         <MenuItem value={Role.USER}>User</MenuItem>
                                                         <MenuItem value={Role.MEMBER}>Member</MenuItem>
-                                                    </Select>
-                                                </>)
+                                                    </Select> */}
+                                                    <Button onClick={() => openRolesDialog(user)}>추가</Button>
+                                                </>),
+                                                roles: null
                                             }
                                         })
                                 }
@@ -178,7 +270,7 @@ const User: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (
                                 Home
                             </Link>
                         </Text>
-                        <Button onClick={saveRoleChanges}>Save</Button>
+                        {/* <Button onClick={saveRoleChanges}>Save</Button> */}
                         <SearchBar
                             onChange={(e) => { setEmail(e.target.value) }}
                             onSubmit={() => {

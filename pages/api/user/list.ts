@@ -42,7 +42,8 @@ export default async function handle(
             image: true,
             role: true,
             createdAt: true,
-            updatedAt: true
+            updatedAt: true,
+            roles: true
         },
         where: whereConditions,
         // where: {
