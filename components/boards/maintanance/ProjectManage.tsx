@@ -1,6 +1,6 @@
 import { logger } from '@core/logger';
-import { Alert, AlertProps, Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormControlLabel, FormGroup, Input, InputLabel, Paper, Snackbar, Stack, TextareaAutosize, TextField } from '@mui/material';
-import { DataGrid, GridColDef, GridRowModel, GridValueGetterParams } from '@mui/x-data-grid';
+import { Alert, AlertProps, Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogContentText, DialogProps, DialogTitle, FormControl, FormControlLabel, FormGroup, Input, InputLabel, Paper, Snackbar, Stack, TextareaAutosize, TextField } from '@mui/material';
+import { DataGrid, GridApi, GridCellValue, GridColDef, GridRowModel, GridValueGetterParams } from '@mui/x-data-grid';
 import { Props } from 'framer-motion/types/types';
 import { useTranslation } from 'next-i18next';
 import { styled } from '@mui/material/styles';
@@ -21,86 +21,7 @@ import { dehydrate, QueryClient, useQuery } from 'react-query';
 import { getProjects } from 'pages/boards/maintanance';
 import { TProject } from '@core/types/TProject';
 
-const columns: GridColDef[] = [
-    {
-        field: 'id',
-        headerName: 'ID',
-        width: 90
-        // flex: 1,
-    },
-    {
-        field: 'projectName',
-        headerName: 'projectName',
-        // width: 150,
-        editable: true,
-        // resizable: true
-        flex: 1,
-    },
-    {
-        field: 'projectEnglishName',
-        headerName: 'projectEnglishName',
-        // width: 150,
-        editable: true,
-        flex: 1,
-    },
-    {
-        field: 'projectStartDate',
-        headerName: 'projectStartDate',
-        type: 'date',
-        // width: 110,
-        editable: true,
-        flex: 1,
-    },
-    {
-        field: 'projectEndDate',
-        headerName: 'projectEndDate',
-        type: 'date',
-        // width: 110,
-        editable: true,
-        flex: 1,
-    },
-    {
-        field: 'projectMaintananceStartDate',
-        headerName: 'projectMaintananceStartDate',
-        type: 'date',
-        // width: 110,
-        editable: true,
-        flex: 1,
-    },
-    {
-        field: 'projectMaintananceEndDate',
-        headerName: 'projectMaintananceEndDate',
-        type: 'date',
-        // width: 110,
-        editable: true,
-        flex: 1,
-    },
-    {
-        field: 'createdAt',
-        headerName: 'createdAt',
-        type: 'date',
-        // width: 110,
-        // editable: true,
-        flex: 1,
-    },
-    {
-        field: 'updatedAt',
-        headerName: 'updatedAt',
-        type: 'date',
-        // width: 110,
-        // editable: true,
-        flex: 1,
-    },
-    // {
-    //     field: 'fullName',
-    //     headerName: 'Full name',
-    //     description: 'This column has a value getter and is not sortable.',
-    //     sortable: false,
-    //     width: 160,
-    //     valueGetter: (params: GridValueGetterParams) =>
-    //         `${params.row.firstName || ''} ${params.row.lastName || ''}`,
-    // },
-];
+
 function computeMutation(newRow: GridRowModel, oldRow: GridRowModel) {
     if (newRow.projectName !== oldRow.projectName) {
         return `projectName from '${oldRow.projectName}' to '${newRow.projectName}'`;
@@ -163,8 +84,115 @@ const ProjectManage: React.FC<Props> = ({ props }) => {
 
 
 
-    //////////// mui example
+    //////////// mui datagrid example
 
+    const columns: GridColDef[] = [
+        {
+            field: 'id',
+            headerName: 'ID',
+            width: 10
+            // flex: 1,
+        },
+        {
+            field: 'projectName',
+            headerName: 'projectName',
+            // width: 150,
+            editable: true,
+            // resizable: true
+            flex: 1,
+        },
+        {
+            field: 'projectEnglishName',
+            headerName: 'projectEnglishName',
+            // width: 150,
+            editable: true,
+            flex: 1,
+        },
+        {
+            field: 'projectStartDate',
+            headerName: 'projectStartDate',
+            type: 'date',
+            // width: 110,
+            editable: true,
+            flex: 1,
+        },
+        {
+            field: 'projectEndDate',
+            headerName: 'projectEndDate',
+            type: 'date',
+            // width: 110,
+            editable: true,
+            flex: 1,
+        },
+        {
+            field: 'projectMaintananceStartDate',
+            headerName: 'projectMaintananceStartDate',
+            type: 'date',
+            // width: 110,
+            editable: true,
+            flex: 1,
+        },
+        {
+            field: 'projectMaintananceEndDate',
+            headerName: 'projectMaintananceEndDate',
+            type: 'date',
+            // width: 110,
+            editable: true,
+            flex: 1,
+        },
+        {
+            field: 'createdAt',
+            headerName: 'createdAt',
+            type: 'date',
+            // width: 110,
+            // editable: true,
+            flex: 1,
+        },
+        {
+            field: 'updatedAt',
+            headerName: 'updatedAt',
+            type: 'date',
+            // width: 110,
+            // editable: true,
+            flex: 1,
+        },
+        {
+            field: "action",
+            headerName: "소통 담당자 추가",
+            sortable: false,
+            // width: 20,
+            flex: 1,
+            renderCell: (params) => {
+                const onClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+                    e.stopPropagation(); // don't select this row after clicking
+
+                    const api: GridApi = params.api;
+                    const thisRow: Record<string, GridCellValue> = {};
+
+                    api
+                        .getAllColumns()
+                        .filter((c) => c.field !== "__check__" && !!c)
+                        .forEach(
+                            (c) => (thisRow[c.field] = params.getValue(params.id, c.field))
+                        );
+
+                    // return alert(JSON.stringify(thisRow, null, 4));
+                    setDialogOpen(true)
+                };
+
+                return <Button onClick={onClick}>추가</Button>;
+            }
+        },
+        // {
+        //     field: 'fullName',
+        //     headerName: 'Full name',
+        //     description: 'This column has a value getter and is not sortable.',
+        //     sortable: false,
+        //     width: 160,
+        //     valueGetter: (params: GridValueGetterParams) =>
+        //         `${params.row.firstName || ''} ${params.row.lastName || ''}`,
+        // },
+    ];
     const [promiseArguments, setPromiseArguments] = React.useState<any>(null);
     const [snackbar, setSnackbar] = React.useState<Pick<
         AlertProps,
@@ -271,10 +299,58 @@ const ProjectManage: React.FC<Props> = ({ props }) => {
         );
     };
 
+
+    // dialog 
+    const [scroll, setScroll] = React.useState<DialogProps['scroll']>('paper');
+    const [dialogOpen, setDialogOpen] = React.useState(false);
     const handleCloseSnackbar = () => setSnackbar(null);
+    const handleCloseDialog = () => {
+        setDialogOpen(false);
+    };
+    const descriptionElementRef = React.useRef<HTMLElement>(null);
+    React.useEffect(() => {
+        if (dialogOpen) {
+            const { current: descriptionElement } = descriptionElementRef;
+            if (descriptionElement !== null) {
+                descriptionElement.focus();
+            }
+        }
+    }, [dialogOpen]);
+
 
     return (
         <>
+            <div>
+                <Dialog
+                    open={dialogOpen}
+                    onClose={handleCloseDialog}
+                    scroll={'paper'}
+                    aria-labelledby="scroll-dialog-title"
+                    aria-describedby="scroll-dialog-description"
+                >
+                    <DialogTitle id="scroll-dialog-title">Subscribe</DialogTitle>
+                    <DialogContent dividers={scroll === 'paper'}>
+                        <DialogContentText
+                            id="scroll-dialog-description"
+                            ref={descriptionElementRef}
+                            tabIndex={-1}
+                        >
+                            {[...new Array(50)]
+                                .map(
+                                    () => `Cras mattis consectetur purus sit amet fermentum.
+Cras justo odio, dapibus ac facilisis in, egestas eget quam.
+Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
+Praesent commodo cursus magna, vel scelerisque nisl consectetur et.`,
+                                )
+                                .join('\n')}
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleCloseDialog}>Cancel</Button>
+                        <Button onClick={handleCloseDialog}>Subscribe</Button>
+                    </DialogActions>
+                </Dialog>
+            </div>
             <Box sx={{ height: 400, width: '100%' }}>
                 {renderConfirmDialog()}
                 <DataGrid
@@ -409,56 +485,6 @@ const ProjectManage: React.FC<Props> = ({ props }) => {
         </>
     )
 }
-// const getProjects = async (page: any, email: any) =>
-//     await fetch(`${process.env.NEXTAPI_BASE_URL}/project/list`, {
-//         method: 'POST',
-//         body: JSON.stringify({
-//             page: page - 1,
-//             limit: projectTableLimit,
-//             conditions: {
-//                 creator: {
-//                     // email: 'admin@sotong.co.kr'
-//                     // email
-//                     ...(email && { email: email })
-//                 }
-//             }
-//         }),
-//         headers: { "Content-Type": "application/json" }
-//     }).then((result) => result.json())
-// export const getServerSideProps: GetServerSideProps<any> = async (context) => {
-//     const { req, res, locale, resolvedUrl } = context;
-//     const session = await unstable_getServerSession(
-//         req as NextApiRequest | (IncomingMessage & { cookies: Partial<{ [key: string]: string; }>; }),
-//         res as NextApiResponse<any> | ServerResponse<IncomingMessage>,
-//         authOptions
-//     )
-//     let page = 1;
-//     if (context.query.page && typeof context.query.page === 'string') {
-//         page = parseInt(context.query.page);
-//     }
-//     const email = context.query.email;
-//     const queryClient = new QueryClient();
-//     await queryClient.prefetchQuery(
-//         "projectList",
-//         () => getProjects(page, email)
-//     );
-//     // redirect check
-//     if (checkAuthorized(session, resolvedUrl) === false) {
-//         return {
-//             redirect: {
-//                 destination: '/',
-//                 permanent: false,
-//             },
-//         }
-//     }
-//     return {
-//         props: {
-//             data: { csrfToken: await getCsrfToken(context), },
-//             // ...(await serverSideTranslations(locale as string)),
-//             dehydratedState: dehydrate(queryClient),
-//         },
-//     };
-// }
 
 export default ProjectManage;
 
