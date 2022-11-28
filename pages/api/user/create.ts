@@ -31,7 +31,14 @@ async function handlePOST(
         password: hashPassword(req.body.password),
     });
     const user = await prisma.user.create({
-        data: { ...req.body, password: hashPassword(req.body.password), role: Role.USER },
+        data: {
+            ...req.body, password: hashPassword(req.body.password), role: Role.USER
+            , roles: {
+                create: {
+                    role: Role.USER
+                }
+            }
+        },
     });
     res.json(user);
 }
