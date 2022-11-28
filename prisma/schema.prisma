@@ -60,6 +60,8 @@ model UserRoles {
   user   User?   @relation(fields: [userId], references: [id])
   userId String?
   role   Role    @default(USER)
+
+  @@unique([userId, role])
 }
 
 model User {
