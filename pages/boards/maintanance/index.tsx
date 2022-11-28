@@ -510,10 +510,14 @@ export const getServerSideProps: GetServerSideProps<any> = async (context) => {
     }
     const email = context.query.email;
     const queryClient = new QueryClient();
-    await queryClient.prefetchQuery(
+    // await queryClient.prefetchQuery(
+    //     "projectList",
+    //     () => getProjects(page)
+    // );
+    await Promise.all([queryClient.prefetchQuery(
         "projectList",
         () => getProjects(page)
-    );
+    )])
     // redirect check
     if (checkAuthorized(session, resolvedUrl) === false) {
         return {

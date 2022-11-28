@@ -109,8 +109,9 @@ const Item = styled(Paper)(({ theme }) => ({
 
 const ProjectManage: React.FC<Props> = ({ props }) => {
     // const { t } = useTranslation('maintanance');
-    const { data } = useQuery("projectList",()=>getProjects(1)) as any
-    const tableData = { ...data }
+    // const { data } = useQuery("projectList",()=>getProjects(1)) as any
+    const projectList = useQuery("projectList",()=>getProjects(1)) as any
+    const tableData = { ...projectList.data }
     const {
         handleSubmit,
         register,
