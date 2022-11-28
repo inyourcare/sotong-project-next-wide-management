@@ -22,18 +22,26 @@ import { getProjects } from 'pages/boards/maintanance';
 import { TProject } from '@core/types/TProject';
 
 const columns: GridColDef[] = [
-    { field: 'id', headerName: 'ID', width: 90 },
+    {
+        field: 'id',
+        headerName: 'ID',
+        width: 90
+        // flex: 1,
+    },
     {
         field: 'projectName',
         headerName: 'projectName',
         // width: 150,
         editable: true,
+        // resizable: true
+        flex: 1,
     },
     {
         field: 'projectEnglishName',
         headerName: 'projectEnglishName',
         // width: 150,
         editable: true,
+        flex: 1,
     },
     {
         field: 'projectStartDate',
@@ -41,6 +49,7 @@ const columns: GridColDef[] = [
         type: 'date',
         // width: 110,
         editable: true,
+        flex: 1,
     },
     {
         field: 'projectEndDate',
@@ -48,6 +57,7 @@ const columns: GridColDef[] = [
         type: 'date',
         // width: 110,
         editable: true,
+        flex: 1,
     },
     {
         field: 'projectMaintananceStartDate',
@@ -55,6 +65,7 @@ const columns: GridColDef[] = [
         type: 'date',
         // width: 110,
         editable: true,
+        flex: 1,
     },
     {
         field: 'projectMaintananceEndDate',
@@ -62,20 +73,23 @@ const columns: GridColDef[] = [
         type: 'date',
         // width: 110,
         editable: true,
+        flex: 1,
     },
     {
         field: 'createdAt',
         headerName: 'createdAt',
         type: 'date',
         // width: 110,
-        editable: true,
+        // editable: true,
+        flex: 1,
     },
     {
         field: 'updatedAt',
         headerName: 'updatedAt',
         type: 'date',
         // width: 110,
-        editable: true,
+        // editable: true,
+        flex: 1,
     },
     // {
     //     field: 'fullName',
@@ -87,30 +101,24 @@ const columns: GridColDef[] = [
     //         `${params.row.firstName || ''} ${params.row.lastName || ''}`,
     // },
 ];
-
-const rows = [
-    { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
-    { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
-    { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
-    { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
-    { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-    { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-    { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-    { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-    { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
-];
-
-const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-}));
-
 function computeMutation(newRow: GridRowModel, oldRow: GridRowModel) {
     if (newRow.projectName !== oldRow.projectName) {
         return `projectName from '${oldRow.projectName}' to '${newRow.projectName}'`;
+    }
+    if (newRow.projectEnglishName !== oldRow.projectEnglishName) {
+        return `projectName from '${oldRow.projectEnglishName}' to '${newRow.projectEnglishName}'`;
+    }
+    if (newRow.projectStartDate !== oldRow.projectStartDate) {
+        return `projectName from '${oldRow.projectStartDate}' to '${newRow.projectStartDate}'`;
+    }
+    if (newRow.projectEndDate !== oldRow.projectEndDate) {
+        return `projectName from '${oldRow.projectEndDate}' to '${newRow.projectEndDate}'`;
+    }
+    if (newRow.projectMaintananceStartDate !== oldRow.projectMaintananceStartDate) {
+        return `projectName from '${oldRow.projectMaintananceStartDate}' to '${newRow.projectMaintananceStartDate}'`;
+    }
+    if (newRow.projectMaintananceEndDate !== oldRow.projectMaintananceEndDate) {
+        return `projectName from '${oldRow.projectMaintananceEndDate}' to '${newRow.projectMaintananceEndDate}'`;
     }
     return null;
 }
@@ -182,9 +190,11 @@ const ProjectManage: React.FC<Props> = ({ props }) => {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ ...project }),
             })
+                .then(result => result.json())
                 .catch((error) => {
                     console.error(`${project.id} 수정 중 에러 :: ${error}`);
                 })
+            return res
         }
         , []
     );
@@ -216,6 +226,7 @@ const ProjectManage: React.FC<Props> = ({ props }) => {
             // Make the HTTP request to save in the backend
             const response = await mutateRow(newRow);
             setSnackbar({ children: 'User successfully saved', severity: 'success' });
+            logger.debug('handleYes success::', response)
             resolve(response);
             setPromiseArguments(null);
         } catch (error) {
