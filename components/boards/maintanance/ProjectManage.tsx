@@ -1,6 +1,6 @@
 import { logger } from '@core/logger';
-import { Box, Button, Checkbox, FormControl, FormControlLabel, FormGroup, Input, InputLabel, Paper, Stack, TextareaAutosize, TextField } from '@mui/material';
-import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
+import { Alert, AlertProps, Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormControlLabel, FormGroup, Input, InputLabel, Paper, Snackbar, Stack, TextareaAutosize, TextField } from '@mui/material';
+import { DataGrid, GridColDef, GridRowModel, GridValueGetterParams } from '@mui/x-data-grid';
 import { Props } from 'framer-motion/types/types';
 import { useTranslation } from 'next-i18next';
 import { styled } from '@mui/material/styles';
@@ -25,13 +25,13 @@ const columns: GridColDef[] = [
     {
         field: 'projectName',
         headerName: 'projectName',
-        width: 150,
+        // width: 150,
         editable: true,
     },
     {
         field: 'projectEnglishName',
         headerName: 'projectEnglishName',
-        width: 150,
+        // width: 150,
         editable: true,
     },
     {
@@ -107,11 +107,18 @@ const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
 }));
 
+function computeMutation(newRow: GridRowModel, oldRow: GridRowModel) {
+    if (newRow.projectName !== oldRow.projectName) {
+        return `projectName from '${oldRow.projectName}' to '${newRow.projectName}'`;
+    }
+    return null;
+}
+
 const ProjectManage: React.FC<Props> = ({ props }) => {
     // const { t } = useTranslation('maintanance');
     // const { data } = useQuery("projectList",()=>getProjects(1)) as any
-    const projectList = useQuery("projectList",()=>getProjects(1)) as any
-    const tableData = { ...projectList.data }
+    const projectList = useQuery("projectList", () => getProjects(1)) as any
+    const porjectTableData = { ...projectList.data }
     const {
         handleSubmit,
         register,
@@ -141,23 +148,136 @@ const ProjectManage: React.FC<Props> = ({ props }) => {
             console.error(error);
         }
     }
-    useEffect(()=>{
-        logger.debug('project list -> ' , tableData)
-    },[tableData])
+    useEffect(() => {
+        logger.debug('project list -> ', porjectTableData)
+    }, [porjectTableData])
+
+
+
+    //////////// mui example
+
+    const [promiseArguments, setPromiseArguments] = React.useState<any>(null);
+    const [snackbar, setSnackbar] = React.useState<Pick<
+        AlertProps,
+        'children' | 'severity'
+    > | null>(null);
+    const noButtonRef = React.useRef<HTMLButtonElement>(null);
+
+    interface User {
+        name: string;
+        age: number;
+        // id: GridRowId;
+        dateCreated: Date;
+        lastLogin: Date;
+    }
+    const mutateRow = React.useCallback(
+        (user: Partial<User>) =>
+            new Promise<Partial<User>>((resolve, reject) =>
+                setTimeout(() => {
+                    if (user.name?.trim() === '') {
+                        reject();
+                    } else {
+                        resolve(user);
+                    }
+                }, 200),
+            ),
+        [],
+    );
+
+    const processRowUpdate = React.useCallback(
+        (newRow: GridRowModel, oldRow: GridRowModel) =>
+            new Promise<GridRowModel>((resolve, reject) => {
+                const mutation = computeMutation(newRow, oldRow);
+                if (mutation) {
+                    // Save the arguments to resolve or reject the promise later
+                    setPromiseArguments({ resolve, reject, newRow, oldRow });
+                } else {
+                    resolve(oldRow); // Nothing was changed
+                }
+            }),
+        [],
+    );
+
+    const handleNo = () => {
+        const { oldRow, resolve } = promiseArguments;
+        resolve(oldRow); // Resolve with the old row to not update the internal state
+        setPromiseArguments(null);
+    };
+
+    const handleYes = async () => {
+        const { newRow, oldRow, reject, resolve } = promiseArguments;
+
+        try {
+            // Make the HTTP request to save in the backend
+            const response = await mutateRow(newRow);
+            setSnackbar({ children: 'User successfully saved', severity: 'success' });
+            resolve(response);
+            setPromiseArguments(null);
+        } catch (error) {
+            setSnackbar({ children: "Name can't be empty", severity: 'error' });
+            reject(oldRow);
+            setPromiseArguments(null);
+        }
+    };
+
+    const handleEntered = () => {
+        // The `autoFocus` is not used because, if used, the same Enter that saves
+        // the cell triggers "No". Instead, we manually focus the "No" button once
+        // the dialog is fully open.
+        // noButtonRef.current?.focus();
+    };
+
+    const renderConfirmDialog = () => {
+        if (!promiseArguments) {
+            return null;
+        }
+
+        const { newRow, oldRow } = promiseArguments;
+        const mutation = computeMutation(newRow, oldRow);
+
+        return (
+            <Dialog
+                maxWidth="xs"
+                TransitionProps={{ onEntered: handleEntered }}
+                open={!!promiseArguments}
+            >
+                <DialogTitle>Are you sure?</DialogTitle>
+                <DialogContent dividers>
+                    {`Pressing 'Yes' will change ${mutation}.`}
+                </DialogContent>
+                <DialogActions>
+                    <Button ref={noButtonRef} onClick={handleNo}>
+                        No
+                    </Button>
+                    <Button onClick={handleYes}>Yes</Button>
+                </DialogActions>
+            </Dialog>
+        );
+    };
+
+    const handleCloseSnackbar = () => setSnackbar(null);
 
     return (
         <>
             <Box sx={{ height: 400, width: '100%' }}>
+                {renderConfirmDialog()}
                 <DataGrid
                     // rows={rows}
-                    rows={tableData.projects}
+                    rows={porjectTableData.projects}
                     columns={columns}
                     pageSize={5}
                     rowsPerPageOptions={[5]}
                     checkboxSelection
                     disableSelectionOnClick
                     experimentalFeatures={{ newEditingApi: true }}
+                    processRowUpdate={processRowUpdate}
+                // isCellEditable={(params) => params.row.age % 2 === 0}
                 />
+                {!!snackbar && (
+                    <Snackbar open onClose={handleCloseSnackbar} autoHideDuration={6000}>
+                        <Alert {...snackbar} onClose={handleCloseSnackbar} />
+                    </Snackbar>
+                )}
             </Box>
             <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
                 <form
