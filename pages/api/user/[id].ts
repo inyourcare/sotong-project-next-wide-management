@@ -30,7 +30,7 @@ async function handleGET(userId: string, res: NextApiResponse) {
     res.json(user);
 }
 
-// GET /api/user/:id
+// POST /api/user/:id
 async function handlePOST(userId: string, req: NextApiRequest, res: NextApiResponse) {
     const user = await prisma.user.update({
         // where: { id: Number(userId) },

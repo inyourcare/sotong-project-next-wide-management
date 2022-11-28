@@ -30,7 +30,7 @@ async function handleGET(id: number, res: NextApiResponse) {
     res.json(project);
 }
 
-// GET /api/user/:id
+// POST /api/user/:id
 async function handlePOST(id: number, req: NextApiRequest, res: NextApiResponse) {
     let data = req.body
     const users = data.users
