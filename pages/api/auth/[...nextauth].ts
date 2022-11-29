@@ -130,5 +130,8 @@ export const authOptions: NextAuthOptions = {
     },
     secret: SECRET,
     session: { strategy: "jwt" },
+    pages: {
+        error: '/_error'
+    }
 };
 export default NextAuth(authOptions)
