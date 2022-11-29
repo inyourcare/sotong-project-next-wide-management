@@ -325,6 +325,8 @@ model ProjectUser {
   user      User?    @relation(fields: [userId], references: [id])
   userId    String?
   projectId Int?
+
+  @@unique([userId, projectId])
 }
 
 model Project {

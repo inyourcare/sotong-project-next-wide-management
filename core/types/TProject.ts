@@ -12,5 +12,5 @@ export type TProject = {
     createdAt: Date
     updatedAt: Date,
 
-    users: TUser[]
+    users: [{user:TUser}]
 }

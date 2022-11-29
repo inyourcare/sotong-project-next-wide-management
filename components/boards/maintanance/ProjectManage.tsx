@@ -1,10 +1,10 @@
 import { logger } from '@core/logger';
-import { Alert, AlertProps, Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogContentText, DialogProps, DialogTitle, FormControl, FormControlLabel, FormGroup, Grid, Input, InputLabel, Paper, Snackbar, Stack, TextareaAutosize, TextField } from '@mui/material';
+import { Alert, AlertProps, Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogContentText, DialogProps, DialogTitle, FormControl, FormControlLabel, FormGroup, Grid, Input, InputLabel, List, ListItem, ListItemText, Paper, Snackbar, Stack, TextareaAutosize, TextField } from '@mui/material';
 import { DataGrid, GridApi, GridCellValue, GridColDef, GridRowModel, GridValueGetterParams } from '@mui/x-data-grid';
 import { Props } from 'framer-motion/types/types';
 import { useTranslation } from 'next-i18next';
 import { styled } from '@mui/material/styles';
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import dayjs, { Dayjs } from 'dayjs';
 import { getYYYYMMDDString } from '@core/time';
 import { FieldValues, useForm } from "react-hook-form";
@@ -21,6 +21,8 @@ import { dehydrate, QueryClient, useQuery } from 'react-query';
 import { TProject } from '@core/types/TProject';
 import { getProjects, getUsers } from '@core/logics/prisma';
 import { useQueryGetProjects, useQueryGetUser } from 'pages/boards/maintanance';
+import { TUser } from '@core/types/TUser';
+import { UnorderedList } from '@chakra-ui/react';
 
 
 function computeMutation(newRow: GridRowModel, oldRow: GridRowModel) {
@@ -50,10 +52,10 @@ const ProjectManage: React.FC<Props> = ({ props }) => {
     // const { data } = useQuery("projectList",()=>getProjects(1)) as any
     // const projectList = useQuery("projectList", () => getProjects(1)) as any
     const projectList = useQuery("projectList", () => useQueryGetProjects(1)) as any
-    const porjectTableData = { ...projectList.data }
+    // const porjectTableData = { ...projectList.data }
     // const memberList = useQuery("memberList", () => getUsers(1)) as any
     const memberList = useQuery("memberList", () => useQueryGetUser(1)) as any
-    const memberTableData = { ...memberList.data }
+    // const memberTableData = { ...memberList.data }
     const {
         handleSubmit,
         register,
@@ -84,8 +86,8 @@ const ProjectManage: React.FC<Props> = ({ props }) => {
         }
     }
     useEffect(() => {
-        logger.debug('project list -> ', porjectTableData)
-    }, [porjectTableData])
+        logger.debug('project list -> ', { ...projectList.data })
+    }, [projectList])
 
 
 
@@ -181,9 +183,11 @@ const ProjectManage: React.FC<Props> = ({ props }) => {
                             (c) => (thisRow[c.field] = params.getValue(params.id, c.field))
                         );
 
-                    const projectListArr = porjectTableData.projects as Array<TProject>
-                    setSelectedProject(projectListArr.filter(project => project.id === thisRow['id']).pop())
-
+                    // const projectListArr = porjectTableData.projects as Array<TProject>
+                    const projectListArr = projectList.data.projects as Array<TProject>
+                    const project = projectListArr.filter(project => project.id === thisRow['id']).pop()
+                    setSelectedProject(project)
+                    // setProjectUsers(project?.users)
                     // return alert(JSON.stringify(thisRow, null, 4));
                     setDialogOpen(true)
                 };
@@ -221,9 +225,13 @@ const ProjectManage: React.FC<Props> = ({ props }) => {
         //     ),
         // [],
         async (project: Partial<TProject>) => {
+            // const projectUsers = {update:project.users}
+            // const projectUsers = project.users?.map(user => { return { ...user.user } }).values()
+            delete project.users
             const res = await fetch(`/api/project/${project.id}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
+                // body: JSON.stringify({ ...project, users:{...projectUsers} }),
                 body: JSON.stringify({ ...project }),
             })
                 .then(result => result.json())
@@ -312,10 +320,34 @@ const ProjectManage: React.FC<Props> = ({ props }) => {
     const [scroll, setScroll] = React.useState<DialogProps['scroll']>('paper');
     const [dialogOpen, setDialogOpen] = React.useState(false);
     const [selectedProject, setSelectedProject] = React.useState<TProject | undefined>(undefined);
+    // const [projectUsers, setProjectUsers] = React.useState<[{ user: TUser }] | undefined>(undefined);
+    const [selectedMembers, setSelectedMembers] = React.useState<Array<TUser> | null>(null);
     const handleCloseSnackbar = () => setSnackbar(null);
     const handleCloseDialog = () => {
         setDialogOpen(false);
     };
+    const handleAddDialog = useCallback(async () => {
+        console.log(`handleAddDialog params`, selectedProject, selectedMembers);
+        const res = await fetch(`/api/project/${selectedProject?.id}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            // body: JSON.stringify({ role:dialogRoleToAdd }),
+            // body: JSON.stringify({ users: { create: { userId: dialogRoleToAdd } } }),
+            body: JSON.stringify({ users: { create: selectedMembers?.map(member => { return { userId: member.id } }) } }),
+        })
+            .then(result => {
+                // console.log('hihi1')
+                return (projectList.refetch() as Promise<any>)
+                    .then(refetchResult => {
+                        // console.log('hihi2')
+                        // setSelectedProject((porjectTableData.projects as Array<TProject>).filter(p => p.id === selectedProject?.id).pop())
+                        return result.json()
+                    })
+            })
+            .catch((error) => {
+                console.error(`handleAddDialog :: ${error}`);
+            })
+    }, [selectedMembers, selectedProject]);
     const descriptionElementRef = React.useRef<HTMLElement>(null);
     React.useEffect(() => {
         if (dialogOpen) {
@@ -325,7 +357,6 @@ const ProjectManage: React.FC<Props> = ({ props }) => {
             }
         }
     }, [dialogOpen]);
-
 
     const memberDataColumns: GridColDef[] = [
         {
@@ -341,6 +372,10 @@ const ProjectManage: React.FC<Props> = ({ props }) => {
             flex: 1,
         },
     ]
+
+    useEffect(() => {
+        console.log('selectedProject changed', selectedProject)
+    }, [selectedProject])
     return (
         <>
             <div>
@@ -357,17 +392,21 @@ const ProjectManage: React.FC<Props> = ({ props }) => {
                     <DialogContent dividers={scroll === 'paper'}>
                         <Grid container>
                             <Grid item xs={6}>
-                                {selectedProject?.users.map(user => (
-                                    <>
-                                        {user.name}
-                                    </>
-                                ))}
+                                <List>
+                                    {selectedProject?.users.map(arr => (
+                                    // {projectUsers?.map(arr => (
+                                        <ListItem key={arr.user.id}>
+                                            <ListItemText primary={arr.user.id} />
+                                            <ListItemText primary={arr.user.name} />
+                                        </ListItem>
+                                    ))}
+                                </List>
                             </Grid>
                             <Grid item xs={6}>
                                 <Box sx={{ height: 400 }}>
                                     <DataGrid
                                         // rows={rows}
-                                        rows={memberTableData.users}
+                                        rows={memberList.data.users}
                                         columns={memberDataColumns}
                                         pageSize={5}
                                         rowsPerPageOptions={[5]}
@@ -375,6 +414,16 @@ const ProjectManage: React.FC<Props> = ({ props }) => {
                                         disableSelectionOnClick
                                         experimentalFeatures={{ newEditingApi: true }}
                                         processRowUpdate={processRowUpdate}
+                                        onSelectionModelChange={(ids) => {
+                                            // console.log('selectedRowData1',ids);
+                                            const selectedIDs = new Set(ids);
+                                            const selectedRowData = (memberList.data.users as Array<TUser>).filter((row) =>
+                                                // selectedIDs.has(row.id.toString())
+                                                selectedIDs.has(row.id)
+                                            );
+                                            setSelectedMembers(selectedRowData)
+                                            // console.log('selectedRowData2',selectedRowData);
+                                        }}
                                     // isCellEditable={(params) => params.row.age % 2 === 0}
                                     />
                                 </Box>
@@ -400,7 +449,7 @@ Praesent commodo cursus magna, vel scelerisque nisl consectetur et.`,
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={handleCloseDialog}>Cancel</Button>
-                        <Button onClick={handleCloseDialog}>추가</Button>
+                        <Button onClick={handleAddDialog}>추가</Button>
                     </DialogActions>
                 </Dialog>
             </div>
@@ -408,7 +457,7 @@ Praesent commodo cursus magna, vel scelerisque nisl consectetur et.`,
                 {renderConfirmDialog()}
                 <DataGrid
                     // rows={rows}
-                    rows={porjectTableData.projects}
+                    rows={projectList.data.projects}
                     columns={columns}
                     pageSize={5}
                     rowsPerPageOptions={[5]}
@@ -416,6 +465,15 @@ Praesent commodo cursus magna, vel scelerisque nisl consectetur et.`,
                     disableSelectionOnClick
                     experimentalFeatures={{ newEditingApi: true }}
                     processRowUpdate={processRowUpdate}
+                    onSelectionModelChange={(ids) => {
+                        // console.log('selectedRowData1',ids);
+                        const selectedIDs = new Set(ids);
+                        const selectedRowData = (projectList.data.projects as Array<TProject>).filter((row) =>
+                            // selectedIDs.has(row.id.toString())
+                            selectedIDs.has(row.id)
+                        );
+                        // console.log('selectedRowData2',selectedRowData);
+                    }}
                 // isCellEditable={(params) => params.row.age % 2 === 0}
                 />
                 {!!snackbar && (

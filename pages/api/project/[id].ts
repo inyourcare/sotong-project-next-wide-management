@@ -1,11 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from '@core/prisma';
+import { logger } from "@core/logger";
 
 export default async function handle(
     req: NextApiRequest,
     res: NextApiResponse,
 ) {
     const projectId = Number(req.query.id as string);
+    logger.debug('project dynamic async', req.query)
 
     if (req.method === "GET") {
         handleGET(projectId, res);
@@ -20,7 +22,7 @@ export default async function handle(
     }
 }
 
-// GET /api/user/:id
+// GET /api/project/:id
 async function handleGET(id: number, res: NextApiResponse) {
     const project = await prisma.project.findUnique({
         // where: { id: Number(userId) },
@@ -30,11 +32,12 @@ async function handleGET(id: number, res: NextApiResponse) {
     res.json(project);
 }
 
-// POST /api/user/:id
+// POST /api/project/:id
 async function handlePOST(id: number, req: NextApiRequest, res: NextApiResponse) {
     let data = req.body
-    const users = data.users
-    delete data.users
+    // const users = data.users
+    // delete data.users
+    logger.debug('project handlePOST', data)
     const project = await prisma.project.update({
         // where: { id: Number(userId) },
         where: { id: id },
@@ -47,7 +50,7 @@ async function handlePOST(id: number, req: NextApiRequest, res: NextApiResponse)
     return res.json(project);
 }
 
-// DELETE /api/user/:id
+// DELETE /api/project/:id
 async function handleDELETE(id: number, res: NextApiResponse) {
     const project = await prisma.project.delete({
         where: { id: id },

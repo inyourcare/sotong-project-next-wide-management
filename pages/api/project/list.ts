@@ -42,7 +42,24 @@ export default async function handle(
             projectMaintananceEndDate: true,
             createdAt: true,
             updatedAt: true,
-            users: true
+            users: {
+                select: {
+                    user: {
+                        select: {
+                            id: true,
+                            name: true,
+                            email: true,
+                            emailVerified: true,
+                            // password:true,
+                            image: true,
+                            // role: true,
+                            createdAt: true,
+                            updatedAt: true,
+                            roles: true
+                        }
+                    }
+                }
+            }
         },
         where: whereConditions,
         // include: {
