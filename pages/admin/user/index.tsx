@@ -31,6 +31,7 @@ import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 import { userTableLimit, TableColDef } from '@core/styles/mui';
 import { TUser } from '@core/types/TUser';
 import { Role } from '@prisma/client';
+import { getUsers } from '@core/logics/prisma';
 
 type UserParams = {
     // props: {
@@ -284,22 +285,7 @@ const User: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = (
         </>
     )
 }
-const getUsers = async (page: any, email: any) =>
-    await fetch(`${process.env.NEXTAPI_BASE_URL || '/api'}/user/list`, {
-        method: 'POST',
-        body: JSON.stringify({
-            page: page - 1,
-            limit: userTableLimit,
-            conditions: {
-                // creator: {
-                // email: 'admin@sotong.co.kr'
-                // email
-                //     ...(email && { email: email })
-                // }
-            }
-        }),
-        headers: { "Content-Type": "application/json" }
-    }).then((result) => result.json())
+
 export const getServerSideProps: GetServerSideProps<UserParams> = async (context) => {
     const { req, res, locale, resolvedUrl } = context;
     const session = await unstable_getServerSession(

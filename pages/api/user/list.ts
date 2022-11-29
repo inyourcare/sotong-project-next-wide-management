@@ -14,7 +14,7 @@ export default async function handle(
 ) {
     // const query = req.query;
     const { page, limit, lastId, conditions } = req.body;
-    logger.debug('user list api', req.body, page, limit)
+    logger.debug('user list api', req.body, page, limit, conditions)
     // const conditionTemp = {
     //     creator: {
     //         email: 'admin@sotong.co.kr'

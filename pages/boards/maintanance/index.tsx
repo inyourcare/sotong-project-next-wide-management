@@ -34,6 +34,8 @@ import WorkJournal from '@components/boards/maintanance/WorkJournal';
 import ProjectManage from '@components/boards/maintanance/ProjectManage';
 import { projectTableLimit } from '@core/styles/mui';
 import { dehydrate, QueryClient } from 'react-query';
+import { getProjects, getUsers } from '@core/logics/prisma';
+import { Role } from '@prisma/client';
 
 
 
@@ -480,23 +482,9 @@ const Maintanance: React.FC<Props> = (props) => {
     );
 }
 
-export const getProjects = async (page: any) =>
-    await fetch(`${process.env.NEXTAPI_BASE_URL || '/api'}/project/list`, {
-        method: 'POST',
-        body: JSON.stringify({
-            page: page - 1,
-            limit: projectTableLimit,
-            conditions: {
-                // creator: {
-                    // email: 'admin@sotong.co.kr'
-                    // email
-                    // ...(email && { email: email })
-                // }
-            }
-        }),
-        headers: { "Content-Type": "application/json" }
-    }).then((result) => result.json())
 
+export const useQueryGetProjects = (page: number) => getProjects(page);
+export const useQueryGetUser = (page: number) => getUsers(page, null, { roles: { some: { role: Role.MEMBER } } });
 export const getServerSideProps: GetServerSideProps<any> = async (context) => {
     const { req, res, locale, resolvedUrl } = context;
     const session = await unstable_getServerSession(
@@ -514,10 +502,15 @@ export const getServerSideProps: GetServerSideProps<any> = async (context) => {
     //     "projectList",
     //     () => getProjects(page)
     // );
-    await Promise.all([queryClient.prefetchQuery(
-        "projectList",
-        () => getProjects(page)
-    )])
+    await Promise.all([
+        // queryClient.prefetchQuery("projectList", () => getProjects(page)),
+        queryClient.prefetchQuery("projectList", () => useQueryGetProjects(page)),
+        // queryClient.prefetchQuery("memberList", () => getUsers({
+        //     page, conditions: { roles: { some: { role: Role.MEMBER } } }
+        // }))
+        // queryClient.prefetchQuery("memberList", () => getUsers(page,null,{ roles: { some: { role: Role.MEMBER } } }))
+        queryClient.prefetchQuery("memberList", () => useQueryGetUser(page))
+    ])
     // redirect check
     if (checkAuthorized(session, resolvedUrl) === false) {
         return {

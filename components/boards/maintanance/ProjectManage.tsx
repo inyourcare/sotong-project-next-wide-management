@@ -1,5 +1,5 @@
 import { logger } from '@core/logger';
-import { Alert, AlertProps, Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogContentText, DialogProps, DialogTitle, FormControl, FormControlLabel, FormGroup, Input, InputLabel, Paper, Snackbar, Stack, TextareaAutosize, TextField } from '@mui/material';
+import { Alert, AlertProps, Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogContentText, DialogProps, DialogTitle, FormControl, FormControlLabel, FormGroup, Grid, Input, InputLabel, Paper, Snackbar, Stack, TextareaAutosize, TextField } from '@mui/material';
 import { DataGrid, GridApi, GridCellValue, GridColDef, GridRowModel, GridValueGetterParams } from '@mui/x-data-grid';
 import { Props } from 'framer-motion/types/types';
 import { useTranslation } from 'next-i18next';
@@ -18,8 +18,9 @@ import { getCsrfToken } from 'next-auth/react';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { projectTableLimit } from '@core/styles/mui';
 import { dehydrate, QueryClient, useQuery } from 'react-query';
-import { getProjects } from 'pages/boards/maintanance';
 import { TProject } from '@core/types/TProject';
+import { getProjects, getUsers } from '@core/logics/prisma';
+import { useQueryGetProjects, useQueryGetUser } from 'pages/boards/maintanance';
 
 
 function computeMutation(newRow: GridRowModel, oldRow: GridRowModel) {
@@ -47,8 +48,12 @@ function computeMutation(newRow: GridRowModel, oldRow: GridRowModel) {
 const ProjectManage: React.FC<Props> = ({ props }) => {
     // const { t } = useTranslation('maintanance');
     // const { data } = useQuery("projectList",()=>getProjects(1)) as any
-    const projectList = useQuery("projectList", () => getProjects(1)) as any
+    // const projectList = useQuery("projectList", () => getProjects(1)) as any
+    const projectList = useQuery("projectList", () => useQueryGetProjects(1)) as any
     const porjectTableData = { ...projectList.data }
+    // const memberList = useQuery("memberList", () => getUsers(1)) as any
+    const memberList = useQuery("memberList", () => useQueryGetUser(1)) as any
+    const memberTableData = { ...memberList.data }
     const {
         handleSubmit,
         register,
@@ -175,6 +180,9 @@ const ProjectManage: React.FC<Props> = ({ props }) => {
                         .forEach(
                             (c) => (thisRow[c.field] = params.getValue(params.id, c.field))
                         );
+
+                    const projectListArr = porjectTableData.projects as Array<TProject>
+                    setSelectedProject(projectListArr.filter(project => project.id === thisRow['id']).pop())
 
                     // return alert(JSON.stringify(thisRow, null, 4));
                     setDialogOpen(true)
@@ -303,6 +311,7 @@ const ProjectManage: React.FC<Props> = ({ props }) => {
     // dialog 
     const [scroll, setScroll] = React.useState<DialogProps['scroll']>('paper');
     const [dialogOpen, setDialogOpen] = React.useState(false);
+    const [selectedProject, setSelectedProject] = React.useState<TProject | undefined>(undefined);
     const handleCloseSnackbar = () => setSnackbar(null);
     const handleCloseDialog = () => {
         setDialogOpen(false);
@@ -318,6 +327,20 @@ const ProjectManage: React.FC<Props> = ({ props }) => {
     }, [dialogOpen]);
 
 
+    const memberDataColumns: GridColDef[] = [
+        {
+            field: 'id',
+            headerName: 'ID',
+            // width: 10
+            flex: 1,
+        },
+        {
+            field: 'name',
+            headerName: 'name',
+            // width: 
+            flex: 1,
+        },
+    ]
     return (
         <>
             <div>
@@ -327,23 +350,53 @@ const ProjectManage: React.FC<Props> = ({ props }) => {
                     scroll={'paper'}
                     aria-labelledby="scroll-dialog-title"
                     aria-describedby="scroll-dialog-description"
+                    fullWidth={true}
+                    maxWidth={'lg'}
                 >
                     <DialogTitle id="scroll-dialog-title">Subscribe</DialogTitle>
                     <DialogContent dividers={scroll === 'paper'}>
-                        <DialogContentText
+                        <Grid container>
+                            <Grid item xs={6}>
+                                {selectedProject?.users.map(user => (
+                                    <>
+                                        {user.name}
+                                    </>
+                                ))}
+                            </Grid>
+                            <Grid item xs={6}>
+                                <Box sx={{ height: 400 }}>
+                                    <DataGrid
+                                        // rows={rows}
+                                        rows={memberTableData.users}
+                                        columns={memberDataColumns}
+                                        pageSize={5}
+                                        rowsPerPageOptions={[5]}
+                                        checkboxSelection
+                                        disableSelectionOnClick
+                                        experimentalFeatures={{ newEditingApi: true }}
+                                        processRowUpdate={processRowUpdate}
+                                    // isCellEditable={(params) => params.row.age % 2 === 0}
+                                    />
+                                </Box>
+                            </Grid>
+                        </Grid>
+                        {/* <DialogContentText
                             id="scroll-dialog-description"
                             ref={descriptionElementRef}
                             tabIndex={-1}
-                        >
-                            {[...new Array(50)]
+                        > */}
+                        {/* {[...new Array(50)]
                                 .map(
                                     () => `Cras mattis consectetur purus sit amet fermentum.
 Cras justo odio, dapibus ac facilisis in, egestas eget quam.
 Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
 Praesent commodo cursus magna, vel scelerisque nisl consectetur et.`,
                                 )
-                                .join('\n')}
-                        </DialogContentText>
+                                .join('\n')} */}
+                        {/* {selectedProject?.users.map(user=>(<>
+                                    {user.name}
+                                </>))} */}
+                        {/* </DialogContentText> */}
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={handleCloseDialog}>Cancel</Button>

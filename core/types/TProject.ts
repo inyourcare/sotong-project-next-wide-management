@@ -1,3 +1,5 @@
+import { TUser } from "./TUser"
+
 export type TProject = {
     id: number,
     projectName: string,
@@ -8,5 +10,7 @@ export type TProject = {
     projectMaintananceEndDate: Date,
 
     createdAt: Date
-    updatedAt: Date
+    updatedAt: Date,
+
+    users: TUser[]
 }
