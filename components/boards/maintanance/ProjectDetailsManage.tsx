@@ -1,6 +1,6 @@
 import { logger } from '@core/logger';
 import { Alert, AlertProps, Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogContentText, DialogProps, DialogTitle, FormControl, FormControlLabel, FormGroup, Grid, Input, InputLabel, List, ListItem, ListItemText, Paper, Snackbar, Stack, TextareaAutosize, TextField } from '@mui/material';
-import { DataGrid, GridApi, GridCellValue, GridColDef, GridRowModel, GridValueGetterParams } from '@mui/x-data-grid';
+import { DataGrid, GridApi, GridCellValue, GridColDef, GridEventListener, GridRowModel, GridValueGetterParams } from '@mui/x-data-grid';
 import { Props } from 'framer-motion/types/types';
 import { useTranslation } from 'next-i18next';
 import { styled } from '@mui/material/styles';
@@ -347,6 +347,15 @@ const ProjectDetailsManage: React.FC<Props> = ({ props }) => {
     useEffect(() => {
         console.log('selectedProject changed', selectedProject)
     }, [selectedProject])
+
+    // project row click
+    const projectRowOnClick: GridEventListener<'rowClick'> = (
+        params, // GridRowParams
+        event, // MuiEvent<React.MouseEvent<HTMLElement>>
+        details, // GridCallbackDetails
+    ) => {
+        logger.debug(`Movie "${params.row.projectName}" clicked`);
+    };
     return (
         <>
             <div>
@@ -432,8 +441,8 @@ Praesent commodo cursus magna, vel scelerisque nisl consectetur et.`,
                     columns={columns}
                     pageSize={5}
                     rowsPerPageOptions={[5]}
-                    checkboxSelection
-                    disableSelectionOnClick
+                    // checkboxSelection
+                    // disableSelectionOnClick
                     experimentalFeatures={{ newEditingApi: true }}
                     processRowUpdate={processRowUpdate}
                     onSelectionModelChange={(ids) => {
@@ -445,6 +454,7 @@ Praesent commodo cursus magna, vel scelerisque nisl consectetur et.`,
                         );
                         // console.log('selectedRowData2',selectedRowData);
                     }}
+                    onRowClick={projectRowOnClick}
                 // isCellEditable={(params) => params.row.age % 2 === 0}
                 />
                 {!!snackbar && (
