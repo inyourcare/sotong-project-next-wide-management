@@ -227,6 +227,8 @@ const ProjectManage: React.FC<Props> = ({ props }) => {
             // const projectUsers = {update:project.users}
             // const projectUsers = project.users?.map(user => { return { ...user.user } }).values()
             delete project.users
+            delete project.schedules
+            delete project.webServers
             const res = await fetch(`/api/project/${project.id}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },

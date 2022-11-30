@@ -1,4 +1,6 @@
+import { TProjectSchedule } from "./TProjectSchedule"
 import { TUser } from "./TUser"
+import { TWebServer } from "./TWebServer"
 
 export type TProject = {
     id: number,
@@ -13,4 +15,6 @@ export type TProject = {
     updatedAt: Date,
 
     users: [{user:TUser}]
+    schedules: TProjectSchedule[]
+    webServers: TWebServer[]
 }

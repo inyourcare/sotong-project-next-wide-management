@@ -59,6 +59,25 @@ export default async function handle(
                         }
                     }
                 }
+            },
+            schedules: {
+                select: {
+                    id: true,
+                    type: true,
+                    startDate: true,
+                    endDate: true,
+                    memo: true
+                }
+            },
+            webServers: {
+                select: {
+                    id: true,
+                    serverName: true,
+                    serverIp: true,
+                    serverPort: true,
+                    referenceAddress: true,
+                    memo: true,
+                }
             }
         },
         where: whereConditions,

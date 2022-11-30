@@ -332,7 +332,9 @@ model ProjectUser {
 model Project {
   id Int @id @default(autoincrement())
 
-  users ProjectUser[]
+  users      ProjectUser[]
+  schedules  ProjectSchedule[]
+  webServers WebServer[]
 
   projectName        String
   projectEnglishName String
@@ -342,6 +344,33 @@ model Project {
   projectMaintananceStartDate DateTime?
   projectMaintananceEndDate   DateTime?
 
+  memo String? @db.VarChar(3000)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+enum ProjectScheduleType {
+  MAINTANANCE
+}
+
+model ProjectSchedule {
+  id        Int                 @id @default(autoincrement())
+  project   Project?            @relation(fields: [projectId], references: [id])
+  projectId Int?
+  type      ProjectScheduleType
+  startDate DateTime?
+  endDate   DateTime?
+  memo      String
+}
+
+model WebServer {
+  id               Int      @id @default(autoincrement())
+  Project          Project? @relation(fields: [projectId], references: [id])
+  projectId        Int?
+  serverName       String
+  serverIp         String
+  serverPort       String
+  referenceAddress String
+  memo             String
 }
