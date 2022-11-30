@@ -13,7 +13,7 @@ import { dehydrate, QueryClient, useQuery } from 'react-query';
 import { TProject } from '@core/types/TProject';
 import { useQueryGetProjects, useQueryGetUser } from 'pages/boards/maintanance';
 import { TUser } from '@core/types/TUser';
-import { updateProject } from '@core/logics/prisma';
+import { createProjectUsers, updateProject } from '@core/logics/prisma';
 
 function computeMutation(newRow: GridRowModel, oldRow: GridRowModel) {
     if (newRow.projectName !== oldRow.projectName) {
@@ -270,29 +270,24 @@ const ProjectDetailsManage: React.FC<Props> = ({ props }) => {
     };
     const handleAddDialog = useCallback(async () => {
         console.log(`handleAddDialog params`, selectedProject, selectedMembers);
-        const res = await fetch(`/api/project/${selectedProject?.id}`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            // body: JSON.stringify({ role:dialogRoleToAdd }),
-            // body: JSON.stringify({ users: { create: { userId: dialogRoleToAdd } } }),
-            body: JSON.stringify({ users: { create: selectedMembers?.map(member => { return { userId: member.id } }) } }),
-        })
-            .then(result => {
-                // console.log('hihi1')
-                return (projectList.refetch() as Promise<any>)
-                    .then(refetchResult => {
-                        const newProjectList = refetchResult.data.projects as Array<TProject>
-                        // const temp = (projectList.data.projects as Array<TProject>).filter(p => p.id === selectedProject?.id).pop()
-                        const temp = newProjectList.filter(p => p.id === selectedProject?.id).pop()
-                        // console.log('hihi2', temp)
-                        setSelectedProject(temp)
-                        return result.json()
-                    })
-                // return result.json()
-            })
-            .catch((error) => {
-                console.error(`handleAddDialog :: ${error}`);
-            })
+        if (selectedProject && selectedMembers)
+            createProjectUsers(selectedProject, selectedMembers)
+                .then(result => {
+                    // console.log('hihi1')
+                    return (projectList.refetch() as Promise<any>)
+                        .then(refetchResult => {
+                            const newProjectList = refetchResult.data.projects as Array<TProject>
+                            // const temp = (projectList.data.projects as Array<TProject>).filter(p => p.id === selectedProject?.id).pop()
+                            const temp = newProjectList.filter(p => p.id === selectedProject?.id).pop()
+                            // console.log('hihi2', temp)
+                            setSelectedProject(temp)
+                            return result.json()
+                        })
+                    // return result.json()
+                })
+                .catch((error) => {
+                    console.error(`handleAddDialog :: ${error}`);
+                })
     }, [selectedMembers, selectedProject]);
     const descriptionElementRef = React.useRef<HTMLElement>(null);
     React.useEffect(() => {
