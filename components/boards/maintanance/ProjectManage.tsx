@@ -19,7 +19,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { projectTableLimit } from '@core/styles/mui';
 import { dehydrate, QueryClient, useQuery } from 'react-query';
 import { TProject } from '@core/types/TProject';
-import { getProjects, getUsers } from '@core/logics/prisma';
+import { createProject, getProjects, getUsers, updateProject } from '@core/logics/prisma';
 import { useQueryGetProjects, useQueryGetUser } from 'pages/boards/maintanance';
 import { TUser } from '@core/types/TUser';
 import { UnorderedList } from '@chakra-ui/react';
@@ -62,28 +62,16 @@ const ProjectManage: React.FC<Props> = ({ props }) => {
         formState: { errors, isSubmitting },
     } = useForm();
     const router = useRouter();
-    async function onSubmit(values: FieldValues) {
-        try {
-            const body = { ...values };
-            console.log(`POSTing ${JSON.stringify(body, null, 2)}`);
-            const res = await fetch(`/api/project/create`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(body),
-            });
-            logger.debug(`res`, res);
-            // todo:: 만약 네이버 등으로 먼저 로그읺해서 메일이 등록된 유저는 create 가 되지 않는다. 해결 필요
-            reset();
-            router.push(
-                `maintanance${router.query.callbackUrl
-                    ? `?callbackUrl=${router.query.callbackUrl}`
-                    : ""
-                }`,
-            );
-        } catch (error) {
-            console.error(error);
-        }
-    }
+    const onSubmit = async (values: FieldValues) => createProject(values).then(result => {
+        reset();
+        router.push(
+            `maintanance${router.query.callbackUrl
+                ? `?callbackUrl=${router.query.callbackUrl}`
+                : ""
+            }`,
+        );
+        return result
+    })
     useEffect(() => {
         logger.debug('project list -> ', { ...projectList.data })
     }, [projectList])
@@ -212,35 +200,7 @@ const ProjectManage: React.FC<Props> = ({ props }) => {
     const noButtonRef = React.useRef<HTMLButtonElement>(null);
 
     const mutateRow = React.useCallback(
-        // (user: Partial<User>) =>
-        //     new Promise<Partial<User>>((resolve, reject) =>
-        //         setTimeout(() => {
-        //             if (user.name?.trim() === '') {
-        //                 reject();
-        //             } else {
-        //                 resolve(user);
-        //             }
-        //         }, 200),
-        //     ),
-        // [],
-        async (project: Partial<TProject>) => {
-            // const projectUsers = {update:project.users}
-            // const projectUsers = project.users?.map(user => { return { ...user.user } }).values()
-            delete project.users
-            delete project.schedules
-            delete project.webServers
-            const res = await fetch(`/api/project/${project.id}`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                // body: JSON.stringify({ ...project, users:{...projectUsers} }),
-                body: JSON.stringify({ ...project }),
-            })
-                .then(result => result.json())
-                .catch((error) => {
-                    console.error(`${project.id} 수정 중 에러 :: ${error}`);
-                })
-            return res
-        }
+        updateProject
         , []
     );
 
