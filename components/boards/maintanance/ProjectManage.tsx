@@ -23,29 +23,7 @@ import { createProject, getProjects, getUsers, updateProject, createProjectUsers
 import { useQueryGetProjects, useQueryGetUser } from 'pages/boards/maintanance';
 import { TUser } from '@core/types/TUser';
 import { UnorderedList } from '@chakra-ui/react';
-import { EntityType, renderConfirmDialog } from '@components/common/Dialog';
-
-function computeMutation(newRow: GridRowModel, oldRow: GridRowModel) {
-    if (newRow.projectName !== oldRow.projectName) {
-        return `projectName from '${oldRow.projectName}' to '${newRow.projectName}'`;
-    }
-    if (newRow.projectEnglishName !== oldRow.projectEnglishName) {
-        return `projectName from '${oldRow.projectEnglishName}' to '${newRow.projectEnglishName}'`;
-    }
-    if (newRow.projectStartDate !== oldRow.projectStartDate) {
-        return `projectName from '${oldRow.projectStartDate}' to '${newRow.projectStartDate}'`;
-    }
-    if (newRow.projectEndDate !== oldRow.projectEndDate) {
-        return `projectName from '${oldRow.projectEndDate}' to '${newRow.projectEndDate}'`;
-    }
-    if (newRow.projectMaintananceStartDate !== oldRow.projectMaintananceStartDate) {
-        return `projectName from '${oldRow.projectMaintananceStartDate}' to '${newRow.projectMaintananceStartDate}'`;
-    }
-    if (newRow.projectMaintananceEndDate !== oldRow.projectMaintananceEndDate) {
-        return `projectName from '${oldRow.projectMaintananceEndDate}' to '${newRow.projectMaintananceEndDate}'`;
-    }
-    return null;
-}
+import { computeProjectMutation, EntityType, renderConfirmDialog } from '@components/common/Dialog';
 
 const ProjectManage: React.FC<Props> = ({ props }) => {
     // const { t } = useTranslation('maintanance');
@@ -208,7 +186,7 @@ const ProjectManage: React.FC<Props> = ({ props }) => {
     const processRowUpdate = React.useCallback(
         (newRow: GridRowModel, oldRow: GridRowModel) =>
             new Promise<GridRowModel>((resolve, reject) => {
-                const mutation = computeMutation(newRow, oldRow);
+                const mutation = computeProjectMutation(newRow, oldRow);
                 if (mutation) {
                     // Save the arguments to resolve or reject the promise later
                     setPromiseArguments({ resolve, reject, newRow, oldRow });
