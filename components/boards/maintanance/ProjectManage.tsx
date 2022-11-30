@@ -24,7 +24,6 @@ import { useQueryGetProjects, useQueryGetUser } from 'pages/boards/maintanance';
 import { TUser } from '@core/types/TUser';
 import { UnorderedList } from '@chakra-ui/react';
 
-
 function computeMutation(newRow: GridRowModel, oldRow: GridRowModel) {
     if (newRow.projectName !== oldRow.projectName) {
         return `projectName from '${oldRow.projectName}' to '${newRow.projectName}'`;
@@ -339,10 +338,14 @@ const ProjectManage: React.FC<Props> = ({ props }) => {
                 // console.log('hihi1')
                 return (projectList.refetch() as Promise<any>)
                     .then(refetchResult => {
-                        // console.log('hihi2')
-                        // setSelectedProject((porjectTableData.projects as Array<TProject>).filter(p => p.id === selectedProject?.id).pop())
+                        const newProjectList = refetchResult.data.projects as Array<TProject>
+                        // const temp = (projectList.data.projects as Array<TProject>).filter(p => p.id === selectedProject?.id).pop()
+                        const temp = newProjectList.filter(p => p.id === selectedProject?.id).pop()
+                        // console.log('hihi2', temp)
+                        setSelectedProject(temp)
                         return result.json()
                     })
+                // return result.json()
             })
             .catch((error) => {
                 console.error(`handleAddDialog :: ${error}`);
@@ -394,7 +397,7 @@ const ProjectManage: React.FC<Props> = ({ props }) => {
                             <Grid item xs={6}>
                                 <List>
                                     {selectedProject?.users.map(arr => (
-                                    // {projectUsers?.map(arr => (
+                                        // {projectUsers?.map(arr => (
                                         <ListItem key={arr.user.id}>
                                             <ListItemText primary={arr.user.id} />
                                             <ListItemText primary={arr.user.name} />
