@@ -23,6 +23,7 @@ import { createProject, getProjects, getUsers, updateProject, createProjectUsers
 import { useQueryGetProjects, useQueryGetUser } from 'pages/boards/maintanance';
 import { TUser } from '@core/types/TUser';
 import { UnorderedList } from '@chakra-ui/react';
+import { EntityType, renderConfirmDialog } from '@components/common/Dialog';
 
 function computeMutation(newRow: GridRowModel, oldRow: GridRowModel) {
     if (newRow.projectName !== oldRow.projectName) {
@@ -248,33 +249,33 @@ const ProjectManage: React.FC<Props> = ({ props }) => {
         // noButtonRef.current?.focus();
     };
 
-    const renderConfirmDialog = () => {
-        if (!promiseArguments) {
-            return null;
-        }
+    // const renderConfirmDialog = () => {
+    //     if (!promiseArguments) {
+    //         return null;
+    //     }
 
-        const { newRow, oldRow } = promiseArguments;
-        const mutation = computeMutation(newRow, oldRow);
+    //     const { newRow, oldRow } = promiseArguments;
+    //     const mutation = computeMutation(newRow, oldRow);
 
-        return (
-            <Dialog
-                maxWidth="xs"
-                TransitionProps={{ onEntered: handleEntered }}
-                open={!!promiseArguments}
-            >
-                <DialogTitle>Are you sure?</DialogTitle>
-                <DialogContent dividers>
-                    {`Pressing 'Yes' will change ${mutation}.`}
-                </DialogContent>
-                <DialogActions>
-                    <Button ref={noButtonRef} onClick={handleNo}>
-                        No
-                    </Button>
-                    <Button onClick={handleYes}>Yes</Button>
-                </DialogActions>
-            </Dialog>
-        );
-    };
+    //     return (
+    //         <Dialog
+    //             maxWidth="xs"
+    //             TransitionProps={{ onEntered: handleEntered }}
+    //             open={!!promiseArguments}
+    //         >
+    //             <DialogTitle>Are you sure?</DialogTitle>
+    //             <DialogContent dividers>
+    //                 {`Pressing 'Yes' will change ${mutation}.`}
+    //             </DialogContent>
+    //             <DialogActions>
+    //                 <Button ref={noButtonRef} onClick={handleNo}>
+    //                     No
+    //                 </Button>
+    //                 <Button onClick={handleYes}>Yes</Button>
+    //             </DialogActions>
+    //         </Dialog>
+    //     );
+    // };
 
 
     // dialog 
@@ -421,7 +422,7 @@ Praesent commodo cursus magna, vel scelerisque nisl consectetur et.`,
                 </Dialog>
             </div>
             <Box sx={{ height: 400, width: '100%' }}>
-                {renderConfirmDialog()}
+                {renderConfirmDialog(EntityType.Project,promiseArguments,noButtonRef,handleNo,handleYes)}
                 <DataGrid
                     // rows={rows}
                     rows={projectList.data.projects}

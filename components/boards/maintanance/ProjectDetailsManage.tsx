@@ -14,6 +14,7 @@ import { TProject } from '@core/types/TProject';
 import { useQueryGetProjects, useQueryGetUser } from 'pages/boards/maintanance';
 import { TUser } from '@core/types/TUser';
 import { createProjectUsers, updateProject } from '@core/logics/prisma';
+import { EntityType, renderConfirmDialog } from '@components/common/Dialog';
 
 function computeMutation(newRow: GridRowModel, oldRow: GridRowModel) {
     if (newRow.projectName !== oldRow.projectName) {
@@ -219,41 +220,6 @@ const ProjectDetailsManage: React.FC<Props> = ({ props }) => {
         }
     };
 
-    const handleEntered = () => {
-        // The `autoFocus` is not used because, if used, the same Enter that saves
-        // the cell triggers "No". Instead, we manually focus the "No" button once
-        // the dialog is fully open.
-        // noButtonRef.current?.focus();
-    };
-
-    const renderConfirmDialog = () => {
-        if (!promiseArguments) {
-            return null;
-        }
-
-        const { newRow, oldRow } = promiseArguments;
-        const mutation = computeMutation(newRow, oldRow);
-
-        return (
-            <Dialog
-                maxWidth="xs"
-                TransitionProps={{ onEntered: handleEntered }}
-                open={!!promiseArguments}
-            >
-                <DialogTitle>Are you sure?</DialogTitle>
-                <DialogContent dividers>
-                    {`Pressing 'Yes' will change ${mutation}.`}
-                </DialogContent>
-                <DialogActions>
-                    <Button ref={noButtonRef} onClick={handleNo}>
-                        No
-                    </Button>
-                    <Button onClick={handleYes}>Yes</Button>
-                </DialogActions>
-            </Dialog>
-        );
-    };
-
     const [selectedProject, setSelectedProject] = React.useState<TProject | undefined>(undefined);
     const handleCloseSnackbar = () => setSnackbar(null);
 
@@ -267,30 +233,37 @@ const ProjectDetailsManage: React.FC<Props> = ({ props }) => {
     };
     return (
         <>
-            <Box sx={{ height: 400, width: '50%' }}>
-                {renderConfirmDialog()}
-                <DataGrid
-                    // rows={rows}
-                    rows={projectList.data.projects}
-                    columns={columns}
-                    pageSize={5}
-                    rowsPerPageOptions={[5]}
-                    // checkboxSelection
-                    // disableSelectionOnClick
-                    experimentalFeatures={{ newEditingApi: true }}
-                    processRowUpdate={processRowUpdate}
-                    onSelectionModelChange={(ids) => {
-                        // console.log('selectedRowData1',ids);
-                        const selectedIDs = new Set(ids);
-                        const selectedRowData = (projectList.data.projects as Array<TProject>).filter((row) =>
-                            // selectedIDs.has(row.id.toString())
-                            selectedIDs.has(row.id)
-                        );
-                        // console.log('selectedRowData2',selectedRowData);
-                    }}
-                    onRowClick={projectRowOnClick}
-                // isCellEditable={(params) => params.row.age % 2 === 0}
-                />
+            <Grid container>
+                <Grid item xs={6} sx={{ height: 400 }}>
+                    {renderConfirmDialog(EntityType.Project,promiseArguments,noButtonRef,handleNo,handleYes)}
+                    <DataGrid
+                        // rows={rows}
+                        rows={projectList.data.projects}
+                        columns={columns}
+                        pageSize={5}
+                        rowsPerPageOptions={[5]}
+                        // checkboxSelection
+                        // disableSelectionOnClick
+                        experimentalFeatures={{ newEditingApi: true }}
+                        processRowUpdate={processRowUpdate}
+                        onSelectionModelChange={(ids) => {
+                            // console.log('selectedRowData1',ids);
+                            const selectedIDs = new Set(ids);
+                            const selectedRowData = (projectList.data.projects as Array<TProject>).filter((row) =>
+                                // selectedIDs.has(row.id.toString())
+                                selectedIDs.has(row.id)
+                            );
+                            // console.log('selectedRowData2',selectedRowData);
+                        }}
+                        onRowClick={projectRowOnClick}
+                    // isCellEditable={(params) => params.row.age % 2 === 0}
+                    />
+                </Grid>
+                <Grid item xs={6}>
+                    2
+                </Grid>
+            </Grid>
+            <Box>
                 {!!snackbar && (
                     <Snackbar open onClose={handleCloseSnackbar} autoHideDuration={6000}>
                         <Alert {...snackbar} onClose={handleCloseSnackbar} />
