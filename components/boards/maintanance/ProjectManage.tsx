@@ -19,7 +19,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { projectTableLimit } from '@core/styles/mui';
 import { dehydrate, QueryClient, useQuery } from 'react-query';
 import { TProject } from '@core/types/TProject';
-import { createProject, getProjects, getUsers, updateProject, updateProjectUsers } from '@core/logics/prisma';
+import { createProject, getProjects, getUsers, updateProject, createProjectUsers } from '@core/logics/prisma';
 import { useQueryGetProjects, useQueryGetUser } from 'pages/boards/maintanance';
 import { TUser } from '@core/types/TUser';
 import { UnorderedList } from '@chakra-ui/react';
@@ -297,7 +297,7 @@ const ProjectManage: React.FC<Props> = ({ props }) => {
         //     body: JSON.stringify({ users: { create: selectedMembers?.map(member => { return { userId: member.id } }) } }),
         // })
         if (selectedProject && selectedMembers)
-            updateProjectUsers(selectedProject, selectedMembers)
+            createProjectUsers(selectedProject, selectedMembers)
                 .then(result => {
                     // console.log('hihi1')
                     return (projectList.refetch() as Promise<any>)

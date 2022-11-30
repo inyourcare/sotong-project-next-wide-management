@@ -75,7 +75,7 @@ export const createProject = async (values: FieldValues) => {
     }
 }
 
-export const updateProjectUsers = async (project:TProject, members:TUser[]) => {
+export const createProjectUsers = async (project:TProject, members:TUser[]) => {
     console.log(`handleAddDialog params`, project, members);
     const res = await fetch(`/api/project/${project.id}`, {
         method: "POST",
