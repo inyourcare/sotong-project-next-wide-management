@@ -1,6 +1,7 @@
 import { logger } from "@core/logger";
 import { projectTableLimit, userTableLimit } from "@core/styles/mui";
 import { TProject } from "@core/types/TProject";
+import { TUser } from "@core/types/TUser";
 import { FieldValues } from "react-hook-form";
 
 export const getProjects = async (page: any) =>
@@ -72,4 +73,16 @@ export const createProject = async (values: FieldValues) => {
     } catch (error) {
         console.error(error);
     }
+}
+
+export const updateProjectUsers = async (project:TProject, members:TUser[]) => {
+    console.log(`handleAddDialog params`, project, members);
+    const res = await fetch(`/api/project/${project.id}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        // body: JSON.stringify({ role:dialogRoleToAdd }),
+        // body: JSON.stringify({ users: { create: { userId: dialogRoleToAdd } } }),
+        body: JSON.stringify({ users: { create: members.map(member => { return { userId: member.id } }) } }),
+    })
+    return res
 }
