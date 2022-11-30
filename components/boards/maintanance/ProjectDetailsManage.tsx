@@ -62,7 +62,7 @@ const ProjectDetailsManage: React.FC<Props> = ({ props }) => {
 
     //////////// mui datagrid example
 
-    const columns: GridColDef[] = [
+    const projectColumns: GridColDef[] = [
         {
             field: 'id',
             headerName: 'ID',
@@ -84,54 +84,6 @@ const ProjectDetailsManage: React.FC<Props> = ({ props }) => {
             editable: true,
             flex: 1,
         },
-        // {
-        //     field: 'projectStartDate',
-        //     headerName: 'projectStartDate',
-        //     type: 'date',
-        //     // width: 110,
-        //     editable: true,
-        //     flex: 1,
-        // },
-        // {
-        //     field: 'projectEndDate',
-        //     headerName: 'projectEndDate',
-        //     type: 'date',
-        //     // width: 110,
-        //     editable: true,
-        //     flex: 1,
-        // },
-        // {
-        //     field: 'projectMaintananceStartDate',
-        //     headerName: 'projectMaintananceStartDate',
-        //     type: 'date',
-        //     // width: 110,
-        //     editable: true,
-        //     flex: 1,
-        // },
-        // {
-        //     field: 'projectMaintananceEndDate',
-        //     headerName: 'projectMaintananceEndDate',
-        //     type: 'date',
-        //     // width: 110,
-        //     editable: true,
-        //     flex: 1,
-        // },
-        // {
-        //     field: 'createdAt',
-        //     headerName: 'createdAt',
-        //     type: 'date',
-        //     // width: 110,
-        //     // editable: true,
-        //     flex: 1,
-        // },
-        // {
-        //     field: 'updatedAt',
-        //     headerName: 'updatedAt',
-        //     type: 'date',
-        //     // width: 110,
-        //     // editable: true,
-        //     flex: 1,
-        // },
         // {
         //     field: "action",
         //     headerName: "소통 담당자 추가",
@@ -171,6 +123,38 @@ const ProjectDetailsManage: React.FC<Props> = ({ props }) => {
         //         `${params.row.firstName || ''} ${params.row.lastName || ''}`,
         // },
     ];
+    const scheduleColumns: GridColDef[] = [
+        {
+            field: 'id',
+            headerName: 'ID',
+            width: 10
+            // flex: 1,
+        },
+        {
+            field: 'startDate',
+            headerName: 'startDate',
+            // width: 150,
+            editable: true,
+            // resizable: true
+            flex: 1,
+        },
+        {
+            field: 'endDate',
+            headerName: 'endDate',
+            // width: 150,
+            editable: true,
+            // resizable: true
+            flex: 1,
+        },
+        {
+            field: 'memo',
+            headerName: 'memo',
+            // width: 150,
+            editable: true,
+            // resizable: true
+            flex: 1,
+        },
+    ]
     const [promiseArguments, setPromiseArguments] = React.useState<any>(null);
     const [snackbar, setSnackbar] = React.useState<Pick<
         AlertProps,
@@ -229,19 +213,75 @@ const ProjectDetailsManage: React.FC<Props> = ({ props }) => {
         event, // MuiEvent<React.MouseEvent<HTMLElement>>
         details, // GridCallbackDetails
     ) => {
-        logger.debug(`Movie "${params.row.projectName}" clicked`);
+        logger.debug(`Project "${params.row.projectName}" clicked`);
+        const project = (projectList.data.projects as Array<TProject>).filter(project => project.id === params.row.id).pop()
+        setSelectedProject(project)
     };
     return (
         <>
             <Grid container>
-                <Grid item xs={6} sx={{ height: 400 }}>
-                    {renderConfirmDialog(EntityType.Project,promiseArguments,noButtonRef,handleNo,handleYes)}
+                <Grid item xs={4} sx={{ height: 800 }}>
+                    {renderConfirmDialog(EntityType.Project, promiseArguments, noButtonRef, handleNo, handleYes)}
                     <DataGrid
                         // rows={rows}
                         rows={projectList.data.projects}
-                        columns={columns}
-                        pageSize={5}
-                        rowsPerPageOptions={[5]}
+                        columns={projectColumns}
+                        pageSize={10}
+                        // rowsPerPageOptions={[10]}
+                        // checkboxSelection
+                        // disableSelectionOnClick
+                        experimentalFeatures={{ newEditingApi: true }}
+                        processRowUpdate={processRowUpdate}
+                        // onSelectionModelChange={(ids) => {
+                        //     // console.log('selectedRowData1',ids);
+                        //     const selectedIDs = new Set(ids);
+                        //     const selectedRowData = (projectList.data.projects as Array<TProject>).filter((row) =>
+                        //         // selectedIDs.has(row.id.toString())
+                        //         selectedIDs.has(row.id)
+                        //     );
+                        //     // console.log('selectedRowData2',selectedRowData);
+                        // }}
+                        onRowClick={projectRowOnClick}
+                    // isCellEditable={(params) => params.row.age % 2 === 0}
+                    />
+                </Grid>
+                <Grid item xs={8} sx={{ height: 800 }}>
+                    <Grid sx={{ height: 400 }}>
+                        <DataGrid
+                            // rows={rows}
+                            rows={selectedProject?.schedules || []}
+                            getRowId={(row) => row.user.id}
+                            columns={scheduleColumns}
+                            pageSize={5}
+                            // rowsPerPageOptions={[10]}
+                            // checkboxSelection
+                            // disableSelectionOnClick
+                            experimentalFeatures={{ newEditingApi: true }}
+                            processRowUpdate={processRowUpdate}
+                            // onSelectionModelChange={(ids) => {
+                            //     // console.log('selectedRowData1',ids);
+                            //     const selectedIDs = new Set(ids);
+                            //     const selectedRowData = (projectList.data.projects as Array<TProject>).filter((row) =>
+                            //         // selectedIDs.has(row.id.toString())
+                            //         selectedIDs.has(row.id)
+                            //     );
+                            //     // console.log('selectedRowData2',selectedRowData);
+                            // }}
+                            onRowClick={projectRowOnClick}
+                        // isCellEditable={(params) => params.row.age % 2 === 0}
+                        />
+                    </Grid>
+                    <Grid sx={{ height: 400 }}>
+                        hihi
+                    </Grid>
+                </Grid>
+                <Grid item xs={12} sx={{ height: 200 }}>
+                    <DataGrid
+                        // rows={rows}
+                        rows={projectList.data.projects}
+                        columns={projectColumns}
+                        pageSize={10}
+                        // rowsPerPageOptions={[10]}
                         // checkboxSelection
                         // disableSelectionOnClick
                         experimentalFeatures={{ newEditingApi: true }}
@@ -258,9 +298,6 @@ const ProjectDetailsManage: React.FC<Props> = ({ props }) => {
                         onRowClick={projectRowOnClick}
                     // isCellEditable={(params) => params.row.age % 2 === 0}
                     />
-                </Grid>
-                <Grid item xs={6}>
-                    2
                 </Grid>
             </Grid>
             <Box>
