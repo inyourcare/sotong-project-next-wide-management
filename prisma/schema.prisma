@@ -352,6 +352,9 @@ model Project {
 
 enum ProjectScheduleType {
   MAINTANANCE
+  DEVELOPMENT
+  DESIGN
+  PLANNING
 }
 
 model ProjectSchedule {
