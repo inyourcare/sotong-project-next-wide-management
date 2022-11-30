@@ -36,6 +36,7 @@ import { projectTableLimit } from '@core/styles/mui';
 import { dehydrate, QueryClient } from 'react-query';
 import { getProjects, getUsers } from '@core/logics/prisma';
 import { Role } from '@prisma/client';
+import ProjectDetailsManage from '@components/boards/maintanance/ProjectDetailsManage';
 
 
 
@@ -189,7 +190,12 @@ function StyledTreeItem(props: StyledTreeItemProps) {
         />
     );
 }
-
+enum CurrentView {
+    Default = '',
+    WorkJournal = 'workJournal',
+    ProjectManage = 'projectManage',
+    ProjectDetailsManage = 'projectDetailsManage'
+}
 // component
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 const Maintanance: React.FC<Props> = (props) => {
@@ -197,7 +203,7 @@ const Maintanance: React.FC<Props> = (props) => {
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
-    const [currentView, setCurrentView] = React.useState<'' | 'workJournal' | 'projectManage'>('');
+    const [currentView, setCurrentView] = React.useState<CurrentView>(CurrentView.Default);
     const session = useSession();
     const path = routes;
     const signInPath = path.filter(({ name, link }) => name === 'SignIn').pop()
@@ -343,7 +349,7 @@ const Maintanance: React.FC<Props> = (props) => {
                                 // labelInfo="90"
                                 color="#1a73e8"
                                 bgColor="#e8f0fe"
-                                onClick={() => setCurrentView('projectManage')}
+                                onClick={() => setCurrentView(CurrentView.ProjectManage)}
                             />
                             <StyledTreeItem
                                 nodeId="1_2"
@@ -352,6 +358,7 @@ const Maintanance: React.FC<Props> = (props) => {
                                 // labelInfo="2,294"
                                 color="#e3742f"
                                 bgColor="#fcefe3"
+                                onClick={() => setCurrentView(CurrentView.ProjectDetailsManage)}
                             />
                             <StyledTreeItem
                                 nodeId="1_3"
@@ -368,7 +375,7 @@ const Maintanance: React.FC<Props> = (props) => {
                                 // labelInfo="733"
                                 color="#3c8039"
                                 bgColor="#e6f4ea"
-                                onClick={() => setCurrentView('workJournal')}
+                                onClick={() => setCurrentView(CurrentView.WorkJournal)}
                             />
                             <StyledTreeItem
                                 nodeId="1_5"
@@ -447,9 +454,10 @@ const Maintanance: React.FC<Props> = (props) => {
             </Drawer>
             <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
                 <DrawerHeader />
-                {currentView === 'workJournal' && <WorkJournal />}
-                {currentView === 'projectManage' && <ProjectManage />}
-                {currentView === '' && (<>
+                {currentView === CurrentView.WorkJournal && <WorkJournal />}
+                {currentView === CurrentView.ProjectManage && <ProjectManage />}
+                {currentView === CurrentView.ProjectDetailsManage && <ProjectDetailsManage />}
+                {currentView === CurrentView.Default && (<>
                     <Typography paragraph>
                         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
                         tempor incididunt ut labore et dolore magna aliqua. Rhoncus dolor purus non
