@@ -257,7 +257,7 @@ const ProjectDetailsManage: React.FC<Props> = ({ props }) => {
                         />
                     </Grid>
                     <Grid sx={{ height: 400 }}>
-                        <ToastEditor />
+                        <ToastEditor height={'400px'}/>
                     </Grid>
                 </Grid>
                 <Grid item xs={12} sx={{ height: 200 }}>
