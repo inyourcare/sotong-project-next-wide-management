@@ -13,6 +13,7 @@ import { dehydrate, QueryClient, useQuery } from 'react-query';
 import { TProject } from '@core/types/TProject';
 import { useQueryGetProjects, useQueryGetUser } from 'pages/boards/maintanance';
 import { TUser } from '@core/types/TUser';
+import { updateProject } from '@core/logics/prisma';
 
 function computeMutation(newRow: GridRowModel, oldRow: GridRowModel) {
     if (newRow.projectName !== oldRow.projectName) {
@@ -180,33 +181,7 @@ const ProjectDetailsManage: React.FC<Props> = ({ props }) => {
     const noButtonRef = React.useRef<HTMLButtonElement>(null);
 
     const mutateRow = React.useCallback(
-        // (user: Partial<User>) =>
-        //     new Promise<Partial<User>>((resolve, reject) =>
-        //         setTimeout(() => {
-        //             if (user.name?.trim() === '') {
-        //                 reject();
-        //             } else {
-        //                 resolve(user);
-        //             }
-        //         }, 200),
-        //     ),
-        // [],
-        async (project: Partial<TProject>) => {
-            // const projectUsers = {update:project.users}
-            // const projectUsers = project.users?.map(user => { return { ...user.user } }).values()
-            delete project.users
-            const res = await fetch(`/api/project/${project.id}`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                // body: JSON.stringify({ ...project, users:{...projectUsers} }),
-                body: JSON.stringify({ ...project }),
-            })
-                .then(result => result.json())
-                .catch((error) => {
-                    console.error(`${project.id} 수정 중 에러 :: ${error}`);
-                })
-            return res
-        }
+        updateProject
         , []
     );
 
