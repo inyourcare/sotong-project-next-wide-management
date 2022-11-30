@@ -116,6 +116,12 @@ const ProjectDetailsManage: React.FC<Props> = ({ props }) => {
             // flex: 1,
         },
         {
+            field: 'type',
+            headerName: 'type',
+            // width: 10
+            flex: 1,
+        },
+        {
             field: 'startDate',
             headerName: 'startDate',
             // width: 150,
@@ -212,7 +218,7 @@ const ProjectDetailsManage: React.FC<Props> = ({ props }) => {
                         rows={projectList.data.projects}
                         columns={projectColumns}
                         pageSize={10}
-                        // rowsPerPageOptions={[10]}
+                        rowsPerPageOptions={[10,5]}
                         // checkboxSelection
                         // disableSelectionOnClick
                         experimentalFeatures={{ newEditingApi: true }}
@@ -238,7 +244,7 @@ const ProjectDetailsManage: React.FC<Props> = ({ props }) => {
                             getRowId={(row) => row.user.id}
                             columns={scheduleColumns}
                             pageSize={5}
-                            // rowsPerPageOptions={[10]}
+                            rowsPerPageOptions={[10,5]}
                             // checkboxSelection
                             // disableSelectionOnClick
                             experimentalFeatures={{ newEditingApi: true }}
@@ -266,7 +272,7 @@ const ProjectDetailsManage: React.FC<Props> = ({ props }) => {
                         rows={projectList.data.projects}
                         columns={projectColumns}
                         pageSize={10}
-                        // rowsPerPageOptions={[10]}
+                        rowsPerPageOptions={[10]}
                         // checkboxSelection
                         // disableSelectionOnClick
                         experimentalFeatures={{ newEditingApi: true }}
