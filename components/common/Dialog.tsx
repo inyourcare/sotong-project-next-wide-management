@@ -40,7 +40,7 @@ export const renderConfirmDialog = (
     );
 };
 
-function computeProjectMutation(newRow: GridRowModel, oldRow: GridRowModel) {
+export function computeProjectMutation(newRow: GridRowModel, oldRow: GridRowModel) {
     if (newRow.projectName !== oldRow.projectName) {
         return `projectName from '${oldRow.projectName}' to '${newRow.projectName}'`;
     }
