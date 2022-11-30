@@ -131,38 +131,35 @@ const ProjectDetailsManage: React.FC<Props> = ({ props }) => {
         //     // editable: true,
         //     flex: 1,
         // },
-        {
-            field: "action",
-            headerName: "소통 담당자 추가",
-            sortable: false,
-            // width: 20,
-            flex: 1,
-            renderCell: (params) => {
-                const onClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-                    e.stopPropagation(); // don't select this row after clicking
+        // {
+        //     field: "action",
+        //     headerName: "소통 담당자 추가",
+        //     sortable: false,
+        //     // width: 20,
+        //     flex: 1,
+        //     renderCell: (params) => {
+        //         const onClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+        //             e.stopPropagation(); // don't select this row after clicking
 
-                    const api: GridApi = params.api;
-                    const thisRow: Record<string, GridCellValue> = {};
+        //             const api: GridApi = params.api;
+        //             const thisRow: Record<string, GridCellValue> = {};
 
-                    api
-                        .getAllColumns()
-                        .filter((c) => c.field !== "__check__" && !!c)
-                        .forEach(
-                            (c) => (thisRow[c.field] = params.getValue(params.id, c.field))
-                        );
+        //             api
+        //                 .getAllColumns()
+        //                 .filter((c) => c.field !== "__check__" && !!c)
+        //                 .forEach(
+        //                     (c) => (thisRow[c.field] = params.getValue(params.id, c.field))
+        //                 );
 
-                    // const projectListArr = porjectTableData.projects as Array<TProject>
-                    const projectListArr = projectList.data.projects as Array<TProject>
-                    const project = projectListArr.filter(project => project.id === thisRow['id']).pop()
-                    setSelectedProject(project)
-                    // setProjectUsers(project?.users)
-                    // return alert(JSON.stringify(thisRow, null, 4));
-                    setDialogOpen(true)
-                };
+        //             // const projectListArr = porjectTableData.projects as Array<TProject>
+        //             const projectListArr = projectList.data.projects as Array<TProject>
+        //             const project = projectListArr.filter(project => project.id === thisRow['id']).pop()
+        //             setSelectedProject(project)
+        //         };
 
-                return <Button onClick={onClick}>추가</Button>;
-            }
-        },
+        //         return <Button onClick={onClick}>추가</Button>;
+        //     }
+        // },
         // {
         //     field: 'fullName',
         //     headerName: 'Full name',
@@ -257,66 +254,8 @@ const ProjectDetailsManage: React.FC<Props> = ({ props }) => {
         );
     };
 
-
-    // dialog 
-    const [scroll, setScroll] = React.useState<DialogProps['scroll']>('paper');
-    const [dialogOpen, setDialogOpen] = React.useState(false);
     const [selectedProject, setSelectedProject] = React.useState<TProject | undefined>(undefined);
-    // const [projectUsers, setProjectUsers] = React.useState<[{ user: TUser }] | undefined>(undefined);
-    const [selectedMembers, setSelectedMembers] = React.useState<Array<TUser> | null>(null);
     const handleCloseSnackbar = () => setSnackbar(null);
-    const handleCloseDialog = () => {
-        setDialogOpen(false);
-    };
-    const handleAddDialog = useCallback(async () => {
-        console.log(`handleAddDialog params`, selectedProject, selectedMembers);
-        if (selectedProject && selectedMembers)
-            createProjectUsers(selectedProject, selectedMembers)
-                .then(result => {
-                    // console.log('hihi1')
-                    return (projectList.refetch() as Promise<any>)
-                        .then(refetchResult => {
-                            const newProjectList = refetchResult.data.projects as Array<TProject>
-                            // const temp = (projectList.data.projects as Array<TProject>).filter(p => p.id === selectedProject?.id).pop()
-                            const temp = newProjectList.filter(p => p.id === selectedProject?.id).pop()
-                            // console.log('hihi2', temp)
-                            setSelectedProject(temp)
-                            return result.json()
-                        })
-                    // return result.json()
-                })
-                .catch((error) => {
-                    console.error(`handleAddDialog :: ${error}`);
-                })
-    }, [selectedMembers, selectedProject]);
-    const descriptionElementRef = React.useRef<HTMLElement>(null);
-    React.useEffect(() => {
-        if (dialogOpen) {
-            const { current: descriptionElement } = descriptionElementRef;
-            if (descriptionElement !== null) {
-                descriptionElement.focus();
-            }
-        }
-    }, [dialogOpen]);
-
-    const memberDataColumns: GridColDef[] = [
-        {
-            field: 'id',
-            headerName: 'ID',
-            // width: 10
-            flex: 1,
-        },
-        {
-            field: 'name',
-            headerName: 'name',
-            // width: 
-            flex: 1,
-        },
-    ]
-
-    useEffect(() => {
-        console.log('selectedProject changed', selectedProject)
-    }, [selectedProject])
 
     // project row click
     const projectRowOnClick: GridEventListener<'rowClick'> = (
@@ -328,81 +267,6 @@ const ProjectDetailsManage: React.FC<Props> = ({ props }) => {
     };
     return (
         <>
-            <div>
-                <Dialog
-                    open={dialogOpen}
-                    onClose={handleCloseDialog}
-                    scroll={'paper'}
-                    aria-labelledby="scroll-dialog-title"
-                    aria-describedby="scroll-dialog-description"
-                    fullWidth={true}
-                    maxWidth={'lg'}
-                >
-                    <DialogTitle id="scroll-dialog-title">Subscribe</DialogTitle>
-                    <DialogContent dividers={scroll === 'paper'}>
-                        <Grid container>
-                            <Grid item xs={6}>
-                                <List>
-                                    {selectedProject?.users.map(arr => (
-                                        // {projectUsers?.map(arr => (
-                                        <ListItem key={arr.user.id}>
-                                            <ListItemText primary={arr.user.id} />
-                                            <ListItemText primary={arr.user.name} />
-                                        </ListItem>
-                                    ))}
-                                </List>
-                            </Grid>
-                            <Grid item xs={6}>
-                                <Box sx={{ height: 400 }}>
-                                    <DataGrid
-                                        // rows={rows}
-                                        rows={memberList.data.users}
-                                        columns={memberDataColumns}
-                                        pageSize={5}
-                                        rowsPerPageOptions={[5]}
-                                        checkboxSelection
-                                        disableSelectionOnClick
-                                        experimentalFeatures={{ newEditingApi: true }}
-                                        processRowUpdate={processRowUpdate}
-                                        onSelectionModelChange={(ids) => {
-                                            // console.log('selectedRowData1',ids);
-                                            const selectedIDs = new Set(ids);
-                                            const selectedRowData = (memberList.data.users as Array<TUser>).filter((row) =>
-                                                // selectedIDs.has(row.id.toString())
-                                                selectedIDs.has(row.id)
-                                            );
-                                            setSelectedMembers(selectedRowData)
-                                            // console.log('selectedRowData2',selectedRowData);
-                                        }}
-                                    // isCellEditable={(params) => params.row.age % 2 === 0}
-                                    />
-                                </Box>
-                            </Grid>
-                        </Grid>
-                        {/* <DialogContentText
-                            id="scroll-dialog-description"
-                            ref={descriptionElementRef}
-                            tabIndex={-1}
-                        > */}
-                        {/* {[...new Array(50)]
-                                .map(
-                                    () => `Cras mattis consectetur purus sit amet fermentum.
-Cras justo odio, dapibus ac facilisis in, egestas eget quam.
-Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-Praesent commodo cursus magna, vel scelerisque nisl consectetur et.`,
-                                )
-                                .join('\n')} */}
-                        {/* {selectedProject?.users.map(user=>(<>
-                                    {user.name}
-                                </>))} */}
-                        {/* </DialogContentText> */}
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleCloseDialog}>Cancel</Button>
-                        <Button onClick={handleAddDialog}>추가</Button>
-                    </DialogActions>
-                </Dialog>
-            </div>
             <Box sx={{ height: 400, width: '50%' }}>
                 {renderConfirmDialog()}
                 <DataGrid
