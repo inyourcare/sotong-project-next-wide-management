@@ -157,12 +157,12 @@ const ProjectDetailsManage: React.FC<Props> = ({ props }) => {
         AlertProps,
         'children' | 'severity'
     > | null>(null);
-    const noButtonRef = React.useRef<HTMLButtonElement>(null);
+    // const noButtonRef = React.useRef<HTMLButtonElement>(null);
 
-    const mutateRow = React.useCallback(
-        updateProject
-        , []
-    );
+    // const mutateRow = React.useCallback(
+    //     updateProject
+    //     , []
+    // );
 
     // const processRowUpdate = React.useCallback(
     //     (newRow: GridRowModel, oldRow: GridRowModel) =>
@@ -224,8 +224,8 @@ const ProjectDetailsManage: React.FC<Props> = ({ props }) => {
                             entityType: EntityType.Project,
                             promiseArguments: projectDataGridPromiseArguments,
                             setPromiseArguments: setProjectDataGridPromiseArguments,
-                            noButtonRef: noButtonRef,
-                            mutateRow,
+                            // noButtonRef: noButtonRef,
+                            mutateRow: updateProject,
                             setSnackbar
                         }
                     )}
@@ -243,6 +243,18 @@ const ProjectDetailsManage: React.FC<Props> = ({ props }) => {
                 </Grid>
                 <Grid item xs={8} sx={{ height: 800 }}>
                     <Grid sx={{ height: 400 }}>
+                        {renderConfirmDialog(
+                            // handleNo,
+                            // handleYes
+                            {
+                                entityType: EntityType.ProjectSchedule,
+                                promiseArguments: projectScheduleDataGridPromiseArguments,
+                                setPromiseArguments: setProjectScheduleDataGridPromiseArguments,
+                                // noButtonRef: noButtonRef,
+                                mutateRow: updateProject,
+                                setSnackbar
+                            }
+                        )}
                         <CustomDataGrid
                             rows={scheduleRows || []}
                             columns={scheduleColumns}

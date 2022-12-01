@@ -12,14 +12,14 @@ interface ConfirmDialogProps {
         oldRow: GridValidRowModel
     },
     setPromiseArguments: (value: any) => void,
-    noButtonRef: React.RefObject<HTMLButtonElement>,
+    // noButtonRef: React.RefObject<HTMLButtonElement>,
     // handleNo: () => void,
     // handleYes: () => void,
-    mutateRow: (param: any) => Promise<any>,
+    mutateRow: (param: GridValidRowModel) => Promise<any>,
     setSnackbar: React.Dispatch<React.SetStateAction<Pick<AlertProps, "children" | "severity"> | null>>
 }
 export const renderConfirmDialog = (
-    { entityType, promiseArguments, setPromiseArguments, noButtonRef, mutateRow, setSnackbar }: ConfirmDialogProps
+    { entityType, promiseArguments, setPromiseArguments, mutateRow, setSnackbar }: ConfirmDialogProps
 ) => {
     if (!promiseArguments) {
         return null;
@@ -64,7 +64,8 @@ export const renderConfirmDialog = (
                 {`Pressing 'Yes' will change ${mutation}.`}
             </DialogContent>
             <DialogActions>
-                <Button ref={noButtonRef} onClick={handleNo}>
+                {/* <Button ref={noButtonRef} onClick={handleNo}> */}
+                <Button onClick={handleNo}>
                     No
                 </Button>
                 <Button onClick={handleYes}>Yes</Button>

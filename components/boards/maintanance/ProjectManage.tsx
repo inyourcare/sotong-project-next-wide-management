@@ -435,7 +435,7 @@ Praesent commodo cursus magna, vel scelerisque nisl consectetur et.`,
                         entityType: EntityType.Project,
                         promiseArguments: promiseArguments,
                         setPromiseArguments: setPromiseArguments,
-                        noButtonRef: noButtonRef,
+                        // noButtonRef: noButtonRef,
                         mutateRow,
                         setSnackbar
                     }
