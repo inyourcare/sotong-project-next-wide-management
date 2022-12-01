@@ -233,6 +233,9 @@ const ProjectDetailsManage: React.FC<Props> = ({ props }) => {
                         rows={projectList.data.projects}
                         columns={projectColumns}
                         // processRowUpdate={processRowUpdate}
+                        pageSize={5}
+                        rowsPerPageOptions={[10, 5]}
+                        experimentalFeatures={{ newEditingApi: true }}
                         setPromiseArguments={setProjectDataGridPromiseArguments}
                         rowOnClick={projectRowOnClick}
                         entityType={EntityType.Project}
@@ -271,9 +274,15 @@ const ProjectDetailsManage: React.FC<Props> = ({ props }) => {
                         <CustomDataGrid
                             rows={scheduleRows || []}
                             columns={scheduleColumns}
+                            pageSize={5}
+                            rowsPerPageOptions={[10, 5]}
+                            experimentalFeatures={{ newEditingApi: true }}
+                            components={{
+                                Footer: () => BasicAddRemoveDataGridFooter({ onAddClick: addProjectSheduleClick, onRemoveClick: removeProjectSheduleClick }),
+                            }}
                             // processRowUpdate={processRowUpdate}
                             setPromiseArguments={setProjectScheduleDataGridPromiseArguments}
-                            rowOnClick={()=>{}}
+                            rowOnClick={() => { }}
                             entityType={EntityType.ProjectSchedule}
                         />
                     </Grid>
@@ -307,6 +316,9 @@ const ProjectDetailsManage: React.FC<Props> = ({ props }) => {
                     <CustomDataGrid
                         rows={projectList.data.projects}
                         columns={projectColumns}
+                        pageSize={10}
+                        rowsPerPageOptions={[10, 5]}
+                        experimentalFeatures={{ newEditingApi: true }}
                         // processRowUpdate={processRowUpdate}
                         setPromiseArguments={setProjectDataGridPromiseArguments}
                         rowOnClick={projectRowOnClick}

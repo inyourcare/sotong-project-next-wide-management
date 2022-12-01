@@ -32,11 +32,11 @@ export default function CustomDataGrid(props: CustomDataGridProps) {
             {...props}
             rows={rows}
             columns={columns}
-            pageSize={10}
-            rowsPerPageOptions={[10, 5]}
+            // pageSize={10}
+            // rowsPerPageOptions={[10, 5]}
             // checkboxSelection
             // disableSelectionOnClick
-            experimentalFeatures={{ newEditingApi: true }}
+            // experimentalFeatures={{ newEditingApi: true }}
             processRowUpdate={processRowUpdate}
             // onSelectionModelChange={(ids) => {
             //     // console.log('selectedRowData1',ids);
