@@ -1,7 +1,8 @@
+import { logger } from "@core/logger";
 import { DataGrid, DataGridProps, GridColDef, GridEventListener, GridRowModel, GridValidRowModel } from "@mui/x-data-grid";
 
 interface CustomDataGridProps extends DataGridProps<any> {
-// interface CustomDataGridProps {
+    // interface CustomDataGridProps {
     rows: any,
     columns: GridColDef[],
     processRowUpdate?: (newRow: GridRowModel, oldRow: GridRowModel) => Promise<GridValidRowModel>,
@@ -15,8 +16,8 @@ export default function CustomDataGrid(props: CustomDataGridProps) {
         (newRow: GridRowModel, oldRow: GridRowModel) =>
             new Promise<GridRowModel>((resolve, reject) => {
                 let mutation
-                if (Object.values(EntityType).includes(entityType as EntityType)) 
-                    mutation = getMutation(entityType as EntityType, newRow, oldRow)
+                // if (Object.values(EntityType).includes(entityType as EntityType))
+                mutation = getMutation(entityType as EntityType, newRow, oldRow)
                 // if (entityType === EntityType.Project)
                 //     mutation = computeProjectMutation(newRow, oldRow);
                 // const mutation = entityType ? getMutation(entityType, newRow, oldRow) : null
@@ -59,6 +60,7 @@ export enum EntityType {
 }
 
 export function getMutation(entityType: EntityType, newRow: GridRowModel, oldRow: GridRowModel) {
+    logger.debug('getMutation', entityType, newRow, oldRow)
     let mutation
     if (entityType === EntityType.Project)
         mutation = computeProjectMutation(newRow, oldRow);
