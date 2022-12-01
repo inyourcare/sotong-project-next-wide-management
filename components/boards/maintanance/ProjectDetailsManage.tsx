@@ -45,8 +45,15 @@ const ProjectDetailsManage: React.FC<Props> = ({ props }) => {
     } = useForm();
     const router = useRouter();
     useEffect(() => {
-        logger.debug('project list -> ', { ...projectList.data })
-    }, [projectList])
+        logger.debug('project list -> ', scheduleRows)
+        // setScheduleRows(scheduleRows?.filter(schedule => schedule.id !== 0))
+        const projects = projectList.data.projects as Array<TProject>
+        setScheduleRows(
+            projects
+                .filter(p => p.id === selectedProject?.id)
+                .pop()?.schedules.filter(schedule => schedule.id !== 0)
+        )
+    }, [projectList.data.projects])
 
 
 
@@ -184,6 +191,7 @@ const ProjectDetailsManage: React.FC<Props> = ({ props }) => {
 
     useEffect(() => {
         logger.debug('selectedProject -> ', { ...selectedProject })
+        // setScheduleRows(scheduleRows?.filter(schedule => schedule.id !== 0))
         setScheduleRows(selectedProject?.schedules)
     }, [selectedProject])
 
@@ -201,7 +209,8 @@ const ProjectDetailsManage: React.FC<Props> = ({ props }) => {
     const addProjectSheduleClick = useCallback(() => {
         logger.debug('addProjectSheduleClick');
         setScheduleRows(scheduleRows?.concat([{
-            id: scheduleRows.length,
+            // id: scheduleRows.length,
+            id: 0,
             projectId: (selectedProject as TProject).id,
             type: ProjectScheduleType.MAINTANANCE,
             startDate: new Date(),

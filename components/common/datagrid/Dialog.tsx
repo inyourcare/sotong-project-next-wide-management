@@ -46,6 +46,7 @@ export const renderConfirmDialog = (
             setSnackbar({ children: 'User successfully saved', severity: 'success' });
             logger.debug('handleYes success::', response)
             resolve(response);
+            // resolve(void);
             setPromiseArguments(null);
             refetch()
         } catch (error) {
