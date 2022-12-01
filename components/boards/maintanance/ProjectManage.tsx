@@ -23,7 +23,8 @@ import { createProject, getProjects, getUsers, updateProject, createProjectUsers
 import { useQueryGetProjects, useQueryGetUser } from 'pages/boards/maintanance';
 import { TUser } from '@core/types/TUser';
 import { UnorderedList } from '@chakra-ui/react';
-import { computeProjectMutation, EntityType, renderConfirmDialog } from '@components/common/Dialog';
+import { renderConfirmDialog } from '@components/common/datagrid/Dialog';
+import CustomDataGrid, { EntityType } from '@components/common/datagrid/CustomDataGrid';
 
 const ProjectManage: React.FC<Props> = ({ props }) => {
     // const { t } = useTranslation('maintanance');
@@ -183,49 +184,49 @@ const ProjectManage: React.FC<Props> = ({ props }) => {
         , []
     );
 
-    const processRowUpdate = React.useCallback(
-        (newRow: GridRowModel, oldRow: GridRowModel) =>
-            new Promise<GridRowModel>((resolve, reject) => {
-                const mutation = computeProjectMutation(newRow, oldRow);
-                if (mutation) {
-                    // Save the arguments to resolve or reject the promise later
-                    setPromiseArguments({ resolve, reject, newRow, oldRow });
-                } else {
-                    resolve(oldRow); // Nothing was changed
-                }
-            }),
-        [],
-    );
+    // const processRowUpdate = React.useCallback(
+    //     (newRow: GridRowModel, oldRow: GridRowModel) =>
+    //         new Promise<GridRowModel>((resolve, reject) => {
+    //             const mutation = computeProjectMutation(newRow, oldRow);
+    //             if (mutation) {
+    //                 // Save the arguments to resolve or reject the promise later
+    //                 setPromiseArguments({ resolve, reject, newRow, oldRow });
+    //             } else {
+    //                 resolve(oldRow); // Nothing was changed
+    //             }
+    //         }),
+    //     [],
+    // );
 
-    const handleNo = () => {
-        const { oldRow, resolve } = promiseArguments;
-        resolve(oldRow); // Resolve with the old row to not update the internal state
-        setPromiseArguments(null);
-    };
+    // const handleNo = () => {
+    //     const { oldRow, resolve } = promiseArguments;
+    //     resolve(oldRow); // Resolve with the old row to not update the internal state
+    //     setPromiseArguments(null);
+    // };
 
-    const handleYes = async () => {
-        const { newRow, oldRow, reject, resolve } = promiseArguments;
+    // const handleYes = async () => {
+    //     const { newRow, oldRow, reject, resolve } = promiseArguments;
 
-        try {
-            // Make the HTTP request to save in the backend
-            const response = await mutateRow(newRow);
-            setSnackbar({ children: 'User successfully saved', severity: 'success' });
-            logger.debug('handleYes success::', response)
-            resolve(response);
-            setPromiseArguments(null);
-        } catch (error) {
-            setSnackbar({ children: "Name can't be empty", severity: 'error' });
-            reject(oldRow);
-            setPromiseArguments(null);
-        }
-    };
+    //     try {
+    //         // Make the HTTP request to save in the backend
+    //         const response = await mutateRow(newRow);
+    //         setSnackbar({ children: 'User successfully saved', severity: 'success' });
+    //         logger.debug('handleYes success::', response)
+    //         resolve(response);
+    //         setPromiseArguments(null);
+    //     } catch (error) {
+    //         setSnackbar({ children: "Name can't be empty", severity: 'error' });
+    //         reject(oldRow);
+    //         setPromiseArguments(null);
+    //     }
+    // };
 
-    const handleEntered = () => {
-        // The `autoFocus` is not used because, if used, the same Enter that saves
-        // the cell triggers "No". Instead, we manually focus the "No" button once
-        // the dialog is fully open.
-        // noButtonRef.current?.focus();
-    };
+    // const handleEntered = () => {
+    //     // The `autoFocus` is not used because, if used, the same Enter that saves
+    //     // the cell triggers "No". Instead, we manually focus the "No" button once
+    //     // the dialog is fully open.
+    //     // noButtonRef.current?.focus();
+    // };
 
     // const renderConfirmDialog = () => {
     //     if (!promiseArguments) {
@@ -350,7 +351,7 @@ const ProjectManage: React.FC<Props> = ({ props }) => {
                             </Grid>
                             <Grid item xs={6}>
                                 <Box sx={{ height: 400 }}>
-                                    <DataGrid
+                                    {/* <DataGrid
                                         // rows={rows}
                                         rows={memberList.data.users}
                                         columns={memberDataColumns}
@@ -371,6 +372,25 @@ const ProjectManage: React.FC<Props> = ({ props }) => {
                                             // console.log('selectedRowData2',selectedRowData);
                                         }}
                                     // isCellEditable={(params) => params.row.age % 2 === 0}
+                                    /> */}
+                                    <CustomDataGrid
+                                        rows={memberList.data.users}
+                                        columns={memberDataColumns}
+                                        // processRowUpdate={processRowUpdate}
+                                        setPromiseArguments={() => { }}
+                                        rowOnClick={() => { }}
+
+                                        checkboxSelection
+                                        onSelectionModelChange={(ids) => {
+                                            // console.log('selectedRowData1',ids);
+                                            const selectedIDs = new Set(ids);
+                                            const selectedRowData = (memberList.data.users as Array<TUser>).filter((row) =>
+                                                // selectedIDs.has(row.id.toString())
+                                                selectedIDs.has(row.id)
+                                            );
+                                            setSelectedMembers(selectedRowData)
+                                            // console.log('selectedRowData2',selectedRowData);
+                                        }}
                                     />
                                 </Box>
                             </Grid>
@@ -400,8 +420,27 @@ Praesent commodo cursus magna, vel scelerisque nisl consectetur et.`,
                 </Dialog>
             </div>
             <Box sx={{ height: 400, width: '100%' }}>
-                {renderConfirmDialog(EntityType.Project,promiseArguments,noButtonRef,handleNo,handleYes)}
-                <DataGrid
+                {/* {renderConfirmDialog(
+                    EntityType.Project,
+                    promiseArguments,
+                    setPromiseArguments,
+                    noButtonRef,
+                    handleNo,
+                    handleYes
+                )} */}
+                {renderConfirmDialog(
+                    // handleNo,
+                    // handleYes
+                    {
+                        entityType: EntityType.Project,
+                        promiseArguments: promiseArguments,
+                        setPromiseArguments: setPromiseArguments,
+                        noButtonRef: noButtonRef,
+                        mutateRow,
+                        setSnackbar
+                    }
+                )}
+                {/* <DataGrid
                     // rows={rows}
                     rows={projectList.data.projects}
                     columns={columns}
@@ -421,6 +460,14 @@ Praesent commodo cursus magna, vel scelerisque nisl consectetur et.`,
                         // console.log('selectedRowData2',selectedRowData);
                     }}
                 // isCellEditable={(params) => params.row.age % 2 === 0}
+                /> */}
+                <CustomDataGrid
+                    rows={projectList.data.projects}
+                    columns={columns}
+                    // processRowUpdate={processRowUpdate}
+                    setPromiseArguments={setPromiseArguments}
+                    rowOnClick={()=>{}}
+                    entityType={EntityType.Project}
                 />
                 {!!snackbar && (
                     <Snackbar open onClose={handleCloseSnackbar} autoHideDuration={6000}>

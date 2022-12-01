@@ -1,6 +1,6 @@
 import { logger } from '@core/logger';
 import { Alert, AlertProps, Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogContentText, DialogProps, DialogTitle, FormControl, FormControlLabel, FormGroup, Grid, Input, InputLabel, List, ListItem, ListItemText, Paper, Snackbar, Stack, TextareaAutosize, TextField } from '@mui/material';
-import { DataGrid, GridApi, GridCellValue, GridColDef, GridEventListener, GridRowModel, GridValueGetterParams } from '@mui/x-data-grid';
+import { DataGrid, GridApi, GridCellValue, GridColDef, GridEventListener, GridRowModel, GridRowModes, GridRowModesModel, GridRowsProp, GridToolbarContainer, GridValueGetterParams } from '@mui/x-data-grid';
 import { Props } from 'framer-motion/types/types';
 import { useTranslation } from 'next-i18next';
 import { styled } from '@mui/material/styles';
@@ -14,9 +14,13 @@ import { TProject } from '@core/types/TProject';
 import { useQueryGetProjects, useQueryGetUser } from 'pages/boards/maintanance';
 import { TUser } from '@core/types/TUser';
 import { createProjectUsers, updateProject } from '@core/logics/prisma';
-import { computeProjectMutation, EntityType, renderConfirmDialog } from '@components/common/Dialog';
+import { renderConfirmDialog } from '@components/common/datagrid/Dialog';
 import dynamic from 'next/dynamic';
 import BasicAddRemoveDataGridFooter from '@components/common/datagrid/BasicAddRemoveDataGridFooter';
+import { AddIcon } from '@chakra-ui/icons';
+import { TProjectSchedule } from '@core/types/TProjectSchedule';
+import { ProjectScheduleType } from '@prisma/client';
+import CustomDataGrid, { EntityType } from '@components/common/datagrid/CustomDataGrid';
 
 
 const ToastEditor = dynamic<any>(
@@ -147,7 +151,8 @@ const ProjectDetailsManage: React.FC<Props> = ({ props }) => {
             flex: 1,
         },
     ]
-    const [promiseArguments, setPromiseArguments] = React.useState<any>(null);
+    const [projectDataGridPromiseArguments, setProjectDataGridPromiseArguments] = React.useState<any>(null);
+    const [projectScheduleDataGridPromiseArguments, setProjectScheduleDataGridPromiseArguments] = React.useState<any>(null);
     const [snackbar, setSnackbar] = React.useState<Pick<
         AlertProps,
         'children' | 'severity'
@@ -159,45 +164,28 @@ const ProjectDetailsManage: React.FC<Props> = ({ props }) => {
         , []
     );
 
-    const processRowUpdate = React.useCallback(
-        (newRow: GridRowModel, oldRow: GridRowModel) =>
-            new Promise<GridRowModel>((resolve, reject) => {
-                const mutation = computeProjectMutation(newRow, oldRow);
-                if (mutation) {
-                    // Save the arguments to resolve or reject the promise later
-                    setPromiseArguments({ resolve, reject, newRow, oldRow });
-                } else {
-                    resolve(oldRow); // Nothing was changed
-                }
-            }),
-        [],
-    );
-
-    const handleNo = () => {
-        const { oldRow, resolve } = promiseArguments;
-        resolve(oldRow); // Resolve with the old row to not update the internal state
-        setPromiseArguments(null);
-    };
-
-    const handleYes = async () => {
-        const { newRow, oldRow, reject, resolve } = promiseArguments;
-
-        try {
-            // Make the HTTP request to save in the backend
-            const response = await mutateRow(newRow);
-            setSnackbar({ children: 'User successfully saved', severity: 'success' });
-            logger.debug('handleYes success::', response)
-            resolve(response);
-            setPromiseArguments(null);
-        } catch (error) {
-            setSnackbar({ children: "Name can't be empty", severity: 'error' });
-            reject(oldRow);
-            setPromiseArguments(null);
-        }
-    };
+    // const processRowUpdate = React.useCallback(
+    //     (newRow: GridRowModel, oldRow: GridRowModel) =>
+    //         new Promise<GridRowModel>((resolve, reject) => {
+    //             const mutation = computeProjectMutation(newRow, oldRow);
+    //             if (mutation) {
+    //                 // Save the arguments to resolve or reject the promise later
+    //                 setPromiseArguments({ resolve, reject, newRow, oldRow });
+    //             } else {
+    //                 resolve(oldRow); // Nothing was changed
+    //             }
+    //         }),
+    //     [],
+    // );
 
     const [selectedProject, setSelectedProject] = React.useState<TProject | undefined>(undefined);
+    const [scheduleRows, setScheduleRows] = React.useState<TProjectSchedule[] | undefined>(undefined);
     const handleCloseSnackbar = () => setSnackbar(null);
+
+    useEffect(() => {
+        logger.debug('selectedProject -> ', { ...selectedProject })
+        setScheduleRows(selectedProject?.schedules)
+    }, [selectedProject])
 
     // project row click
     const projectRowOnClick: GridEventListener<'rowClick'> = (
@@ -210,9 +198,17 @@ const ProjectDetailsManage: React.FC<Props> = ({ props }) => {
         setSelectedProject(project)
     };
 
-    const addProjectSheduleClick = () => {
-        logger.debug('addProjectSheduleClick')
-    }
+    const addProjectSheduleClick = useCallback(() => {
+        logger.debug('addProjectSheduleClick');
+        setScheduleRows(scheduleRows?.concat([{
+            id: scheduleRows.length,
+            project: selectedProject as TProject,
+            type: ProjectScheduleType.MAINTANANCE,
+            startDate: new Date(),
+            endDate: new Date(),
+            memo: ''
+        }]))
+    }, [selectedProject, scheduleRows])
     const removeProjectSheduleClick = () => {
         logger.debug('removeProjectSheduleClick')
     }
@@ -221,43 +217,42 @@ const ProjectDetailsManage: React.FC<Props> = ({ props }) => {
         <>
             <Grid container>
                 <Grid item xs={4} sx={{ height: 800 }}>
-                    {renderConfirmDialog(EntityType.Project, promiseArguments, noButtonRef, handleNo, handleYes)}
-                    <DataGrid
-                        // rows={rows}
+                    {renderConfirmDialog(
+                        // handleNo,
+                        // handleYes
+                        {
+                            entityType: EntityType.Project,
+                            promiseArguments: projectDataGridPromiseArguments,
+                            setPromiseArguments: setProjectDataGridPromiseArguments,
+                            noButtonRef: noButtonRef,
+                            mutateRow,
+                            setSnackbar
+                        }
+                    )}
+                    <CustomDataGrid
                         rows={projectList.data.projects}
                         columns={projectColumns}
-                        pageSize={10}
-                        rowsPerPageOptions={[10, 5]}
-                        // checkboxSelection
-                        // disableSelectionOnClick
-                        experimentalFeatures={{ newEditingApi: true }}
-                        processRowUpdate={processRowUpdate}
-                        // onSelectionModelChange={(ids) => {
-                        //     // console.log('selectedRowData1',ids);
-                        //     const selectedIDs = new Set(ids);
-                        //     const selectedRowData = (projectList.data.projects as Array<TProject>).filter((row) =>
-                        //         // selectedIDs.has(row.id.toString())
-                        //         selectedIDs.has(row.id)
-                        //     );
-                        //     // console.log('selectedRowData2',selectedRowData);
-                        // }}
-                        onRowClick={projectRowOnClick}
-                    // isCellEditable={(params) => params.row.age % 2 === 0}
+                        // processRowUpdate={processRowUpdate}
+                        setPromiseArguments={setProjectDataGridPromiseArguments}
+                        rowOnClick={projectRowOnClick}
+                        entityType={EntityType.Project}
                     />
                 </Grid>
                 <Grid item xs={8} sx={{ height: 800 }}>
                     <Grid sx={{ height: 400 }}>
-                        <DataGrid
+                        {/* <DataGrid
                             // rows={rows}
-                            rows={selectedProject?.schedules || []}
-                            getRowId={(row) => row.user.id}
+                            // rows={selectedProject?.schedules || []}
+                            rows={scheduleRows || []}
+                            // rows={selectedProject?.users || []}
+                            // getRowId={(row) => row.user.id}
                             columns={scheduleColumns}
                             pageSize={5}
                             rowsPerPageOptions={[10, 5]}
                             // checkboxSelection
                             // disableSelectionOnClick
                             experimentalFeatures={{ newEditingApi: true }}
-                            processRowUpdate={processRowUpdate}
+                            // processRowUpdate={processRowUpdate}
                             // onSelectionModelChange={(ids) => {
                             //     // console.log('selectedRowData1',ids);
                             //     const selectedIDs = new Set(ids);
@@ -267,11 +262,19 @@ const ProjectDetailsManage: React.FC<Props> = ({ props }) => {
                             //     );
                             //     // console.log('selectedRowData2',selectedRowData);
                             // }}
-                            onRowClick={projectRowOnClick}
+                            // onRowClick={projectRowOnClick}
                             components={{
                                 Footer: () => BasicAddRemoveDataGridFooter({ onAddClick: addProjectSheduleClick, onRemoveClick: removeProjectSheduleClick }),
                             }}
                         // isCellEditable={(params) => params.row.age % 2 === 0}
+                        /> */}
+                        <CustomDataGrid
+                            rows={scheduleRows || []}
+                            columns={scheduleColumns}
+                            // processRowUpdate={processRowUpdate}
+                            setPromiseArguments={setProjectScheduleDataGridPromiseArguments}
+                            rowOnClick={()=>{}}
+                            entityType={EntityType.ProjectSchedule}
                         />
                     </Grid>
                     <Grid sx={{ height: 400 }}>
@@ -279,7 +282,7 @@ const ProjectDetailsManage: React.FC<Props> = ({ props }) => {
                     </Grid>
                 </Grid>
                 <Grid item xs={12} sx={{ height: 200 }}>
-                    <DataGrid
+                    {/* <DataGrid
                         // rows={rows}
                         rows={projectList.data.projects}
                         columns={projectColumns}
@@ -288,7 +291,7 @@ const ProjectDetailsManage: React.FC<Props> = ({ props }) => {
                         // checkboxSelection
                         // disableSelectionOnClick
                         experimentalFeatures={{ newEditingApi: true }}
-                        processRowUpdate={processRowUpdate}
+                        // processRowUpdate={processRowUpdate}
                         onSelectionModelChange={(ids) => {
                             // console.log('selectedRowData1',ids);
                             const selectedIDs = new Set(ids);
@@ -298,8 +301,16 @@ const ProjectDetailsManage: React.FC<Props> = ({ props }) => {
                             );
                             // console.log('selectedRowData2',selectedRowData);
                         }}
-                        onRowClick={projectRowOnClick}
+                    // onRowClick={projectRowOnClick}
                     // isCellEditable={(params) => params.row.age % 2 === 0}
+                    /> */}
+                    <CustomDataGrid
+                        rows={projectList.data.projects}
+                        columns={projectColumns}
+                        // processRowUpdate={processRowUpdate}
+                        setPromiseArguments={setProjectDataGridPromiseArguments}
+                        rowOnClick={projectRowOnClick}
+                        entityType={EntityType.Project}
                     />
                 </Grid>
             </Grid>
