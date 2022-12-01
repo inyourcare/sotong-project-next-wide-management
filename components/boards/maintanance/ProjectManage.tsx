@@ -437,7 +437,8 @@ Praesent commodo cursus magna, vel scelerisque nisl consectetur et.`,
                         setPromiseArguments: setPromiseArguments,
                         // noButtonRef: noButtonRef,
                         mutateRow,
-                        setSnackbar
+                        setSnackbar,
+                        refetch: projectList.refetch
                     }
                 )}
                 {/* <DataGrid

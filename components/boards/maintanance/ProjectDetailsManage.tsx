@@ -13,7 +13,7 @@ import { dehydrate, QueryClient, useQuery } from 'react-query';
 import { TProject } from '@core/types/TProject';
 import { useQueryGetProjects, useQueryGetUser } from 'pages/boards/maintanance';
 import { TUser } from '@core/types/TUser';
-import { createProjectUsers, updateProject } from '@core/logics/prisma';
+import { createProjectUsers, updateProject, upsertProjectSchedule } from '@core/logics/prisma';
 import { renderConfirmDialog } from '@components/common/datagrid/Dialog';
 import dynamic from 'next/dynamic';
 import BasicAddRemoveDataGridFooter from '@components/common/datagrid/BasicAddRemoveDataGridFooter';
@@ -202,7 +202,7 @@ const ProjectDetailsManage: React.FC<Props> = ({ props }) => {
         logger.debug('addProjectSheduleClick');
         setScheduleRows(scheduleRows?.concat([{
             id: scheduleRows.length,
-            project: selectedProject as TProject,
+            projectId: (selectedProject as TProject).id,
             type: ProjectScheduleType.MAINTANANCE,
             startDate: new Date(),
             endDate: new Date(),
@@ -226,7 +226,8 @@ const ProjectDetailsManage: React.FC<Props> = ({ props }) => {
                             setPromiseArguments: setProjectDataGridPromiseArguments,
                             // noButtonRef: noButtonRef,
                             mutateRow: updateProject,
-                            setSnackbar
+                            setSnackbar,
+                            refetch: projectList.refetch
                         }
                     )}
                     <CustomDataGrid
@@ -251,8 +252,9 @@ const ProjectDetailsManage: React.FC<Props> = ({ props }) => {
                                 promiseArguments: projectScheduleDataGridPromiseArguments,
                                 setPromiseArguments: setProjectScheduleDataGridPromiseArguments,
                                 // noButtonRef: noButtonRef,
-                                mutateRow: updateProject,
-                                setSnackbar
+                                mutateRow: upsertProjectSchedule,
+                                setSnackbar,
+                                refetch: projectList.refetch
                             }
                         )}
                         <CustomDataGrid

@@ -3,7 +3,7 @@ import { TProject } from "./TProject"
 
 export type TProjectSchedule = {
     id: number
-    project: TProject
+    projectId: number
     type: ProjectScheduleType
     startDate: Date
     endDate: Date

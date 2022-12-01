@@ -17,9 +17,10 @@ interface ConfirmDialogProps {
     // handleYes: () => void,
     mutateRow: (param: GridValidRowModel) => Promise<any>,
     setSnackbar: React.Dispatch<React.SetStateAction<Pick<AlertProps, "children" | "severity"> | null>>
+    refetch: any
 }
 export const renderConfirmDialog = (
-    { entityType, promiseArguments, setPromiseArguments, mutateRow, setSnackbar }: ConfirmDialogProps
+    { entityType, promiseArguments, setPromiseArguments, mutateRow, setSnackbar, refetch }: ConfirmDialogProps
 ) => {
     if (!promiseArguments) {
         return null;
@@ -46,6 +47,7 @@ export const renderConfirmDialog = (
             logger.debug('handleYes success::', response)
             resolve(response);
             setPromiseArguments(null);
+            refetch()
         } catch (error) {
             setSnackbar({ children: "Name can't be empty", severity: 'error' });
             reject(oldRow);
