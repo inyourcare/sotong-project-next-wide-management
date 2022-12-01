@@ -243,34 +243,6 @@ const ProjectDetailsManage: React.FC<Props> = ({ props }) => {
                 </Grid>
                 <Grid item xs={8} sx={{ height: 800 }}>
                     <Grid sx={{ height: 400 }}>
-                        {/* <DataGrid
-                            // rows={rows}
-                            // rows={selectedProject?.schedules || []}
-                            rows={scheduleRows || []}
-                            // rows={selectedProject?.users || []}
-                            // getRowId={(row) => row.user.id}
-                            columns={scheduleColumns}
-                            pageSize={5}
-                            rowsPerPageOptions={[10, 5]}
-                            // checkboxSelection
-                            // disableSelectionOnClick
-                            experimentalFeatures={{ newEditingApi: true }}
-                            // processRowUpdate={processRowUpdate}
-                            // onSelectionModelChange={(ids) => {
-                            //     // console.log('selectedRowData1',ids);
-                            //     const selectedIDs = new Set(ids);
-                            //     const selectedRowData = (projectList.data.projects as Array<TProject>).filter((row) =>
-                            //         // selectedIDs.has(row.id.toString())
-                            //         selectedIDs.has(row.id)
-                            //     );
-                            //     // console.log('selectedRowData2',selectedRowData);
-                            // }}
-                            // onRowClick={projectRowOnClick}
-                            components={{
-                                Footer: () => BasicAddRemoveDataGridFooter({ onAddClick: addProjectSheduleClick, onRemoveClick: removeProjectSheduleClick }),
-                            }}
-                        // isCellEditable={(params) => params.row.age % 2 === 0}
-                        /> */}
                         <CustomDataGrid
                             rows={scheduleRows || []}
                             columns={scheduleColumns}
@@ -291,28 +263,6 @@ const ProjectDetailsManage: React.FC<Props> = ({ props }) => {
                     </Grid>
                 </Grid>
                 <Grid item xs={12} sx={{ height: 200 }}>
-                    {/* <DataGrid
-                        // rows={rows}
-                        rows={projectList.data.projects}
-                        columns={projectColumns}
-                        pageSize={10}
-                        rowsPerPageOptions={[10]}
-                        // checkboxSelection
-                        // disableSelectionOnClick
-                        experimentalFeatures={{ newEditingApi: true }}
-                        // processRowUpdate={processRowUpdate}
-                        onSelectionModelChange={(ids) => {
-                            // console.log('selectedRowData1',ids);
-                            const selectedIDs = new Set(ids);
-                            const selectedRowData = (projectList.data.projects as Array<TProject>).filter((row) =>
-                                // selectedIDs.has(row.id.toString())
-                                selectedIDs.has(row.id)
-                            );
-                            // console.log('selectedRowData2',selectedRowData);
-                        }}
-                    // onRowClick={projectRowOnClick}
-                    // isCellEditable={(params) => params.row.age % 2 === 0}
-                    /> */}
                     <CustomDataGrid
                         rows={projectList.data.projects}
                         columns={projectColumns}
