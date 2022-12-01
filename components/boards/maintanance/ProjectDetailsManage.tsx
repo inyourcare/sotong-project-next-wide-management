@@ -131,6 +131,7 @@ const ProjectDetailsManage: React.FC<Props> = ({ props }) => {
             field: 'type',
             headerName: 'type',
             // width: 10
+            editable: true,
             flex: 1,
         },
         {
@@ -139,6 +140,7 @@ const ProjectDetailsManage: React.FC<Props> = ({ props }) => {
             // width: 150,
             editable: true,
             // resizable: true
+            type: 'date',
             flex: 1,
         },
         {
@@ -147,6 +149,7 @@ const ProjectDetailsManage: React.FC<Props> = ({ props }) => {
             // width: 150,
             editable: true,
             // resizable: true
+            type: 'date',
             flex: 1,
         },
         {
@@ -213,6 +216,7 @@ const ProjectDetailsManage: React.FC<Props> = ({ props }) => {
             id: 0,
             projectId: (selectedProject as TProject).id,
             type: ProjectScheduleType.MAINTANANCE,
+            // startDate: new Date('2022-12-01T08:00:06.421Z'),
             startDate: new Date(),
             endDate: new Date(),
             memo: ''
