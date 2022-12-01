@@ -464,6 +464,7 @@ Praesent commodo cursus magna, vel scelerisque nisl consectetur et.`,
                 <CustomDataGrid
                     rows={projectList.data.projects}
                     columns={columns}
+                    experimentalFeatures={{ newEditingApi: true }}
                     // processRowUpdate={processRowUpdate}
                     setPromiseArguments={setPromiseArguments}
                     rowOnClick={()=>{}}
