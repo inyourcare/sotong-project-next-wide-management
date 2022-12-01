@@ -16,6 +16,7 @@ import { TUser } from '@core/types/TUser';
 import { createProjectUsers, updateProject } from '@core/logics/prisma';
 import { computeProjectMutation, EntityType, renderConfirmDialog } from '@components/common/Dialog';
 import dynamic from 'next/dynamic';
+import BasicAddRemoveDataGridFooter from '@components/common/datagrid/BasicAddRemoveDataGridFooter';
 
 
 const ToastEditor = dynamic<any>(
@@ -208,6 +209,14 @@ const ProjectDetailsManage: React.FC<Props> = ({ props }) => {
         const project = (projectList.data.projects as Array<TProject>).filter(project => project.id === params.row.id).pop()
         setSelectedProject(project)
     };
+
+    const addProjectSheduleClick = () => {
+        logger.debug('addProjectSheduleClick')
+    }
+    const removeProjectSheduleClick = () => {
+        logger.debug('removeProjectSheduleClick')
+    }
+
     return (
         <>
             <Grid container>
@@ -218,7 +227,7 @@ const ProjectDetailsManage: React.FC<Props> = ({ props }) => {
                         rows={projectList.data.projects}
                         columns={projectColumns}
                         pageSize={10}
-                        rowsPerPageOptions={[10,5]}
+                        rowsPerPageOptions={[10, 5]}
                         // checkboxSelection
                         // disableSelectionOnClick
                         experimentalFeatures={{ newEditingApi: true }}
@@ -244,7 +253,7 @@ const ProjectDetailsManage: React.FC<Props> = ({ props }) => {
                             getRowId={(row) => row.user.id}
                             columns={scheduleColumns}
                             pageSize={5}
-                            rowsPerPageOptions={[10,5]}
+                            rowsPerPageOptions={[10, 5]}
                             // checkboxSelection
                             // disableSelectionOnClick
                             experimentalFeatures={{ newEditingApi: true }}
@@ -259,11 +268,14 @@ const ProjectDetailsManage: React.FC<Props> = ({ props }) => {
                             //     // console.log('selectedRowData2',selectedRowData);
                             // }}
                             onRowClick={projectRowOnClick}
+                            components={{
+                                Footer: () => BasicAddRemoveDataGridFooter({ onAddClick: addProjectSheduleClick, onRemoveClick: removeProjectSheduleClick }),
+                            }}
                         // isCellEditable={(params) => params.row.age % 2 === 0}
                         />
                     </Grid>
                     <Grid sx={{ height: 400 }}>
-                        <ToastEditor height={'400px'}/>
+                        <ToastEditor height={'400px'} />
                     </Grid>
                 </Grid>
                 <Grid item xs={12} sx={{ height: 200 }}>
