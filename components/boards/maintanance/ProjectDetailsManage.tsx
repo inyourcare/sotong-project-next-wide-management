@@ -1,5 +1,5 @@
 import { logger } from '@core/logger';
-import { Alert, AlertProps, Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogContentText, DialogProps, DialogTitle, FormControl, FormControlLabel, FormGroup, Grid, Input, InputLabel, List, ListItem, ListItemText, Paper, Snackbar, Stack, TextareaAutosize, TextField } from '@mui/material';
+import { Alert, AlertProps, Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogContentText, DialogProps, DialogTitle, FormControl, FormControlLabel, FormGroup, Grid, Input, InputLabel, List, ListItem, ListItemText, MenuItem, Paper, Select, Snackbar, Stack, TextareaAutosize, TextField } from '@mui/material';
 import { DataGrid, GridApi, GridCellValue, GridColDef, GridEventListener, GridRowModel, GridRowModes, GridRowModesModel, GridRowsProp, GridToolbarContainer, GridValueGetterParams } from '@mui/x-data-grid';
 import { Props } from 'framer-motion/types/types';
 import { useTranslation } from 'next-i18next';
@@ -133,6 +133,17 @@ const ProjectDetailsManage: React.FC<Props> = ({ props }) => {
             // width: 10
             editable: true,
             flex: 1,
+            renderCell: (params) => {
+                
+                return <>
+                    {/* <Select value={ProjectScheduleType.MAINTANANCE} sx={{width:'100%'}}> */}
+                    <Select defaultValue={params.value} sx={{width:'100%'}}>
+                        {Object.values(ProjectScheduleType).map((v) => {
+                            return (<MenuItem value={v}>{v}</MenuItem>)
+                        })}
+                    </Select>
+                </>
+            }
         },
         {
             field: 'startDate',
