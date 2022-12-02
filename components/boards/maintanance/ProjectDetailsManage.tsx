@@ -1,6 +1,6 @@
 import { logger } from '@core/logger';
-import { Alert, AlertProps, Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogContentText, DialogProps, DialogTitle, FormControl, FormControlLabel, FormGroup, Grid, Input, InputLabel, List, ListItem, ListItemText, MenuItem, Paper, Select, Snackbar, Stack, TextareaAutosize, TextField } from '@mui/material';
-import { DataGrid, GridApi, GridCellValue, GridColDef, GridEventListener, GridRowModel, GridRowModes, GridRowModesModel, GridRowsProp, GridToolbarContainer, GridValueGetterParams } from '@mui/x-data-grid';
+import { Alert, AlertProps, Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogContentText, DialogProps, DialogTitle, FormControl, FormControlLabel, FormGroup, Grid, Input, InputLabel, List, ListItem, ListItemText, MenuItem, NativeSelect, Paper, Select, SelectChangeEvent, Snackbar, Stack, TextareaAutosize, TextField } from '@mui/material';
+import { DataGrid, GridApi, GridCellValue, GridColDef, GridEventListener, GridRowModel, GridRowModes, GridRowModesModel, GridRowsProp, GridToolbarContainer, GridValueGetterParams, useGridApiRef } from '@mui/x-data-grid';
 import { Props } from 'framer-motion/types/types';
 import { useTranslation } from 'next-i18next';
 import { styled } from '@mui/material/styles';
@@ -54,7 +54,6 @@ const ProjectDetailsManage: React.FC<Props> = ({ props }) => {
                 .pop()?.schedules.filter(schedule => schedule.id !== 0)
         )
     }, [projectList.data.projects])
-
 
 
     //////////// mui datagrid example
@@ -134,14 +133,39 @@ const ProjectDetailsManage: React.FC<Props> = ({ props }) => {
             editable: true,
             flex: 1,
             renderCell: (params) => {
-                
+                // let val = params.value
+                const { id, value, field } = params;
+                // const api: GridApi = params.api;
+                // const thisRow: Record<string, GridCellValue> = {};
+
+                // api
+                //     .getAllColumns()
+                //     .filter((c) => c.field !== "__check__" && !!c)
+                //     .forEach(
+                //         (c) => (thisRow[c.field] = params.getValue(params.id, c.field))
+                //     );
+                const selectChange = (e: SelectChangeEvent) => {
+                    logger.debug('selectChange', id, field, scheduleRows, value, e.target.value)
+                    setScheduleRows(scheduleRows?.map(schedule=> {
+                        if (schedule.id === id){
+                            schedule.type = e.target.value as ProjectScheduleType
+                            return schedule
+                        }
+                        return schedule
+                    }))
+                }
                 return <>
                     {/* <Select value={ProjectScheduleType.MAINTANANCE} sx={{width:'100%'}}> */}
-                    <Select defaultValue={params.value} sx={{width:'100%'}}>
+                    <Select value={value} sx={{ width: '100%' }} onChange={selectChange}>
                         {Object.values(ProjectScheduleType).map((v) => {
-                            return (<MenuItem value={v}>{v}</MenuItem>)
+                            return (<MenuItem value={v} key={v}>{v}</MenuItem>)
                         })}
                     </Select>
+                    {/* <NativeSelect>
+                        {Object.values(ProjectScheduleType).map((v) => {
+                            return (<option value={v}>{v}</option>)
+                        })}
+                    </NativeSelect> */}
                 </>
             }
         },
