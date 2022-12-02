@@ -1,4 +1,4 @@
-import { Button, Pagination } from "@mui/material";
+import { Button, Grid, Pagination } from "@mui/material";
 import { GridFooter, GridFooterContainer } from "@mui/x-data-grid";
 
 export default function BasicAddRemoveDataGridFooter(
@@ -6,11 +6,19 @@ export default function BasicAddRemoveDataGridFooter(
 ) {
     return (<>
         <GridFooterContainer>
-            <Button onClick={onAddClick}>추가</Button>
-            <Button onClick={onRemoveClick}>삭제</Button>
-            <GridFooter sx={{
-                border: 'none', // To delete double border.
-            }} />
+            <Grid container>
+                <Grid item xs={6} sx={{ display: 'flex', justifyContent: 'left' }}>
+                    <Button onClick={onAddClick}>추가</Button>
+                    <Button onClick={onRemoveClick}>삭제</Button>
+                </Grid>
+                {/* <Grid item xs={6} sx={{minWidth: '400px'}}> */}
+                    <GridFooter sx={{
+                        border: 'none', // To delete double border.
+                    }} />
+                {/* </Grid> */}
+            </Grid>
+
+
             {/* <Pagination /> */}
         </GridFooterContainer>
     </>)
